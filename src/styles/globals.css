@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-white: #FFFFFF;
+
+  --color-brand-orange: #FFA500;
+  --color-brand-orange-dark: #E69500;
+  --color-brand-orange-light: #FFE7B8;
+
+  --color-brand-blue: #0F1D75;
+  --color-brand-blue-dark: #0A1350;
+  --color-brand-blue-light: #EAEBF7;
+
+  --color-brand-green: #017119;
+  --color-brand-green-dark: #014D11;
+  --color-brand-green-light: #E4F3E6;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
