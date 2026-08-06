@@ -33,17 +33,18 @@ export default function Footer() {
               <img
                 src={companyLogo}
                 alt="Oceao-Enviro Logo"
-                className="h-16 w-auto object-contain brightness-100"
+                className="h-22 w-auto object-contain brightness-100"
               />
             </Link>
             <AnimatedTagline />
 
             <div className="mt-8">
+              <div class="border-t border-white/20 w-[270px] mb-4"></div>
               <h4 className="font-semibold text-[#8ec63f] text-sm mb-4 uppercase tracking-wider">Get in Touch</h4>
               <div className="flex flex-col gap-3 text-gray-300">
                 <a href="tel:+919999999999" className="flex items-center gap-3 hover:text-brand-orange transition-colors">
                   <Phone className="w-4 h-4 text-[#8ec63f]" />
-                  <span>+91 99999 99999</span>
+                  <span>+91 9953692693</span>
                 </a>
                 <a href="mailto:info@oceaoenviro.com" className="flex items-center gap-3 hover:text-brand-orange transition-colors">
                   <Mail className="w-4 h-4 text-[#8ec63f]" />
@@ -51,16 +52,16 @@ export default function Footer() {
                 </a>
                 <div className="flex items-start gap-3">
                   <MapPin className="w-4 h-4 text-[#8ec63f] shrink-0 mt-0.5" />
-                  <span>Ghaziabad | Bhopal | Jammu</span>
+                  <span>Ghaziabad | Bhopal | Jammu | Delhi</span>
                 </div>
                 <div className="flex items-start gap-3">
                   <Clock className="w-4 h-4 text-[#8ec63f] shrink-0 mt-0.5" />
-                  <span>Mon - Sat: 9:30 AM - 6:30 PM</span>
+                  <span>Mon - Sat: 9:00 AM - 6:00 PM</span>
                 </div>
               </div>
             </div>
-
-            <div className="mt-8">
+            <div className="border-t border-white/20 w-[270px] mt-4"></div>
+            <div className="mt-5">
               <SocialLinks />
             </div>
           </div>

@@ -3,7 +3,7 @@ import { MapPin } from 'lucide-react';
 
 export default function LocationCard({ city, badge, address, mapUrl }) {
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-2">
       <div className="flex items-center gap-2">
         <MapPin className="w-4 h-4 text-[#8ec63f] shrink-0" />
         <h4 className="font-semibold text-white text-base">{city}</h4>
