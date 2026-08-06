@@ -17,13 +17,13 @@ export default function VirtualMeeting() {
           {/* Left Side: Content */}
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <Leaf className="w-6 h-6 text-brand-green" />
-              <h2 className="text-brand-green font-bold text-lg tracking-wider uppercase">
+              <Leaf className="w-8 h-8 text-brand-green" />
+              <h2 className="text-brand-green font-bold text-4xl tracking-wider uppercase">
                 {virtualMeetingContent.heading}
               </h2>
             </div>
             
-            <h3 className="text-3xl md:text-4xl font-bold text-brand-blue mb-6 leading-tight">
+            <h3 className="text-xl md:text-xl font-bold text-brand-blue mb-6 leading-tight">
               {virtualMeetingContent.tagline}
             </h3>
             

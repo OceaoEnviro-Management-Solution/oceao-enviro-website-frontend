@@ -43,7 +43,7 @@ export default function NavbarV2({ onOpenMobileDrawer }) {
       */}
       <div className={`hidden lg:block sticky top-0 z-40 w-full transition-all duration-300 ${isSticky ? 'pt-0 pb-2 px-0' : 'pt-0 pb-2 px-4 sm:px-6'}`}>
         <nav
-          className={`mx-auto max-w-7xl bg-white flex items-center justify-between px-6 py-3 transition-all duration-300 border border-gray-100 ${isSticky ? 'rounded-none shadow-md' : 'rounded-full shadow-sm'
+          className={`mx-auto max-w-7xl bg-white flex items-center justify-between px-6 py-3 transition-all duration-300 border border-gray-100 rounded-full ${isSticky ? 'shadow-xl' : 'shadow-2xl'
             }`}
         >
           {/* Nav Items */}

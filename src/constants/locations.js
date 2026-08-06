@@ -1,7 +1,7 @@
 export const locationsData = [
   {
     city: 'Ghaziabad',
-    badge: 'Headquarter-HQ',
+    badge: 'Head Office',
     address: 'Plot no. 218, Gurudwara Rd, Sector 11, Vasundhara, Ghaziabad, Uttar Pradesh 201012',
     mapUrl: 'https://maps.app.goo.gl/DkYejGj447ZKf7NN8',
   },

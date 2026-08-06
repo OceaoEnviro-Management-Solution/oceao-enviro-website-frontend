@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Leaf } from 'lucide-react';
 // Inline leaf icon for the small top label
 const LeafIconSmall = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-[#3a912a]">
@@ -9,12 +9,12 @@ const LeafIconSmall = () => (
 );
 
 // Inline leaf icon for the heading
-const LeafIconLarge = () => (
-  <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="inline-block text-[#3a912a] -ml-2 -mt-4 transform rotate-12">
-    <path d="M17 3C17 3 5 5 2 12C2 12 5 19 12 19C19 19 22 12 22 12C22 12 20 5 17 3Z" fill="currentColor" />
-    <path d="M12 19L9 9" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-);
+// const LeafIconLarge = () => (
+//   <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="inline-block text-[#3a912a] -ml-2 -mt-4 transform rotate-12">
+//     <path d="M17 3C17 3 5 5 2 12C2 12 5 19 12 19C19 19 22 12 22 12C22 12 20 5 17 3Z" fill="currentColor"/>
+//     <path d="M12 19L9 9" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+//   </svg>
+// );
 
 export default function Hero() {
   return (
@@ -36,7 +36,7 @@ export default function Hero() {
             <span className="text-[#011539] block mb-2">For a Sustainable</span>
             <span className="text-[#2a8f20] flex items-end">
               Tomorrow
-              <LeafIconLarge />
+              {/* <LeafIconLarge /> */}
             </span>
           </h1>
 

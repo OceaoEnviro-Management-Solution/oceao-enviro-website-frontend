@@ -15,8 +15,8 @@ export const socialsData = [
     icon: 'Facebook'
   },
   {
-    platform: 'YouTube',
+    platform: 'X',
     url: '#', // TODO: client to provide URL
-    icon: 'Youtube'
+    icon: 'X'
   }
 ];
