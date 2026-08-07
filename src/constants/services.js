@@ -1,6 +1,6 @@
 import imgEnvironmentalMonitoring from '../assets/images/homePage/serviceSection/Environmental-Monitoring.avif';
 import imgLaboratoryServices from '../assets/images/homePage/serviceSection/Laboratory-Services.jpeg';
-import imgConsultancy from '../assets/images/homePage/serviceSection/Consultancy.jpeg';
+import imgConsultancy from '../assets/images/homePage/Consultancy.jpeg';
 import imgFireSafetyAudits from '../assets/images/homePage/serviceSection/Fire-Safety-Audits.jpeg';
 import imgWasteManagement from '../assets/images/homePage/serviceSection/Waste-Management.avif';
 
