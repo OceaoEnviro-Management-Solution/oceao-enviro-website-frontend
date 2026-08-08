@@ -50,11 +50,11 @@ export default function TopInfoBarV2() {
 
         {/* Right Side: Accreditation Logos */}
         <div className="flex items-center gap-1.5">
-          <div className="w-px h-24 bg-orange-400 mx-2 mb-1 hidden lg:block"></div>
+          <div className="w-px h-24 bg-orange-400 mx-1 mb-1 hidden lg:block"></div>
           <img src={qciLogo} alt="Quality Council of India" className="h-12 w-auto object-contain" />
-          <div className="w-px h-16 bg-orange-400 mx-2 hidden lg:block"></div>
+          <div className="w-px h-16 bg-orange-400 ml-1 hidden lg:block"></div>
           <img src={nabetLogo} alt="NABET Accredited" className="h-12 w-auto object-contain" />
-          <div className="w-px h-16 bg-orange-400 mx-2 hidden lg:block"></div>
+          <div className="w-px h-16 bg-orange-400 mr-1 hidden lg:block"></div>
           <img src={nablLogo} alt="NABL Accredited" className="h-14 w-auto object-contain" />
         </div>
 

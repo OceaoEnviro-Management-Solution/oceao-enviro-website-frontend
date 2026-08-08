@@ -146,8 +146,8 @@ export default function WhyChooseUs() {
 
             return (
               <div key={stat.id} className="flex flex-row items-center group px-2 border-r border-[#b8d4c0]">
-                <div className="w-12 h-12 rounded-full flex items-center justify-center mb-3 transition-transform group-hover:-translate-y-1 bg-white text-brand-green shadow-sm hover:bg-brand-orange hover:text-white hover:shadow-md">
-                  <Icon className="w-5 h-5" />
+                <div className="w-12 h-12 rounded-full flex items-center justify-center transition-transform group-hover:-translate-y-1 bg-white text-brand-green shadow-sm group-hover:bg-brand-orange group-hover:text-white group-hover:shadow-md">
+                  <Icon className="w-6 h-6" />
                 </div>
                 <div className="flex flex-col px-2">
                   <h4 className="text-lg sm:text-xl font-bold text-brand-blue mb-1">{stat.stat}</h4>

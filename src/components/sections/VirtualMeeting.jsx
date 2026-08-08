@@ -10,7 +10,7 @@ const IconMap = {
 export default function VirtualMeeting() {
   return (
     <section className="py-12 lg:py-16 bg-[#F8FAF9] relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="max-w-7xl mx-auto pt-4 sm:px-6 lg:px-8 relative z-10">
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center mb-8">
 
@@ -99,10 +99,10 @@ export default function VirtualMeeting() {
         </div>
 
         {/* Bottom Section: Features Grid */}
-        <div className="mt-8 bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-gray-100 relative">
+        <div className=" bg-white rounded-2xl p-3 sm:p-4 shadow-lg border border-gray-100 relative">
 
           {/* Header "Why Book a Virtual Meeting?" */}
-          <div className="flex items-center justify-center gap-4 mb-8">
+          <div className="flex items-center justify-center gap-4 mb-4">
             <div className="h-[2px] bg-brand-green/30 flex-1 max-w-[100px] md:max-w-[150px]"></div>
             <div className="flex items-center gap-2 text-brand-green font-bold text-base md:text-xl">
               <Leaf className="w-5 h-5 fill-current" />
@@ -115,8 +115,8 @@ export default function VirtualMeeting() {
             {virtualMeetingContent.features.map((feature, index) => {
               const Icon = IconMap[feature.icon];
               const isBlue = index === 0 || index === 2;
-              const iconBgClass = isBlue 
-                ? 'bg-blue-50 text-brand-blue group-hover:bg-brand-blue group-hover:text-white' 
+              const iconBgClass = isBlue
+                ? 'bg-blue-50 text-brand-blue group-hover:bg-brand-blue group-hover:text-white'
                 : 'bg-[#f0f6f1] text-brand-green group-hover:bg-brand-green group-hover:text-white';
 
               return (
