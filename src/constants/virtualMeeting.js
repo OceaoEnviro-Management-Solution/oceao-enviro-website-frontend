@@ -1,21 +1,22 @@
 export const virtualMeetingContent = {
-  heading: "BOOK A VIRTUAL MEETING",
+  heading1: "BOOK A ",
+  heading2: "VIRTUAL MEETING",
   tagline: "Let's Build a Greener Future Together",
   description: "Connect with our environmental experts to discuss your needs, explore solutions, and take the next step towards a sustainable tomorrow. Schedule a virtual meeting at your convenience.",
-  
+
   features: [
     {
-      icon: "MapPin",
-      title: "Connect From Anywhere",
-      description: "Global Access — Connect from anywhere in the world"
+      icon: "Globe2",
+      title: "Global Access",
+      description: "Connect from anywhere in the world"
     },
     {
       icon: "Clock",
       title: "Saves Time",
-      description: "No travel, no wait — just meaningful discussions"
+      description: "No travel, no wait – just meaningful discussions"
     },
     {
-      icon: "MessageCircle",
+      icon: "MessageSquare",
       title: "Direct Interaction",
       description: "One-on-one with our subject matter experts"
     },
@@ -25,7 +26,7 @@ export const virtualMeetingContent = {
       description: "Reduce carbon footprint with virtual meetings"
     }
   ],
-  
+
   benefits: [
     {
       icon: "Calendar",
@@ -43,7 +44,7 @@ export const virtualMeetingContent = {
       description: "Your information is always protected"
     }
   ],
-  
+
   ctaButtonText: "Book Your Meeting Now",
   ctaButtonLink: "/booking"
 };
