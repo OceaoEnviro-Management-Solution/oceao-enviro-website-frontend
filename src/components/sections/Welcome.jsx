@@ -6,39 +6,39 @@ import labTesting from '../../assets/images/homePage/AboutSection/LabTesting.jpg
 
 export default function Welcome() {
   return (
-    <section className="py-12 lg:py-20 bg-white relative overflow-hidden min-h-[100vh] flex items-center">
+    <section className="py-8 lg:py-12 bg-white relative overflow-hidden min-h-[120vh] flex items-center">
       <div className="max-w-[1400px] w-full mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 items-start">
 
           {/* Left Column */}
           <div className="flex flex-col gap-4">
             {/* Section 1: Images */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="col-span-2 overflow-hidden rounded-3xl">
+            <div className="grid grid-cols-2 gap-1 pt-11">
+              <div className="col-span-2 overflow-hidden rounded-xl">
                 <img
                   src={envEarth}
                   alt="Environmental Earth"
-                  className="w-full h-[200px] lg:h-[300px] object-cover hover:scale-105 transition-transform duration-700"
+                  className="w-full h-[220px] lg:h-[253px] object-cover hover:scale-105 transition-transform duration-700"
                 />
               </div>
-              <div className="overflow-hidden rounded-3xl">
+              <div className="overflow-hidden rounded-xl">
                 <img
                   src={labTesting}
                   alt="Lab Testing"
-                  className="w-full h-[200px] lg:h-[260px] object-cover hover:scale-105 transition-transform duration-700"
+                  className="w-full h-[140px] lg:h-[195px] object-cover hover:scale-105 transition-transform duration-700"
                 />
               </div>
-              <div className="overflow-hidden rounded-3xl">
+              <div className="overflow-hidden rounded-xl">
                 <img
                   src={envResearch}
                   alt="Environmental Research"
-                  className="w-full h-[200px] lg:h-[260px] object-cover hover:scale-105 transition-transform duration-700"
+                  className="w-full h-[140px] lg:h-[195px] object-cover hover:scale-105 transition-transform duration-700"
                 />
               </div>
             </div>
 
             {/* Section 2: Highlights */}
-            <div className="bg-brand-white shadow-xl shadow-gray-200/50 rounded-3xl p-6 border border-gray-50 mt-2">
+            <div className="bg-brand-white shadow-lg shadow-gray-200/50 rounded-3xl p-4 border border-gray-50">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center divide-x divide-gray-100">
                 <div className="flex flex-col items-center justify-center space-y-3 px-2">
                   <div className="w-12 h-12 bg-brand-green-light rounded-full flex items-center justify-center text-brand-green">
@@ -66,36 +66,24 @@ export default function Welcome() {
                 </div>
               </div>
             </div>
-            {/* Section 3: Quote */}
-            <div className="bg-brand-green-light/50 border border-brand-green/20 rounded-2xl p-5 md:p-6 flex items-start sm:items-center gap-4 hover:bg-brand-green-light/80 transition-colors">
-              <Leaf className="w-6 h-6 text-brand-green flex-shrink-0 mt-1 sm:mt-0" />
-              <p className="text-brand-primary-blue font-bold text-base md:text-lg leading-snug">
-                "Built on Science. Driven by Engineering. Trusted by Industry."
-              </p>
-            </div>
           </div>
 
           {/* Right Column */}
           <div className="flex flex-col">
             {/* Section 1: Intro */}
-            <div className="mb-10">
-              <span className="uppercase tracking-widest font-bold text-brand-green text-sm mb-4 block">
+            <div className="mb-6">
+              <span className="uppercase tracking-widest font-bold text-brand-green text-sm mb-3 block">
                 ABOUT US
               </span>
-              <h2 className="text-3xl md:text-3xl lg:text-[2.25rem] font-extrabold text-brand-primary-blue leading-[1.15] mb-6 tracking-tight">
+              <h2 className="text-3xl md:text-3xl lg:text-[2 rem] font-extrabold text-brand-primary-blue leading-[1.15] mb-3 tracking-tight">
                 From Environmental Challenges To Engineered Solutions
               </h2>
-              <p className="text-lg md:text-lg font-bold text-brand-green mb-6 leading-snug">
-                Consultancy • Research • Laboratory <br />
-                <p className="text-lg md:text-sm text-brand-green mb-6 leading-snug"><i>-All Under One Roof</i></p>
+              <p className="text-md md:text-md font-bold text-brand-green mb-6 leading-snug">
+                Consultancy • Research • Laboratory <i> - All Under One Roof</i><br />
               </p>
-              <div className="text-gray-600 space-y-5 text-base lg:text-lg leading-relaxed text-justify font-medium">
+              <div className="text-gray-600 space-y-5 text-base lg:text-s leading-relaxed text-justify font-medium">
                 <p>
-                  OCEAO-ENVIRO Management Solutions (India) Pvt. Ltd. is a multidisciplinary organization specializing in environmental engineering, project consultancy, scientific research, and analytical laboratory services. Since 2015, we have partnered with industries, infrastructure developers, and government organizations to deliver technically sound, compliant, and data-driven environmental solutions.
-                </p>
-                <p>
-                  From environmental assessments and statutory clearances to advanced research, accredited laboratory testing, and project implementation, our integrated approach ensures every decision is backed by expertise, precision, and measurable results. We don't just solve environmental challenges—we engineer practical solutions that create long-term value for our clients.
-                </p>
+                  OCEAO-ENVIRO Management Solutions (India) Pvt. Ltd. is a multidisciplinary environmental organization specializing in engineering consultancy, scientific research, analytical laboratory services, and project management. Since 2015, we have delivered innovative, data-driven, and regulatory-compliant solutions, combining technical expertise, accredited testing, and engineering excellence to help industries and government organizations address complex environmental challenges with confidence.                </p>
               </div>
             </div>
 
@@ -111,7 +99,7 @@ export default function Welcome() {
                 </div>
                 <div className="w-full h-px bg-brand-green/20 mb-4"></div>
                 <p className="text-gray-500 text-[13px] md:text-sm leading-relaxed font-medium">
-                  Environmental consultancy, impact assessment, statutory compliance, ESG, and project advisory.
+                  Expert environmental consultancy, impact assessments, statutory compliance, ESG advisory, renewable energy, and sustainable project management.
                 </p>
               </div>
 
@@ -125,7 +113,7 @@ export default function Welcome() {
                 </div>
                 <div className="w-full h-px bg-brand-green/20 mb-4"></div>
                 <p className="text-gray-500 text-[13px] md:text-sm leading-relaxed font-medium">
-                  Environmental studies, advanced analytics, hydrogeological investigations, and technical research.
+                  Advanced environmental research, pollution studies, hydrogeological investigations, monitoring, and scientific analysis for informed decision-making.
                 </p>
               </div>
 
@@ -139,7 +127,7 @@ export default function Welcome() {
                 </div>
                 <div className="w-full h-px bg-brand-green/20 mb-4"></div>
                 <p className="text-gray-500 text-[13px] md:text-sm leading-relaxed font-medium">
-                  NABL-accredited testing, environmental monitoring, sample analysis, and quality assurance.
+                  NABL-accredited testing for air, water, soil, emissions, noise, and environmental quality monitoring.
                 </p>
               </div>
             </div>
@@ -151,8 +139,15 @@ export default function Welcome() {
                 "Built on Science. Driven by Engineering. Trusted by Industry."
               </p>
             </div> */}
-
           </div>
+
+        </div>
+        {/* Section 3: Quote */}
+        <div className="bg-brand-green-light/50 border border-brand-green/20 rounded-2xl p-5 md:p-6 flex items-center justify-center sm:items-center gap-4 hover:bg-brand-green-light/80 transition-colors w-full">
+          <Leaf className="w-6 h-6 text-brand-green flex-shrink-0 mt-1 sm:mt-0" />
+          <p className="text-brand-primary-blue font-bold text-base md:text-lg leading-snug">
+            "Built on Science. Driven by Engineering. Trusted by Industry."
+          </p>
         </div>
       </div>
     </section>
