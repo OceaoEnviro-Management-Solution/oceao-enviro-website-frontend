@@ -9,7 +9,7 @@ export default function Certifications() {
     <section className="py-16 lg:py-24 bg-white relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
-        <div className="text-center max-w-3xl mx-auto mb-16">
+        <div className="text-center max-w-3xl mx-auto mb-8">
           <h2 className="text-3xl md:text-4xl lg:text-[40px] font-bold text-brand-blue mb-4">
             Our Certifications & Accreditations
           </h2>
@@ -45,7 +45,7 @@ export default function Certifications() {
                 <iframe
                   src={`${cert.pdfUrl}#toolbar=0&navpanes=0&scrollbar=0`}
                   title={cert.alt}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 border-none"
+                  className="w-full h-full object-cover group-hover:scale-100 transition-transform duration-500 border-none"
                 />
                 {/* Overlay on hover */}
                 <div className="absolute inset-0 bg-brand-blue/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
