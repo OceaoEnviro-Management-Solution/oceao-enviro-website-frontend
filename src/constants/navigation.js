@@ -2,10 +2,10 @@ export const navItems = [
   { id: 'home', label: 'Home', href: '/', hasDropdown: false },
   {
     id: 'about', label: 'About Us', href: '/about', hasDropdown: true, children: [
-      { label: 'Team', href: '/about/team' },
       { label: 'Company Profile', href: '/about/profile' },
-      { label: 'Vision & Mission', href: '/about/vision' },
       { label: 'Certifications & Accreditations', href: '/about/certifications' },
+      { label: 'Vision & Mission', href: '/about/vision' },
+      { label: 'Team', href: '/about/team' },
       { label: 'Gallery', href: '/about/gallery' },
     ]
   },
