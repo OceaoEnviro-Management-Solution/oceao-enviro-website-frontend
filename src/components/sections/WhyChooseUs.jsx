@@ -80,7 +80,7 @@ export default function WhyChooseUs() {
   };
 
   return (
-    <section className="py-4 lg:pt-5 lg:pb-4 bg-[#d5ebda] relative overflow-hidden">
+    <section className="py-4 lg:pt-5 lg:pb-4 bg-[#e8f6eb87] relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
         {/* Main Grid: Left (Text) and Right (Circle) */}
@@ -138,7 +138,7 @@ export default function WhyChooseUs() {
         </div>
 
         {/* BOTTOM SECTION: Stats Grid */}
-        <div className="mt-4 lg:mt-4 py-2 bg-[#b8d9d7] border-t border-[#b8d4c0] shadow-xl rounded-2xl grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 text-center">
+        <div className="mt-4 lg:mt-4 py-2 bg-[#b8d9d7c9] border-t border-[#b8d4c0] shadow-xl rounded-2xl grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 text-center">
           {bottomStats.map((stat) => {
             const Icon = IconMap[stat.icon];
             // // Highlight 'Pan India Presence'
