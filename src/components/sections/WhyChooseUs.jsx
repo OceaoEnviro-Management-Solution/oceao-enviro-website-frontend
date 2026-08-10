@@ -80,7 +80,7 @@ export default function WhyChooseUs() {
   };
 
   return (
-    <section className="py-4 lg:pt-12 lg:pb-4 bg-[#d5ebda] relative overflow-hidden">
+    <section className="py-4 lg:pt-5 lg:pb-4 bg-[#d5ebda] relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
         {/* Main Grid: Left (Text) and Right (Circle) */}
@@ -91,14 +91,14 @@ export default function WhyChooseUs() {
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-brand-blue mb-3 uppercase tracking-tight">
               WHY TO CHOOSE US?
             </h2>
-            <h3 className="text-xl md:text-2xl font-bold text-brand-green mb-4">
-              One Partner. Every Environmental Solution.
+            <h3 className="text-xl md:text-lg font-bold text-brand-green mb-4 ">
+              <i> One Partner - Every Environmental Solution.</i>
             </h3>
-            <p className="text-sm text-gray-700 mb-8 leading-relaxed max-w-xl">
+            <p className="text-sm text-gray-700 mb-6 leading-relaxed max-w-xl">
               We combine consultancy, research and laboratory excellence to deliver end-to-end environmental solutions that ensure compliance, drive sustainability and create long term value of products and communities.
             </p>
 
-            <div className="space-y-4">
+            <div className="space-y-2">
               {whyChooseUsFeatures.map(feature => {
                 const Icon = IconMap[feature.icon];
                 return (
