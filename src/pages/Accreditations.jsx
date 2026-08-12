@@ -1,9 +1,9 @@
 import { useState, useMemo } from 'react';
-import AccreditationsHero from '../components/Sections/AccreditationsHero';
-import AccreditationsSidebar from '../components/Accreditations/AccreditationsSidebar';
-import AccreditationsMain from '../components/Accreditations/AccreditationsMain';
-import { certifications, certificateCategories } from '../constants/certifications';
-import { useScrollSpy } from '../hooks/useScrollSpy';
+import AccreditationsHero from '../components/Sections/AccreditationsHero.jsx';
+import AccreditationsSidebar from '../components/Accreditations/AccreditationsSidebar.jsx';
+import AccreditationsMain from '../components/Accreditations/AccreditationsMain.jsx';
+import { certifications, certificateCategories } from '../constants/certifications.js';
+import { useScrollSpy } from '../hooks/useScrollSpy.js';
 
 export default function Accreditations() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -14,7 +14,7 @@ export default function Accreditations() {
 
   // Filter and group certificates based on search query
   const { filteredCategories, groupedCertificates } = useMemo(() => {
-    
+
     // 1. Filter certifications by search query
     const filteredCerts = certifications.filter(cert => {
       if (!searchQuery) return true;
@@ -38,9 +38,9 @@ export default function Accreditations() {
       return { ...cat, count: matchCount };
     });
 
-    return { 
+    return {
       filteredCategories: categoriesWithUpdatedCounts,
-      groupedCertificates: grouped 
+      groupedCertificates: grouped
     };
 
   }, [searchQuery]);
@@ -51,9 +51,9 @@ export default function Accreditations() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 md:mt-12 relative">
         <div className="flex flex-col md:flex-row md:items-start">
-          
+
           {/* Sidebar */}
-          <AccreditationsSidebar 
+          <AccreditationsSidebar
             categories={filteredCategories}
             activeId={activeId}
             searchQuery={searchQuery}
@@ -62,7 +62,7 @@ export default function Accreditations() {
 
           {/* Main Content Area */}
           <div className="flex-1 md:pl-8 lg:pl-12 mt-6 md:mt-0">
-            <AccreditationsMain 
+            <AccreditationsMain
               groupedCertificates={groupedCertificates}
               searchQuery={searchQuery}
             />
