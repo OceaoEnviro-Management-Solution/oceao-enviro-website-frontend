@@ -1,6 +1,6 @@
 import React from 'react';
 import { Target, FlaskConical, ShieldCheck, Users, Leaf, ClipboardCheck, Microscope, TestTube2, FileBadge, HardHat, Award, Building2, UsersRound, MapPin, Globe2 } from 'lucide-react';
-import { whyChooseUsFeatures, circularSectors, bottomStats } from '../../constants/whyChooseUs';
+import { whyChooseUsFeatures, wedgeData, imageWedges, bottomStats } from '../../constants/whyChooseUs';
 
 import imgConsultancy from '../../assets/images/homePage/Consultancy.jpeg';
 import imgRiver from '../../assets/images/homePage/whyUsSection/River.jpeg';
@@ -14,70 +14,7 @@ const IconMap = {
   Award, Building2, UsersRound, MapPin, Globe2
 };
 
-const circleImages = [imgRiver, imgResearch, imgTesting, imgConsultancy];
-
 export default function WhyChooseUs() {
-
-  const renderWedges = () => {
-    const wedges = [];
-    let textIndex = 0;
-    let imageIndex = 0;
-
-    for (let i = 0; i < 9; i++) {
-      const rotation = i * 40;
-      const isText = i % 2 === 0;
-
-      wedges.push(
-        <div
-          key={`wedge-${i}`}
-          className="absolute top-0 left-0 w-full h-full origin-center"
-          style={{ transform: `rotate(${rotation}deg)` }}
-        >
-          {/* Background Wedge with Clip Path */}
-          <div
-            className="w-full h-full absolute top-0 left-0 transition-transform hover:scale-[1.02]"
-            style={{
-              clipPath: 'polygon(50% 50%, 31.8% 0%, 68.2% 0%)',
-              backgroundColor: isText ? (i % 4 === 0 ? '#ffffff' : '#f0fdf4') : 'transparent'
-            }}
-          >
-            {!isText && (
-              <img
-                src={circleImages[imageIndex++]}
-                alt="Sector"
-                className="absolute object-cover"
-                style={{
-                  width: '70%',
-                  height: '70%',
-                  top: '-10%',
-                  left: '15%',
-                  transformOrigin: '50% 85.7%',
-                  transform: `rotate(${-rotation}deg)`
-                }}
-              />
-            )}
-          </div>
-
-          {/* Text Content Layer (Not clipped, allows counter-rotation) */}
-          {isText && (() => {
-            const item = circularSectors[textIndex++];
-            const Icon = IconMap[item.icon];
-            return (
-              <div
-                className="absolute top-[5%] sm:top-[8%] left-1/2 flex flex-col items-center justify-center text-center w-[70px] sm:w-[100px]"
-                style={{ transform: `translate(-50%, 0) rotate(${-rotation}deg)` }}
-              >
-                <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-brand-green mb-1" />
-                <h5 className="text-[9px] sm:text-[10px] font-bold text-brand-blue uppercase leading-tight">{item.title}</h5>
-                <p className="hidden sm:block text-[8px] text-gray-500 leading-tight mt-1">{item.subtitle}</p>
-              </div>
-            );
-          })()}
-        </div>
-      );
-    }
-    return wedges;
-  };
 
   return (
     <section className="py-4 lg:pt-5 lg:pb-4 bg-[#e8f6eb87] relative overflow-hidden">
@@ -116,24 +53,95 @@ export default function WhyChooseUs() {
             </div>
           </div>
 
-          {/* RIGHT SECTION: Circular Graphic */}
-          <div className="lg:col-span-7 flex justify-center items-center relative min-h-[360px] sm:min-h-[450px] lg:min-h-[550px] overflow-hidden lg:overflow-visible">
+          {/* RIGHT SECTION: 8-Wedge Pie Graphic */}
+          <div className="lg:col-span-7 flex justify-center items-center relative min-h-[450px] sm:min-h-[550px] lg:min-h-[650px] overflow-visible">
 
-            {/* Wheel Container */}
-            <div className="relative w-[340px] h-[340px] sm:w-[450px] sm:h-[450px] lg:w-[500px] lg:h-[500px] rounded-full shadow-2xl bg-white overflow-hidden border-[6px] border-white flex-shrink-0">
-              {/* 9 Wedges */}
-              {renderWedges()}
+            {/* Main Outer Container (for badges) */}
+            <div className="relative w-[360px] h-[360px] sm:w-[480px] sm:h-[480px] lg:w-[540px] lg:h-[540px] flex-shrink-0">
+              
+              {/* The Inner Circle (Clips everything inside) */}
+              <div className="absolute inset-0 rounded-full shadow-[0_0_40px_rgba(0,0,0,0.1)] overflow-hidden border-[8px] border-white bg-white">
+                
+                {/* 1. Base Layer: Images in their 4 quadrants */}
+                {imageWedges.map((wedge) => {
+                  let bgImage = null;
+                  if (wedge.imageRef === 'imgRiver') bgImage = imgRiver;
+                  if (wedge.imageRef === 'imgResearch') bgImage = imgResearch;
+                  if (wedge.imageRef === 'imgConsultancy') bgImage = imgConsultancy;
+                  if (wedge.imageRef === 'imgTesting') bgImage = imgTesting;
+
+                  return (
+                    <div 
+                      key={wedge.id} 
+                      className="absolute inset-0 group overflow-hidden"
+                      style={{ clipPath: wedge.clipPath }}
+                    >
+                      <img src={bgImage} alt={wedge.id} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                    </div>
+                  );
+                })}
+
+                {/* 2. SVG Overlay: Creates the beautiful curved boundaries and text background colors */}
+                <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full pointer-events-none z-10" preserveAspectRatio="none">
+                  <defs>
+                    {/* Base Text Wedge (Top, points UP) */}
+                    <path id="wedge-text" d="M 50 50 Q 35 20, 30.87 3.81 A 50 50 0 0 1 69.13 3.81 Q 65 20, 50 50 Z" />
+                    {/* Base Image Wedge (Top Right) */}
+                    <path id="wedge-image" d="M 50 50 Q 65 20, 69.13 3.81 A 50 50 0 0 1 96.19 30.87 Q 80 35, 50 50 Z" />
+                  </defs>
+
+                  {/* Draw Text Wedges (with opaque colors to cover the straight image edges) */}
+                  <use href="#wedge-text" fill="#f1f8f5" stroke="#ffffff" strokeWidth="1.2" />
+                  <use href="#wedge-text" transform="rotate(90 50 50)" fill="#f4f7fb" stroke="#ffffff" strokeWidth="1.2" />
+                  <use href="#wedge-text" transform="rotate(180 50 50)" fill="#f2f9f8" stroke="#ffffff" strokeWidth="1.2" />
+                  <use href="#wedge-text" transform="rotate(270 50 50)" fill="#fff9f0" stroke="#ffffff" strokeWidth="1.2" />
+
+                  {/* Draw Image Wedges (transparent fill, just for the thick white borders) */}
+                  <use href="#wedge-image" fill="none" stroke="#ffffff" strokeWidth="1.2" />
+                  <use href="#wedge-image" transform="rotate(90 50 50)" fill="none" stroke="#ffffff" strokeWidth="1.2" />
+                  <use href="#wedge-image" transform="rotate(180 50 50)" fill="none" stroke="#ffffff" strokeWidth="1.2" />
+                  <use href="#wedge-image" transform="rotate(270 50 50)" fill="none" stroke="#ffffff" strokeWidth="1.2" />
+                </svg>
+
+                {/* 3. Text Content HTML (Positioned over the SVG text wedges) */}
+                {wedgeData.map((wedge) => {
+                  const Icon = IconMap[wedge.icon];
+                  return (
+                    <div key={`text-${wedge.id}`} className={`absolute z-20 ${wedge.textContainer}`}>
+                       <Icon className={`w-5 h-5 sm:w-7 sm:h-7 mb-1.5 sm:mb-2 ${wedge.iconColor}`} />
+                       <h4 className={`text-[9px] sm:text-[11px] lg:text-xs font-extrabold uppercase leading-snug mb-1.5 sm:mb-2 whitespace-pre-line ${wedge.titleColor}`}>
+                         {wedge.title}
+                       </h4>
+                       <p className="text-[7.5px] sm:text-[9px] lg:text-[10px] text-gray-700 leading-snug hidden sm:block">
+                         {wedge.description}
+                       </p>
+                    </div>
+                  );
+                })}
+
+                {/* 4. Center Logo Circle */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140px] h-[140px] sm:w-[180px] sm:h-[180px] lg:w-[200px] lg:h-[200px] bg-white rounded-full shadow-2xl z-30 flex flex-col items-center justify-center p-2 text-center border-[2px] border-brand-blue/20">
+                  <div className="w-full h-full rounded-full flex flex-col items-center justify-center bg-white shadow-inner">
+                    <img src={logo} alt="Oceao Enviro Logo" className="w-16 sm:w-24 lg:w-28 mb-1.5 sm:mb-2 object-contain" />
+                    <div className="h-[1px] w-3/4 bg-gray-200 mb-1.5 sm:mb-2"></div>
+                    <p className="text-[5px] sm:text-[6px] lg:text-[7px] font-bold text-brand-blue tracking-[0.1em] sm:tracking-[0.15em] uppercase leading-tight">
+                      Consultancy • Research<br />Laboratory
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* 5. Outer Number Badges */}
+              {wedgeData.map((wedge) => (
+                <div 
+                  key={`badge-${wedge.id}`} 
+                  className={`absolute w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 rounded-full flex items-center justify-center text-[11px] sm:text-sm font-bold text-white shadow-lg z-40 ${wedge.badgeBg} ${wedge.badgePos}`}
+                >
+                  {wedge.number}
+                </div>
+              ))}
+
             </div>
-
-            {/* Center Logo Circle */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140px] h-[140px] sm:w-[180px] sm:h-[180px] lg:w-[200px] lg:h-[200px] bg-white rounded-full shadow-2xl z-20 flex flex-col items-center justify-center border-4 border-gray-50 p-3 text-center">
-              <img src={logo} alt="Oceao Enviro Logo" className="w-16 sm:w-24 lg:w-28 mb-2 object-contain" />
-              <div className="h-px w-3/4 bg-gray-200 mb-2"></div>
-              <p className="text-[7px] sm:text-[9px] lg:text-[10px] font-bold text-brand-blue tracking-[0.1em] sm:tracking-[0.15em] uppercase">
-                Consultancy • Research<br />Laboratory
-              </p>
-            </div>
-
           </div>
         </div>
 
