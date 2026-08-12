@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import AccreditationsHero from '../sections/AccreditationsHero';
+import AccreditationsHero from '../components/Accreditations/AccreditationsHero';
 import AccreditationsSidebar from '../components/Accreditations/AccreditationsSidebar.jsx';
 import AccreditationsMain from '../components/Accreditations/AccreditationsMain.jsx';
 import { certifications, certificateCategories } from '../constants/certifications.js';
