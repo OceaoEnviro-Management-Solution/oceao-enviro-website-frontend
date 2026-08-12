@@ -39,7 +39,7 @@ export default function Footer() {
             <AnimatedTagline />
 
             <div className="mt-8">
-              <div class="border-t border-white/20 w-[270px] mb-4"></div>
+              <div class="border-t border-white/20 w-[280px] mb-4"></div>
               <h4 className="font-semibold text-[#8ec63f] text-sm mb-4 uppercase tracking-wider">Get in Touch</h4>
               <div className="flex flex-col gap-3 text-gray-300">
                 <a href="tel:+919999999999" className="flex items-center gap-3 hover:text-brand-orange transition-colors">
@@ -52,7 +52,7 @@ export default function Footer() {
                 </a>
                 <div className="flex items-start gap-3">
                   <MapPin className="w-4 h-4 text-[#8ec63f] shrink-0 mt-0.5" />
-                  <span>Ghaziabad | Bhopal | Jammu | Delhi</span>
+                  <span>Ghaziabad | Bhopal | Jammu | New Delhi</span>
                 </div>
                 <div className="flex items-start gap-3">
                   <Clock className="w-4 h-4 text-[#8ec63f] shrink-0 mt-0.5" />
@@ -60,7 +60,7 @@ export default function Footer() {
                 </div>
               </div>
             </div>
-            <div className="border-t border-white/20 w-[270px] mt-4"></div>
+            <div className="border-t border-white/20 w-[280px] mt-4"></div>
             <div className="mt-5">
               <SocialLinks />
             </div>
