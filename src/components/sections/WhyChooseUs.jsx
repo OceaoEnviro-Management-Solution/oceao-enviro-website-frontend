@@ -17,7 +17,7 @@ const IconMap = {
 export default function WhyChooseUs() {
 
   return (
-    <section className="py-4 lg:pt-5 lg:pb-4 bg-[#e8f6eb87] relative overflow-hidden">
+    <section className="py-4 lg:pt-5 lg:pb-4 bg-[#e9eef1] relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
         {/* Main Grid: Left (Text) and Right (Circle) */}
@@ -58,10 +58,10 @@ export default function WhyChooseUs() {
 
             {/* Main Outer Container (for badges) */}
             <div className="relative w-[360px] h-[360px] sm:w-[480px] sm:h-[480px] lg:w-[540px] lg:h-[540px] flex-shrink-0">
-              
+
               {/* The Inner Circle (Clips everything inside) */}
               <div className="absolute inset-0 rounded-full shadow-[0_0_40px_rgba(0,0,0,0.1)] overflow-hidden border-[8px] border-white bg-white">
-                
+
                 {/* 1. Base Layer: Images in their 4 quadrants */}
                 {imageWedges.map((wedge) => {
                   let bgImage = null;
@@ -71,8 +71,8 @@ export default function WhyChooseUs() {
                   if (wedge.imageRef === 'imgTesting') bgImage = imgTesting;
 
                   return (
-                    <div 
-                      key={wedge.id} 
+                    <div
+                      key={wedge.id}
                       className="absolute inset-0 group overflow-hidden"
                       style={{ clipPath: wedge.clipPath }}
                     >
@@ -108,13 +108,13 @@ export default function WhyChooseUs() {
                   const Icon = IconMap[wedge.icon];
                   return (
                     <div key={`text-${wedge.id}`} className={`absolute z-20 ${wedge.textContainer}`}>
-                       <Icon className={`w-5 h-5 sm:w-7 sm:h-7 mb-1.5 sm:mb-2 ${wedge.iconColor}`} />
-                       <h4 className={`text-[9px] sm:text-[11px] lg:text-xs font-extrabold uppercase leading-snug mb-1.5 sm:mb-2 whitespace-pre-line ${wedge.titleColor}`}>
-                         {wedge.title}
-                       </h4>
-                       <p className="text-[7.5px] sm:text-[9px] lg:text-[10px] text-gray-700 leading-snug hidden sm:block">
-                         {wedge.description}
-                       </p>
+                      <Icon className={`w-5 h-5 sm:w-7 sm:h-7 mb-1.5 sm:mb-2 ${wedge.iconColor}`} />
+                      <h4 className={`text-[9px] sm:text-[11px] lg:text-xs font-extrabold uppercase leading-snug mb-1.5 sm:mb-2 whitespace-pre-line ${wedge.titleColor}`}>
+                        {wedge.title}
+                      </h4>
+                      <p className="text-[7.5px] sm:text-[9px] lg:text-[10px] text-gray-700 leading-snug hidden sm:block">
+                        {wedge.description}
+                      </p>
                     </div>
                   );
                 })}
@@ -133,8 +133,8 @@ export default function WhyChooseUs() {
 
               {/* 5. Outer Number Badges */}
               {wedgeData.map((wedge) => (
-                <div 
-                  key={`badge-${wedge.id}`} 
+                <div
+                  key={`badge-${wedge.id}`}
                   className={`absolute w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 rounded-full flex items-center justify-center text-[11px] sm:text-sm font-bold text-white shadow-lg z-40 ${wedge.badgeBg} ${wedge.badgePos}`}
                 >
                   {wedge.number}

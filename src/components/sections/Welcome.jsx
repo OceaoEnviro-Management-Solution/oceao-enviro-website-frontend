@@ -79,7 +79,7 @@ export default function Welcome() {
                 From Environmental Challenges To Engineered Solutions
               </h2>
               <p className="text-md md:text-md font-bold text-brand-green mb-6 leading-snug">
-                Consultancy • Research • Laboratory <i> - All Under One Roof</i><br />
+                Consultancy • Research • Laboratory <i> - ONE STOP SOLUTION</i><br />
               </p>
               <div className="text-gray-600 space-y-5 text-base lg:text-s leading-relaxed text-justify font-medium">
                 <p>
@@ -95,7 +95,7 @@ export default function Welcome() {
                   <div className="w-12 h-12 rounded-full bg-brand-green-light flex items-center justify-center text-brand-green flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
                     <Leaf className="w-5 h-5" />
                   </div>
-                  <h3 className="font-bold text-brand-primary-blue text-sm md:text-base leading-tight">Environmental Engineering</h3>
+                  <h3 className="font-bold text-brand-primary-blue text-sm md:text-base leading-tight">Environmental Solutions</h3>
                 </div>
                 <div className="w-full h-px bg-brand-green/20 mb-4"></div>
                 <p className="text-gray-500 text-[13px] md:text-sm leading-relaxed font-medium">
@@ -109,7 +109,7 @@ export default function Welcome() {
                   <div className="w-12 h-12 rounded-full bg-brand-green-light flex items-center justify-center text-brand-green flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
                     <Microscope className="w-5 h-5" />
                   </div>
-                  <h3 className="font-bold text-brand-primary-blue text-sm md:text-base leading-tight">Scientific<br />Research</h3>
+                  <h3 className="font-bold text-brand-primary-blue text-sm md:text-base leading-tight">Sustainable<br />Research</h3>
                 </div>
                 <div className="w-full h-px bg-brand-green/20 mb-4"></div>
                 <p className="text-gray-500 text-[13px] md:text-sm leading-relaxed font-medium">
