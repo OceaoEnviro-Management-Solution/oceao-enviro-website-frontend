@@ -3,7 +3,7 @@ export const navItems = [
   {
     id: 'about', label: 'About Us', href: '/about', hasDropdown: true, children: [
       { label: 'Company Profile', href: '/about/profile' },
-      { label: 'Certifications & Accreditations', href: '/about/certifications' },
+      { label: 'Certifications & Accreditations', href: '/about/accreditations' },
       { label: 'Vision & Mission', href: '/about/vision' },
       { label: 'Team', href: '/about/team' },
       { label: 'Gallery', href: '/about/gallery' },

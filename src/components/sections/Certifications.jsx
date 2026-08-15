@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { certifications } from '../../constants/certifications';
+import { certifications, certifications_HP } from '../../constants/certifications';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function Certifications() {
   const [selectedCert, setSelectedCert] = useState(null);
-  const [items, setItems] = useState(certifications);
+  const [items, setItems] = useState(certifications_HP);
 
   const nextSlide = () => {
     setItems((prev) => [...prev.slice(1), prev[0]]);
@@ -20,7 +20,7 @@ export default function Certifications() {
 
         <div className="text-center max-w-3xl mx-auto mb-8">
           <h2 className="text-3xl md:text-4xl lg:text-[40px] font-bold text-brand-blue mb-4">
-            Our Certifications & Accreditations
+            Our Accreditations
           </h2>
           <p className="text-lg text-gray-600">
             Trusted by Regulatory Bodies
@@ -28,16 +28,16 @@ export default function Certifications() {
         </div>
 
         <div className="relative px-12">
-          {/* Left Arrow */}
-          <button 
+          {/* Left Arrow
+          <button
             onClick={prevSlide}
             className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow-md rounded-full p-2 text-brand-blue hover:bg-brand-blue hover:text-white transition-colors border border-gray-100"
             aria-label="Previous certification"
           >
             <ChevronLeft className="w-6 h-6" />
-          </button>
+          </button> */}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
             {items.map((cert, index) => (
               <div
                 key={`${cert.id}-${index}`}
@@ -65,14 +65,14 @@ export default function Certifications() {
             ))}
           </div>
 
-          {/* Right Arrow */}
-          <button 
+          {/* Right Arrow
+          <button
             onClick={nextSlide}
             className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow-md rounded-full p-2 text-brand-blue hover:bg-brand-blue hover:text-white transition-colors border border-gray-100"
             aria-label="Next certification"
           >
             <ChevronRight className="w-6 h-6" />
-          </button>
+          </button> */}
         </div>
 
       </div>

@@ -2,6 +2,7 @@ import React from 'react';
 import { virtualMeetingContent } from '../../constants/virtualMeeting';
 import { Leaf, Globe2, Clock, MessageSquare, Calendar, Users, Shield, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import meetingImg from '../../assets/images/homePage/virtualMeeting.png';
 
 const IconMap = {
   Globe2, Clock, MessageSquare, Leaf, Calendar, Users, Shield
@@ -89,7 +90,7 @@ export default function VirtualMeeting() {
 
             <div className="relative w-full rounded-2xl overflow-hidden flex justify-center">
               <img
-                src="/src/assets/images/homePage/virtualMeeting.png"
+                src={meetingImg}
                 alt="Virtual Meeting Mockup"
                 className="w-full h-auto max-h-[450px] lg:max-h-[500px] object-contain drop-shadow-lg"
               />
