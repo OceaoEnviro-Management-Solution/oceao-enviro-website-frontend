@@ -50,7 +50,7 @@ export default function Clientele() {
             <div className="absolute left-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-r from-white via-white to-transparent z-10"></div>
             <div className="absolute right-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-l from-white via-white to-transparent z-10"></div>
 
-            <div className="flex w-[200%] sm:w-[max-content] animate-[marquee_40s_linear_infinite] group-hover:[animation-play-state:paused]">
+            <div className="flex w-[200%] sm:w-[max-content] animate-[marquee_45s_linear_infinite] group-hover:[animation-play-state:paused]">
               <div className="flex items-center">
                 {repeatedClientele1.map((client, index) => (
                   <div key={`${client.id}-${index}`} className="flex items-center justify-center shrink-0 border-r border-gray-100 last:border-0" style={{ width: '20vw', minWidth: '200px' }}>

@@ -98,8 +98,15 @@ export default function Welcome() {
                   <h3 className="font-bold text-brand-primary-blue text-sm md:text-base leading-tight">Environmental Solutions</h3>
                 </div>
                 <div className="w-full h-px bg-brand-green/20 mb-4"></div>
-                <p className="text-gray-500 text-[13px] md:text-sm leading-relaxed font-medium">
-                  Expert environmental consultancy, impact assessments, statutory compliance, ESG advisory, renewable energy, and sustainable project management.
+                <p className="text-gray-500 text-[13px] md:text-[13px] leading-relaxed font-medium">
+                  <ul className="list-disc pl-5 space-y-2">
+                    <li>Expert Environmental Consultancy </li>
+                    <li>Environmental Impact Assessments </li>
+                    <li>Statutory & Regulatory Compliance </li>
+                    <li>ESG Advisory & Sustainability </li>
+                    <li>Renewable Energy Solutions </li>
+                    <li>Sustainable Project Management</li>
+                  </ul>
                 </p>
               </div>
 
@@ -112,8 +119,15 @@ export default function Welcome() {
                   <h3 className="font-bold text-brand-primary-blue text-sm md:text-base leading-tight">Sustainable<br />Research</h3>
                 </div>
                 <div className="w-full h-px bg-brand-green/20 mb-4"></div>
-                <p className="text-gray-500 text-[13px] md:text-sm leading-relaxed font-medium">
-                  Advanced environmental research, pollution studies, hydrogeological investigations, monitoring, and scientific analysis for informed decision-making.
+                <p className="text-gray-500 text-[13px] md:text-[13px] leading-relaxed font-medium">
+                  <ul className="list-disc pl-5 space-y-2">
+                    <li>Advanced Environmental Research</li>
+                    <li>Pollution & Impact Studies</li>
+                    <li>Hydrogeological Investigations</li>
+                    <li>Environmental Monitoring</li>
+                    <li>Scientific Data Analysis</li>
+                    <li>Evidence-Based Decision-Making</li>
+                  </ul>
                 </p>
               </div>
 
@@ -126,8 +140,16 @@ export default function Welcome() {
                   <h3 className="font-bold text-brand-primary-blue text-sm md:text-base leading-tight">Laboratory<br />Services</h3>
                 </div>
                 <div className="w-full h-px bg-brand-green/20 mb-4"></div>
-                <p className="text-gray-500 text-[13px] md:text-sm leading-relaxed font-medium">
-                  NABL-accredited testing for air, water, soil, emissions, noise, and environmental quality monitoring.
+                <p className="text-gray-500 text-[13px] md:text-[13px] leading-relaxed font-medium">
+                  <ul className="list-disc pl-5 space-y-2">
+                    <li>NABL-Accredited Environmental Testing</li>
+                    <li>Air Quality Testing</li>
+                    <li>Water Quality Testing</li>
+                    <li>Soil & Sediment Analysis</li>
+                    <li>Emission Monitoring</li>
+                    <li>Noise Level Monitoring</li>
+                    <li>Environmental Quality Assessment</li>
+                  </ul>
                 </p>
               </div>
             </div>
