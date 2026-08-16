@@ -8,7 +8,7 @@ export default function AnimatedTagline() {
 
   return (
     <div className="h-6 mt-2">
-      <span className="text-orange-400 text-xl font-bold tracking-wide">
+      <span className="text-orange-400 text-[15px] font-bold tracking-wide">
         {displayText}
         {/* <span className="animate-pulse">|</span> */}
       </span>

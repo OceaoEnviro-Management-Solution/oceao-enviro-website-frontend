@@ -18,21 +18,21 @@ export default function Welcome() {
                 <img
                   src={envEarth}
                   alt="Environmental Earth"
-                  className="w-full h-[220px] lg:h-[253px] object-cover hover:scale-105 transition-transform duration-700"
+                  className="w-full h-[250px] lg:h-[300px] object-cover hover:scale-105 transition-transform duration-700"
                 />
               </div>
               <div className="overflow-hidden rounded-xl">
                 <img
                   src={labTesting}
                   alt="Lab Testing"
-                  className="w-full h-[140px] lg:h-[195px] object-cover hover:scale-105 transition-transform duration-700"
+                  className="w-full h-[200px] lg:h-[250px] object-cover hover:scale-105 transition-transform duration-700"
                 />
               </div>
               <div className="overflow-hidden rounded-xl">
                 <img
                   src={envResearch}
                   alt="Environmental Research"
-                  className="w-full h-[140px] lg:h-[195px] object-cover hover:scale-105 transition-transform duration-700"
+                  className="w-full h-[200px] lg:h-[250px] object-cover hover:scale-105 transition-transform duration-700"
                 />
               </div>
             </div>

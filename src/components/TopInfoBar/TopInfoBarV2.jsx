@@ -35,7 +35,7 @@ export default function TopInfoBarV2() {
             </span>
 
             <div className="flex items-center w-full my-1">
-              <div className="flex-grow h-[1px] bg-orange-400"></div>
+              <div className="flex-grow h-[0.8px] bg-orange-400"></div>
               <div className="mx-2">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M11.5 16C11.5 16 10 9 5.5 5.5C5.5 5.5 1.5 7.5 1.5 12.5C1.5 17.5 11.5 16 11.5 16Z" fill="#81C784" />
@@ -43,7 +43,7 @@ export default function TopInfoBarV2() {
                   <path d="M12 16L12 19" stroke="#2E7D32" strokeWidth="2" strokeLinecap="round" />
                 </svg>
               </div>
-              <div className="flex-grow h-[1px] bg-orange-400"></div>
+              <div className="flex-grow h-[0.8px] bg-orange-400"></div>
             </div>
 
             <div className="text-sm font-bold tracking-wider mt-0.5">

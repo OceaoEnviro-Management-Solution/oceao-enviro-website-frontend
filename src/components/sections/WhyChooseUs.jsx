@@ -6,7 +6,7 @@ import imgConsultancy from '../../assets/images/homePage/Consultancy.jpeg';
 import imgRiver from '../../assets/images/homePage/whyUsSection/River.jpeg';
 import imgResearch from '../../assets/images/homePage/whyUsSection/Research.jpeg';
 import imgTesting from '../../assets/images/homePage/whyUsSection/testing.jpg';
-import logo from '../../assets/logos/company-logo2.png';
+import logo from '../../assets/logos/company-logo.png';
 
 const IconMap = {
   Target, FlaskConical, ShieldCheck, Users, Leaf,
