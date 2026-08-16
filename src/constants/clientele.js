@@ -1,104 +1,122 @@
+import HCLTech from "../assets/logos/clientele/HclTech.jpg";
+import TataHousing from "../assets/logos/clientele/TataHousing.png";
+import JswSteel from "../assets/logos/clientele/JswSteel.png";
+import JaypeeGroup from "../assets/logos/clientele/JaypeeGroup.png";
+import AnantRaj from "../assets/logos/clientele/AnantRaj.png";
+import SatyamevJayate from "../assets/logos/clientele/SatyamevJayate.png";
+import FCIAravali from "../assets/logos/clientele/Aravali.jpg";
+import JkMineral from "../assets/logos/clientele/JkMineral.jpg";
+import Jkpcc from "../assets/logos/clientele/Jkpcc.jpg";
+import SupremeCourt from "../assets/logos/clientele/SupremeCourt.png";
+import Nbcc from "../assets/logos/clientele/Nbcc.jpg";
+import DedicatedFreight from "../assets/logos/clientele/DedicatedFreight.jpg";
+import Cpwd from "../assets/logos/clientele/Cpwd.jpg";
+import MP from "../assets/logos/clientele/MP.jpg";
+import JammuSmartCity from "../assets/logos/clientele/JammuSmartCity.png";
+import AjmerDevelop from "../assets/logos/clientele/AjmerDevelop.jpg";
+import UjjainDevelop from "../assets/logos/clientele/UjjainDevelop.png";
+
 export const clientele_1 = [
   {
     id: 1,
     name: "HCL Tech",
-    imageurl: "../../assets/logos/clientele/HclTech.jpg"
+    imageurl: HCLTech
   },
   {
     id: 2,
     name: "Tata Housing",
-    imageurl: "../../assets/logos/clientele/TataHousing.png"
+    imageurl: TataHousing
   },
   {
     id: 3,
     name: "JSW Steel",
-    imageurl: "../../assets/logos/clientele/JswSteel.png"
+    imageurl: JswSteel
   },
   {
     id: 4,
     name: "Jaypee group",
-    imageurl: "../../assets/logos/clientele/JaypeeGroup.png"
+    imageurl: JaypeeGroup
   },
   {
     id: 5,
     name: "Anant Raj",
-    imageurl: "../../assets/logos/clientele/AnantRaj.png"
+    imageurl: AnantRaj
   },
   {
     id: 6,
     name: "RSMML",
-    imageurl: "../../assets/logos/clientele/SatyamevJayate.png"
+    imageurl: SatyamevJayate
   },
   {
     id: 7,
     name: "FCI Aravali",
-    imageurl: "../../assets/logos/clientele/Aravali.jpg"
+    imageurl: FCIAravali
   },
   {
     id: 8,
     name: "J&K Minerals",
-    imageurl: "../../assets/logos/clientele/JkMineral.jpg"
+    imageurl: JkMineral
   },
   {
     id: 9,
     name: "JKPCC",
-    imageurl: "../../assets/logos/clientele/Jkpcc.jpg"
+    imageurl: Jkpcc
   },
   {
     id: 10,
     name: "MPSMC",
-    imageurl: "../../assets/logos/clientele/SatyamevJayate.png"
+    imageurl: SatyamevJayate
   }
 ];
 export const clientele_2 = [
   {
     id: 1,
     name: "Supreme Court of India",
-    imageurl: "../../assets/logos/clientele/SupremeCourt.png"
+    imageurl: SupremeCourt
   },
   {
     id: 2,
     name: "NBCC",
-    imageurl: "../../assets/logos/clientele/Nbcc.jpg"
+    imageurl: Nbcc
   },
   {
     id: 3,
     name: "DFCCIL",
-    imageurl: "../../assets/logos/clientele/DedicatedFreight.jpg"
+    imageurl: DedicatedFreight
   },
   {
     id: 4,
     name: "CPWD",
-    imageurl: "../../assets/logos/clientele/Cpwd.jpg"
+    imageurl: Cpwd
   },
   {
     id: 5,
     name: "MoHFW",
-    imageurl: "../../assets/logos/clientele/SatyamevJayate.png"
+    imageurl: SatyamevJayate
   },
   {
     id: 6,
     name: "MSDE/Skill India",
-    imageurl: "../../assets/logos/clientele/SatyamevJayate.png"
+    imageurl: SatyamevJayate
   },
   {
     id: 7,
     name: "MP UADD",
-    imageurl: "../../assets/logos/clientele/MP.jpg"
+    imageurl: MP
   },
   {
     id: 8,
     name: "Jammu Smart City",
-    imageurl: "../../assets/logos/clientele/JammuSmartCity.png"
+    imageurl: JammuSmartCity
   },
   {
     id: 9,
     name: "Ajmer Development Authority",
-    imageurl: "../../assets/logos/clientele/AjmerDevelop.jpg"
+    imageurl: AjmerDevelop
   },
   {
     id: 10,
     name: "Ujjain Development Authority",
-    imageurl: "../../assets/logos/clientele/UjjainDevelop.png"
+    imageurl: UjjainDevelop
   },
 ];
