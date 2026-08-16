@@ -1,20 +1,20 @@
-import HCLTech from "../assets/logos/clientele/HclTech.jpg";
-import TataHousing from "../assets/logos/clientele/TataHousing.png";
-import JswSteel from "../assets/logos/clientele/JswSteel.png";
-import JaypeeGroup from "../assets/logos/clientele/JaypeeGroup.png";
-import AnantRaj from "../assets/logos/clientele/AnantRaj.png";
-import SatyamevJayate from "../assets/logos/clientele/SatyamevJayate.png";
-import FCIAravali from "../assets/logos/clientele/Aravali.jpg";
-import JkMineral from "../assets/logos/clientele/JkMineral.jpg";
-import Jkpcc from "../assets/logos/clientele/Jkpcc.jpg";
-import SupremeCourt from "../assets/logos/clientele/SupremeCourt.png";
-import Nbcc from "../assets/logos/clientele/Nbcc.jpg";
-import DedicatedFreight from "../assets/logos/clientele/DedicatedFreight.jpg";
-import Cpwd from "../assets/logos/clientele/Cpwd.jpg";
-import MP from "../assets/logos/clientele/MP.jpg";
-import JammuSmartCity from "../assets/logos/clientele/JammuSmartCity.png";
-import AjmerDevelop from "../assets/logos/clientele/AjmerDevelop.jpg";
-import UjjainDevelop from "../assets/logos/clientele/UjjainDevelop.png";
+import HCLTech from "../assets/logos/Clientele/HclTech.jpg";
+import TataHousing from "../assets/logos/Clientele/TataHousing.png";
+import JswSteel from "../assets/logos/Clientele/JswSteel.png";
+import JaypeeGroup from "../assets/logos/Clientele/JaypeeGroup.png";
+import AnantRaj from "../assets/logos/Clientele/AnantRaj.png";
+import SatyamevJayate from "../assets/logos/Clientele/SatyamevJayate.png";
+import FCIAravali from "../assets/logos/Clientele/Aravali.jpg";
+import JkMineral from "../assets/logos/Clientele/JkMineral.jpg";
+import Jkpcc from "../assets/logos/Clientele/Jkpcc.jpg";
+import SupremeCourt from "../assets/logos/Clientele/SupremeCourt.png";
+import Nbcc from "../assets/logos/Clientele/Nbcc.jpg";
+import DedicatedFreight from "../assets/logos/Clientele/DedicatedFreight.jpg";
+import Cpwd from "../assets/logos/Clientele/Cpwd.jpg";
+import MP from "../assets/logos/Clientele/MP.jpg";
+import JammuSmartCity from "../assets/logos/Clientele/JammuSmartCity.png";
+import AjmerDevelop from "../assets/logos/Clientele/AjmerDevelop.jpg";
+import UjjainDevelop from "../assets/logos/Clientele/UjjainDevelop.png";
 
 export const clientele_1 = [
   {
