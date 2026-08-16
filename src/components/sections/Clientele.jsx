@@ -3,13 +3,13 @@ import { clientele_1, clientele_2 } from '../../constants/clientele';
 
 export default function Clientele() {
   // Use import.meta.glob to eagerly load all images in the clientele directory
-  const images = import.meta.glob('../../assets/logos/clientele/*.{png,jpg,jpeg,svg}', { eager: true });
+  // const images = import.meta.glob('../../assets/logos/clientele/*.{png,jpg,jpeg,svg}', { eager: true });
 
-  const getImageUrl = (path) => {
-    // path is something like "../../assets/logos/clientele/HclTech.jpg"
-    // images[path] will contain the resolved module if it exists
-    return images[path]?.default || path;
-  };
+  // const getImageUrl = (path) => {
+  //   // path is something like "../../assets/logos/clientele/HclTech.jpg"
+  //   // images[path] will contain the resolved module if it exists
+  //   return images[path]?.default || path;
+  // };
 
   // We duplicate the arrays to create a seamless infinite loop effect
   const repeatedClientele1 = [...clientele_1, ...clientele_1, ...clientele_1];
@@ -56,7 +56,7 @@ export default function Clientele() {
                   <div key={`${client.id}-${index}`} className="flex items-center justify-center shrink-0 border-r border-gray-100 last:border-0" style={{ width: '20vw', minWidth: '200px' }}>
                     <div className="h-24 w-3/4 flex items-center justify-center p-4">
                       <img
-                        src={getImageUrl(client.imageurl)}
+                        src={client.imageurl}
                         alt={client.name}
                         className="max-h-full max-w-full object-contain filter transition-all duration-300"
                         onError={(e) => {
@@ -92,7 +92,7 @@ export default function Clientele() {
                   <div key={`${client.id}-${index}`} className="flex items-center justify-center shrink-0 border-r border-gray-100 last:border-0" style={{ width: '20vw', minWidth: '200px' }}>
                     <div className="h-24 w-3/4 flex items-center justify-center p-4">
                       <img
-                        src={getImageUrl(client.imageurl)}
+                        src={client.imageurl}
                         alt={client.name}
                         className="max-h-full max-w-full object-contain filter transition-all duration-300"
                         onError={(e) => {
