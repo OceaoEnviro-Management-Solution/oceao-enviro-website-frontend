@@ -6,7 +6,7 @@ import imgConsultancy from '../../assets/images/homePage/Consultancy.jpeg';
 import imgRiver from '../../assets/images/homePage/whyUsSection/River.jpeg';
 import imgResearch from '../../assets/images/homePage/whyUsSection/Research.jpeg';
 import imgTesting from '../../assets/images/homePage/whyUsSection/testing.jpg';
-import logo from '../../assets/logos/company-logo2.png';
+import logo from '../../assets/logos/company-logo.png';
 
 const IconMap = {
   Target, FlaskConical, ShieldCheck, Users, Leaf,
@@ -112,9 +112,9 @@ export default function WhyChooseUs() {
                       <h4 className={`text-[9px] sm:text-[11px] lg:text-xs font-extrabold uppercase leading-snug mb-1.5 sm:mb-2 whitespace-pre-line ${wedge.titleColor}`}>
                         {wedge.title}
                       </h4>
-                      <p className="text-[7.5px] sm:text-[9px] lg:text-[10px] text-gray-700 leading-snug hidden sm:block">
+                      {/* <p className="text-[7.5px] sm:text-[9px] lg:text-[10px] text-gray-700 leading-snug hidden sm:block">
                         {wedge.description}
-                      </p>
+                      </p> */}
                     </div>
                   );
                 })}

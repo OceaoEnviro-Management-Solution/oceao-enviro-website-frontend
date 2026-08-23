@@ -13,7 +13,7 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-[#011539] pt-12 pb-6 border-t-[4px] border-[#FDB813] relative overflow-hidden text-sm font-sans">
+    <footer className="bg-[#011539] pt-10 pb-6 border-t-[4px] border-[#FDB813] relative overflow-hidden text-sm font-sans">
 
       {/* Decorative leaf watermark (approximate with inline SVG shape) */}
       <div className="absolute -bottom-20 left-1/3 opacity-5 pointer-events-none transform -rotate-12">
@@ -39,13 +39,20 @@ export default function Footer() {
             <AnimatedTagline />
 
             <div className="mt-8">
-              <div class="border-t border-white/20 w-[280px] mb-4"></div>
+              <div className="border-t border-white/20 w-[280px] mb-4"></div>
               <h4 className="font-semibold text-[#8ec63f] text-sm mb-4 uppercase tracking-wider">Get in Touch</h4>
               <div className="flex flex-col gap-3 text-gray-300">
-                <a href="tel:+919999999999" className="flex items-center gap-3 hover:text-brand-orange transition-colors">
-                  <Phone className="w-4 h-4 text-[#8ec63f]" />
-                  <span>+91 9953692693</span>
-                </a>
+                <div className='flex flex-row gap-4'>
+                  <a href="tel:+919220460040" className="flex items-center gap-3 hover:text-brand-orange transition-colors">
+                    <Phone className="w-4 h-4 text-[#8ec63f]" />
+                    <span>+91 9220460040</span>
+                  </a>
+                  <p>|</p>
+                  <a href="tel:0120-4338047" className="flex items-center gap-3 hover:text-brand-orange transition-colors">
+                    {/* <Phone className="w-4 h-4 text-[#8ec63f]" /> */}
+                    <span>0120-4338047</span>
+                  </a>
+                </div>
                 <a href="mailto:info@oceaoenviro.com" className="flex items-center gap-3 hover:text-brand-orange transition-colors">
                   <Mail className="w-4 h-4 text-[#8ec63f]" />
                   <span>info@oceaoenviro.com</span>

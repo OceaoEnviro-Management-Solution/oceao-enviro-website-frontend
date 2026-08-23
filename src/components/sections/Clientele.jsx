@@ -90,7 +90,7 @@ export default function Clientele() {
               <div className="flex items-center">
                 {repeatedClientele2.map((client, index) => (
                   <div key={`${client.id}-${index}`} className="flex items-center justify-center shrink-0 border-r border-gray-100 last:border-0" style={{ width: '20vw', minWidth: '200px' }}>
-                    <div className="h-24 w-3/4 flex items-center justify-center p-4">
+                    <div className="h-30 w-4/4 flex items-center justify-center p-1">
                       <img
                         src={client.imageurl}
                         alt={client.name}
