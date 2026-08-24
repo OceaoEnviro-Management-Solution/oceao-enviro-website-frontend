@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { gallery, galleryCategories } from '../../constants/gallery';
+import { gallery, homepageGalleryCategories } from '../../constants/gallery';
 import { ArrowRight, Image as ImageIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function Gallery() {
   const [activeCategory, setActiveCategory] = useState('All');
 
-  // Filter gallery based on active category
   const filteredGallery = activeCategory === 'All' 
     ? gallery 
     : gallery.filter(item => item.category === activeCategory);
@@ -36,7 +35,7 @@ export default function Gallery() {
           >
             All
           </button>
-          {galleryCategories.map((cat, index) => (
+          {homepageGalleryCategories.map((cat, index) => (
             <button
               key={index}
               onClick={() => setActiveCategory(cat)}
@@ -86,7 +85,7 @@ export default function Gallery() {
         {/* Bottom CTA */}
         <div className="text-center">
           <Link 
-            to="/gallery"
+          to="/about/gallery"
             className="inline-flex items-center justify-center gap-3 px-8 py-3.5 rounded-full text-white font-semibold text-base bg-brand-orange hover:bg-brand-orange-dark transition-colors shadow-md"
           >
             View More Gallery

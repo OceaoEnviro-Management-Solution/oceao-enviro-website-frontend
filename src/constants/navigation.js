@@ -2,9 +2,9 @@ export const navItems = [
   { id: 'home', label: 'Home', href: '/', hasDropdown: false },
   {
     id: 'about', label: 'About Us', href: '/about', hasDropdown: true, children: [
-      { label: 'Company Profile', href: '/about/profile' },
+      { label: 'Company Profile', href: '/about/Company-Profile' },
       { label: 'Certifications & Accreditations', href: '/about/accreditations' },
-      { label: 'Vision & Mission', href: '/about/vision' },
+      { label: 'Vision & Mission', href: '/about/Vision-Mission' },
       { label: 'Team', href: '/about/team' },
       { label: 'Gallery', href: '/about/gallery' },
     ]
@@ -37,9 +37,8 @@ export const navItems = [
   },
   {
     id: 'contact', label: 'Contact Us', href: '/contact', hasDropdown: true, children: [
+      { label: 'Quick Contact', href: '/contact/quick-contact' },
       { label: 'Book Virtual Meeting', href: '/contact/meeting' },
-      { label: 'Request a Callback', href: '/contact/callback' },
-      { label: 'Contact Us', href: '/contact' },
       { label: 'Feedback & Complaint', href: '/contact/feedback' },
       { label: 'Our Offices', href: '/contact/offices' },
     ]

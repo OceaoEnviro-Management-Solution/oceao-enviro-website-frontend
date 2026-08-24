@@ -55,7 +55,7 @@ export default function Hero() {
               <ArrowRight className="w-5 h-5" />
             </a>
             <a
-              href="/contact"
+              href="contact/quick-contact"
               className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full text-[#011539] font-medium text-lg bg-white/80 backdrop-blur-sm border-2 border-[#011539] hover:bg-white transition-colors shadow-lg"
             >
               Contact Us

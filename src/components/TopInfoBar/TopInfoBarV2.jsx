@@ -19,7 +19,7 @@ export default function TopInfoBarV2() {
             <Link to="/">
               <img src={companyLogo} alt="Oceao-Enviro Logo" className="h-23 w-auto object-contain" />
             </Link>
-            <div className='-mt-1 ml-1 ' text-orange-400>
+            <div className='-mt-3 ml-1 text-orange-400'>
               <AnimatedTagline />
             </div>
 

@@ -35,7 +35,7 @@ export const wedgeData = [
   {
     id: 1,
     title: "ENVIRONMENTAL\nCONSULTANCY",
-    description: "Providing sustainable solutions through environmental assessments, impact studies & strategic advisory services.",
+    // description: "Providing sustainable solutions through environmental assessments, impact studies & strategic advisory services.",
     icon: "Leaf",
     number: "01",
     textContainer: "top-[4%] sm:top-[6%] left-1/2 -translate-x-1/2 w-[35%] text-center flex flex-col items-center",
@@ -48,7 +48,7 @@ export const wedgeData = [
   {
     id: 2,
     title: "ENVIRONMENTAL\nRESEARCH",
-    description: "Driving innovation with advanced environmental research and actionable insights.",
+    // description: "Driving innovation with advanced environmental research and actionable insights.",
     icon: "Microscope",
     number: "02",
     textContainer: "top-1/2 -translate-y-1/2 right-[4%] sm:right-[6%] w-[35%] text-center flex flex-col items-center",
@@ -61,7 +61,7 @@ export const wedgeData = [
   {
     id: 3,
     title: "LABORATORY\nTESTING",
-    description: "NABL accredited laboratory testing ensuring accurate, reliable & compliant results.",
+    // description: "NABL accredited laboratory testing ensuring accurate, reliable & compliant results.",
     icon: "FlaskConical",
     number: "03",
     textContainer: "bottom-[4%] sm:bottom-[6%] left-1/2 -translate-x-1/2 w-[35%] text-center flex flex-col items-center",
@@ -74,7 +74,7 @@ export const wedgeData = [
   {
     id: 4,
     title: "STRATEGIC\nCONSULTANCY",
-    description: "Partnering for effective decision-making, compliance support & sustainable business growth.",
+    // description: "Partnering for effective decision-making, compliance support & sustainable business growth.",
     icon: "Users",
     number: "04",
     textContainer: "top-1/2 -translate-y-1/2 left-[4%] sm:left-[6%] w-[35%] text-center flex flex-col items-center",
