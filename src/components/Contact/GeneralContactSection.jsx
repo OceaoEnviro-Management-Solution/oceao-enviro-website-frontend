@@ -7,8 +7,8 @@ import ContactCard, { ContactRow, PrimaryBtn, CopyBtn } from './ContactCard';
 import { contactInfo } from '../../constants/contact';
 
 const ACCENT = {
-  phone:   '#0F1D75',   // brand-blue
-  email:   '#FFA500',   // brand-orange
+  phone: '#0F1D75',   // brand-blue
+  email: '#FFA500',   // brand-orange
   offices: '#017119',   // brand-green
 };
 
@@ -52,6 +52,23 @@ export default function GeneralContactSection() {
                   <PhoneCall className="w-3.5 h-3.5" /> Call
                 </PrimaryBtn>
                 <CopyBtn textToCopy={phone.landline} toastLabel="Copied!" />
+              </>
+            }
+          />
+
+          {/* Divider */}
+          <hr className="border-gray-100" />
+
+          {/* Landline */}
+          <ContactRow
+            label="Landline"
+            value={phone.landline2}
+            buttons={
+              <>
+                <PrimaryBtn href={`tel:${phone.landline2.replace(/\s/g, '')}`}>
+                  <PhoneCall className="w-3.5 h-3.5" /> Call
+                </PrimaryBtn>
+                <CopyBtn textToCopy={phone.landline2} toastLabel="Copied!" />
               </>
             }
           />

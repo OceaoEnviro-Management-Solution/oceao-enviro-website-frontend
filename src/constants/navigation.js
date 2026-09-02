@@ -38,7 +38,7 @@ export const navItems = [
   {
     id: 'contact', label: 'Contact Us', href: '/contact', hasDropdown: true, children: [
       { label: 'Quick Contact', href: '/contact/quick-contact' },
-      { label: 'Book Virtual Meeting', href: '/contact/meeting' },
+      { label: 'Book Virtual Meeting', href: '/booking-vm' },
       { label: 'Feedback & Complaint', href: '/contact/feedback' },
       { label: 'Our Offices', href: '/contact/offices' },
     ]
