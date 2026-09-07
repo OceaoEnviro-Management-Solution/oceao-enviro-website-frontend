@@ -42,7 +42,7 @@ export default function Clientele() {
         <div className="relative mt-8 mb-16">
           {/* Badge */}
           <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20 bg-brand-green-dark text-white text-xs font-bold uppercase tracking-wider py-1.5 px-6 rounded-full shadow-lg">
-            OUR CLIENTS
+            PUBLIC SECTOR
           </div>
 
           <div className="bg-white rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.06)] py-8 border border-gray-100 overflow-hidden relative group">
@@ -78,7 +78,7 @@ export default function Clientele() {
         <div className="relative mt-8 mb-8">
           {/* Badge */}
           <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20 bg-brand-green-dark text-white text-xs font-bold uppercase tracking-wider py-1.5 px-6 rounded-full shadow-lg">
-            OUR CLIENTS
+            PRIVATE SECTOR
           </div>
 
           <div className="bg-white rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.06)] py-8 border border-gray-100 overflow-hidden relative group">
@@ -86,7 +86,7 @@ export default function Clientele() {
             <div className="absolute left-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-r from-white via-white to-transparent z-10"></div>
             <div className="absolute right-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-l from-white via-white to-transparent z-10"></div>
 
-            <div className="flex w-[200%] sm:w-[max-content] animate-[marquee_45s_linear_infinite] group-hover:[animation-play-state:paused]">
+            <div className="flex w-[200%] sm:w-[max-content] animate-[marquee_19s_linear_infinite] group-hover:[animation-play-state:paused]">
               <div className="flex items-center">
                 {repeatedClientele2.map((client, index) => (
                   <div key={`${client.id}-${index}`} className="flex items-center justify-center shrink-0 border-r border-gray-100 last:border-0" style={{ width: '20vw', minWidth: '200px' }}>
