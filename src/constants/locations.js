@@ -1,6 +1,6 @@
-import gzb from '../assets/Images/gallery/Offices/Ghaziabad/Office-G-1.jpeg'
-import jammu from '../assets/Images/gallery/Offices/Ghaziabad/Office-G-1.jpeg'
-import bhopal from '../assets/Images/gallery/Offices/Ghaziabad/Office-G-1.jpeg'
+import gzb from '../assets/images/gallery/Offices/Ghaziabad/Office-G-1.jpeg'
+import jammu from '../assets/images/gallery/Offices/Ghaziabad/Office-G-2.jpeg'
+import bhopal from '../assets/images/gallery/Offices/Ghaziabad/Office-G-3.jpeg'
 export const locationsData = [
   {
     city: 'Ghaziabad',
