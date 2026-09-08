@@ -111,7 +111,7 @@ export default function Footer() {
 
           {/* Column 4: Locations */}
           <div className="flex flex-col gap-8 lg:col-span-3 lg:pl-8">
-            <h4 className="font-semibold text-[#8ec63f] text-sm mb-0 uppercase tracking-wider">Our Locations</h4>
+            <h4 className="font-semibold text-[#8ec63f] text-lg mb-0 uppercase tracking-wider">Our Locations</h4>
             <div className="flex flex-col gap-5 mt-1">
               {locationsData.map((loc, index) => (
                 <LocationCard key={index} {...loc} />

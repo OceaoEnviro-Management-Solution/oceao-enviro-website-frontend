@@ -7,32 +7,32 @@ import imgWasteManagement from '../assets/images/homePage/serviceSection/Waste-M
 export const services = [
   {
     id: 1,
-    title: "Environmental Monitoring",
-    description: "Real-time monitoring of air, water, and soil quality to ensure compliance and environmental health.",
+    title: "Environmental Services",
+    description: "End-to-end environmental assessment and compliance support covering EIA, environmental clearances, biodiversity studies, audits, social assessments, and statutory consents.",
     image: imgEnvironmentalMonitoring
   },
   {
     id: 2,
     title: "Laboratory Services",
-    description: "NABL-accredited laboratory offering comprehensive testing for ambient air, water, soil, and emission parameters.",
+    description: "NABL-accredited testing for ambient air, noise, soil, water, wastewater, DG stack emissions, and DG noise monitoring.",
     image: imgLaboratoryServices
   },
   {
     id: 3,
-    title: "Consultancy",
-    description: "Expert environmental consulting for EIA, compliance audits, policy planning, and sustainable solutions.",
+    title: "Water Resource Management",
+    description: "Sustainable water management solutions covering groundwater permissions, rainwater harvesting, and hydrological and hydrogeological investigations.",
     image: imgConsultancy
   },
   {
     id: 4,
-    title: "Fire And Safety Compliance",
-    description: "Navigate complex fire and safety regulations with our statutory compliance and fire and safety advisory services.",
+    title: "Products",
+    description: "Specialized environmental monitoring and telemetry products designed to support reliable field measurement, data collection, and monitoring applications.",
     image: imgFireSafetyAudits
   },
   {
     id: 5,
-    title: "Waste Management",
-    description: "Sustainable waste management solutions including solid waste, hazardous waste, and e-waste handling.",
+    title: "Green Resource & Energy",
+    description: "Sustainable resource planning with support for GRIHA ratings and traffic studies to promote environmentally responsible and efficient development.",
     image: imgWasteManagement
   }
 ];

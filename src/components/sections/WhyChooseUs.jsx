@@ -3,7 +3,7 @@ import { Target, FlaskConical, ShieldCheck, Users, Leaf, ClipboardCheck, Microsc
 import { whyChooseUsFeatures, wedgeData, imageWedges, bottomStats } from '../../constants/whyChooseUs';
 
 import imgConsultancy from '../../assets/images/homePage/Consultancy.jpeg';
-import imgRiver from '../../assets/images/homePage/whyUsSection/River.jpeg';
+import imgRiver from '../../assets/images/homePage/whyUsSection/River1.png';
 import imgResearch from '../../assets/images/homePage/whyUsSection/Research.jpeg';
 import imgTesting from '../../assets/images/homePage/whyUsSection/testing.jpg';
 import logo from '../../assets/logos/company-logo.png';
@@ -17,8 +17,8 @@ const IconMap = {
 export default function WhyChooseUs() {
 
   return (
-    <section className="py-4 lg:pt-5 lg:pb-4 bg-[#e9eef1] relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <section className="pb-4 lg:pt-5 lg:pb-24 bg-[#fff] relative overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-2 relative z-10">
 
         {/* Main Grid: Left (Text) and Right (Circle) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-6">
@@ -69,6 +69,14 @@ export default function WhyChooseUs() {
                   if (wedge.imageRef === 'imgResearch') bgImage = imgResearch;
                   if (wedge.imageRef === 'imgConsultancy') bgImage = imgConsultancy;
                   if (wedge.imageRef === 'imgTesting') bgImage = imgTesting;
+
+                  const clipPaths = {
+                    tr: 'polygon(50% 50%, 69.13% 3.81%, 96.19% 30.87%)',
+                    br: 'polygon(50% 50%, 96.19% 69.13%, 69.13% 96.19%)',
+                    bl: 'polygon(50% 50%, 30.87% 96.19%, 3.81% 69.13%)',
+                    tl: 'polygon(50% 50%, 3.81% 30.87%, 30.87% 3.81%)',
+                  };
+
 
                   return (
                     <div
@@ -146,7 +154,7 @@ export default function WhyChooseUs() {
         </div>
 
         {/* BOTTOM SECTION: Stats Grid */}
-        <div className="mt-4 lg:mt-4 py-2 bg-[#b8d9d7c9] border-t border-[#b8d4c0] shadow-xl rounded-2xl grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 text-center">
+        <div className="mt-4 lg:mt-1 py-2 bg-[#b8d9d7c9] border-t border-[#b8d4c0] shadow-xl rounded-2xl grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 text-center">
           {bottomStats.map((stat) => {
             const Icon = IconMap[stat.icon];
             // // Highlight 'Pan India Presence'

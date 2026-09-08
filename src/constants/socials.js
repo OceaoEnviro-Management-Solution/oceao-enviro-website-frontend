@@ -6,17 +6,17 @@ export const socialsData = [
   },
   {
     platform: 'Instagram',
-    url: '#', // TODO: client to provide URL
+    url: 'https://www.instagram.com/oceao_enviro?stkn=MWE1MzlnZHpkZHA1Zg==', // TODO: client to provide URL
     icon: 'Instagram'
   },
   {
     platform: 'Facebook',
-    url: '#', // TODO: client to provide URL
+    url: 'https://www.facebook.com/share/153cwpCz3K8/', // TODO: client to provide URL
     icon: 'Facebook'
   },
   {
     platform: 'X',
-    url: '#', // TODO: client to provide URL
+    url: 'https://x.com/OceaoenviroInd', // TODO: client to provide URL
     icon: 'X'
   }
 ];

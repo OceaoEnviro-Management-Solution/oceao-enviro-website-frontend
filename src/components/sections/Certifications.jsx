@@ -52,7 +52,7 @@ export default function Certifications() {
               >
                 <div className="relative w-full aspect-[4/4] rounded-xl overflow-hidden mb-4 bg-gray-50 border border-gray-100 group">
                   <iframe
-                    src={`${cert.pdfUrl}#toolbar=0&navpanes=0&scrollbar=0`}
+                    src={`${cert.imgUrl}#toolbar=0&navpanes=0&scrollbar=0`}
                     title={cert.alt}
                     className="w-full h-full object-cover transition-transform duration-500 border-none pointer-events-none"
                   />
@@ -106,9 +106,9 @@ export default function Certifications() {
             </div>
 
             <div className="p-4 overflow-auto bg-gray-50 flex-grow flex items-center justify-center w-full h-[70vh]">
-              {selectedCert.pdfUrl ? (
+              {selectedCert.imgUrl ? (
                 <iframe
-                  src={`${selectedCert.pdfUrl}#toolbar=0`}
+                  src={`${selectedCert.imgUrl}#toolbar=0`}
                   title={selectedCert.alt}
                   className="w-full h-full border-none rounded shadow-sm"
                 />

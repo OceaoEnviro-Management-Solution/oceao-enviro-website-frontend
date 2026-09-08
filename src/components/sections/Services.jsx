@@ -5,7 +5,7 @@ import { services } from '../../constants/services';
 
 export default function Services() {
   return (
-    <section id="services" className="py-5 lg:py-24 bg-gray-100 relative overflow-hidden">
+    <section id="services" className="py-5 lg:py-24 bg-[#e8f6eb87] relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
         <div className="text-center pb-5 max-w-3xl mx-auto mb-10">

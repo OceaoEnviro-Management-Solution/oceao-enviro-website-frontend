@@ -15,8 +15,82 @@ import MP from "../assets/logos/Clientele/MP.jpg";
 import JammuSmartCity from "../assets/logos/Clientele/JammuSmartCity.png";
 import AjmerDevelop from "../assets/logos/Clientele/AjmerDevelop.jpg";
 import UjjainDevelop from "../assets/logos/Clientele/UjjainDevelop.png";
+import RamadaGurgaon from "../assets/logos/Clientele/RamadaGurgaon.png";
 
 export const clientele_1 = [
+  {
+    id: 1,
+    name: "FCI Aravali",
+    imageurl: FCIAravali
+  },
+  {
+    id: 2,
+    name: "J&K Minerals",
+    imageurl: JkMineral
+  },
+  {
+    id: 3,
+    name: "JKPCC",
+    imageurl: Jkpcc
+  },
+  {
+    id: 4,
+    name: "MPSMC",
+    imageurl: SatyamevJayate
+  },
+  {
+    id: 5,
+    name: "Supreme Court of India",
+    imageurl: SupremeCourt
+  },
+  {
+    id: 6,
+    name: "NBCC",
+    imageurl: Nbcc
+  },
+  {
+    id: 7,
+    name: "DFCCIL",
+    imageurl: DedicatedFreight
+  },
+  {
+    id: 8,
+    name: "CPWD",
+    imageurl: Cpwd
+  },
+  {
+    id: 9,
+    name: "MoHFW",
+    imageurl: SatyamevJayate
+  },
+  {
+    id: 10,
+    name: "MSDE / Skill India",
+    imageurl: SatyamevJayate
+  },
+  {
+    id: 11,
+    name: "MP UADD",
+    imageurl: MP
+  },
+  {
+    id: 12,
+    name: "Jammu Smart City",
+    imageurl: JammuSmartCity
+  },
+  {
+    id: 13,
+    name: "Ajmer Development Authority",
+    imageurl: AjmerDevelop
+  },
+  {
+    id: 14,
+    name: "Ujjain Development Authority",
+    imageurl: UjjainDevelop
+  }
+];
+
+export const clientele_2 = [
   {
     id: 1,
     name: "HCL Tech",
@@ -34,7 +108,7 @@ export const clientele_1 = [
   },
   {
     id: 4,
-    name: "Jaypee group",
+    name: "Jaypee Group",
     imageurl: JaypeeGroup
   },
   {
@@ -44,79 +118,7 @@ export const clientele_1 = [
   },
   {
     id: 6,
-    name: "RSMML",
-    imageurl: SatyamevJayate
-  },
-  {
-    id: 7,
-    name: "FCI Aravali",
-    imageurl: FCIAravali
-  },
-  {
-    id: 8,
-    name: "J&K Minerals",
-    imageurl: JkMineral
-  },
-  {
-    id: 9,
-    name: "JKPCC",
-    imageurl: Jkpcc
-  },
-  {
-    id: 10,
-    name: "MPSMC",
-    imageurl: SatyamevJayate
+    name: "Ramada",
+    imageurl: RamadaGurgaon
   }
-];
-export const clientele_2 = [
-  {
-    id: 1,
-    name: "Supreme Court of India",
-    imageurl: SupremeCourt
-  },
-  {
-    id: 2,
-    name: "NBCC",
-    imageurl: Nbcc
-  },
-  {
-    id: 3,
-    name: "DFCCIL",
-    imageurl: DedicatedFreight
-  },
-  {
-    id: 4,
-    name: "CPWD",
-    imageurl: Cpwd
-  },
-  {
-    id: 5,
-    name: "MoHFW",
-    imageurl: SatyamevJayate
-  },
-  {
-    id: 6,
-    name: "MSDE/Skill India",
-    imageurl: SatyamevJayate
-  },
-  {
-    id: 7,
-    name: "MP UADD",
-    imageurl: MP
-  },
-  {
-    id: 8,
-    name: "Jammu Smart City",
-    imageurl: JammuSmartCity
-  },
-  {
-    id: 9,
-    name: "Ajmer Development Authority",
-    imageurl: AjmerDevelop
-  },
-  {
-    id: 10,
-    name: "Ujjain Development Authority",
-    imageurl: UjjainDevelop
-  },
 ];

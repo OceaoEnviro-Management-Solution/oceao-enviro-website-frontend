@@ -80,9 +80,9 @@ export default function AppRoutes() {
         {/* AdminLayout handles: session guard, sidebar, topbar, Outlet      */}
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<Navigate to="dashboard" replace />} />
-          <Route path="dashboard"              element={<AdminDashboardPage />} />
-          <Route path="bookings"               element={<AdminBookingsPage />} />
-          <Route path="availability-vm"        element={<AdminAvailabilityVMPage />} />
+          <Route path="dashboard" element={<AdminDashboardPage />} />
+          <Route path="bookings" element={<AdminBookingsPage />} />
+          <Route path="availability-vm" element={<AdminAvailabilityVMPage />} />
           <Route path="availability-callbacks" element={<AdminAvailabilityCallbacksPage />} />
         </Route>
 

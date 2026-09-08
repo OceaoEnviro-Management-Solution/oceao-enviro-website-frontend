@@ -266,14 +266,14 @@ export const galleryCategories = galleryData.map((cat) => ({
  * Shows one representative image per category, plus a couple extra.
  */
 export const gallery = [
-  { id: 1, category: 'Field Work', image: fwVisit1,  alt: 'Environmental Field Visit' },
-  { id: 2, category: 'Laboratory', image: lab1,       alt: 'State-of-the-art Laboratory' },
-  { id: 3, category: 'Field Work', image: fwAir1,    alt: 'Air Quality Testing' },
-  { id: 4, category: 'Offices',    image: offGhz1,   alt: 'Ghaziabad Office' },
-  { id: 5, category: 'Field Work', image: fwWater1,  alt: 'Water Quality Testing' },
-  { id: 6, category: 'Laboratory', image: lab2,       alt: 'Laboratory Equipment' },
-  { id: 7, category: 'Field Work', image: fwSoil1,   alt: 'Soil Testing' },
-  { id: 8, category: 'Offices',    image: offGhz2,   alt: 'Office Interior' },
+  { id: 1, category: 'Field Work', image: fwVisit1, alt: 'Environmental Field Visit' },
+  { id: 2, category: 'Laboratory', image: lab1, alt: 'State-of-the-art Laboratory' },
+  { id: 3, category: 'Field Work', image: fwAir1, alt: 'Air Quality Testing' },
+  { id: 4, category: 'Offices', image: offGhz1, alt: 'Ghaziabad Office' },
+  // { id: 5, category: 'Field Work', image: fwWater1,  alt: 'Water Quality Testing' },
+  // { id: 6, category: 'Laboratory', image: lab2,       alt: 'Laboratory Equipment' },
+  // { id: 7, category: 'Field Work', image: fwSoil1,   alt: 'Soil Testing' },
+  // { id: 8, category: 'Offices',    image: offGhz2,   alt: 'Office Interior' },
 ];
 
 /**
