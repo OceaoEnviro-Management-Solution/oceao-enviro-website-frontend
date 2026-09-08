@@ -165,7 +165,7 @@ export default function Welcome() {
 
         </div>
         {/* Section 3: Quote */}
-        <div className="bg-brand-green-light/50 border border-brand-green/20 rounded-2xl p-5 md:p-6 flex items-center justify-center sm:items-center gap-4 hover:bg-brand-green-light/80 transition-colors w-full">
+        <div className="bg-[#b8d9d7ca] border border-brand-green/20 rounded-2xl p-5 md:p-6 flex items-center justify-center sm:items-center gap-4 hover:bg-brand-green-light/80 transition-colors w-full">
           <Leaf className="w-6 h-6 text-brand-green flex-shrink-0 mt-1 sm:mt-0" />
           <p className="text-brand-primary-blue font-bold text-base md:text-lg leading-snug">
             "Built on Science. Driven by Engineering. Trusted by Industry."

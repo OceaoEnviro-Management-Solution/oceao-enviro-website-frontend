@@ -16,7 +16,7 @@ export default function Clientele() {
   const repeatedClientele2 = [...clientele_2, ...clientele_2, ...clientele_2];
 
   return (
-    <section className="py-16 bg-[#f7fdf7] relative overflow-hidden font-sans">
+    <section className="pt-16 pb-16 bg-[#e8f6eb87] relative overflow-hidden font-sans">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-12">
         <div className="flex items-center justify-center gap-4 mb-4">
           <div className="h-px w-12 bg-brand-green/30"></div>

@@ -15,6 +15,7 @@ import MP from "../assets/logos/Clientele/MP.jpg";
 import JammuSmartCity from "../assets/logos/Clientele/JammuSmartCity.png";
 import AjmerDevelop from "../assets/logos/Clientele/AjmerDevelop.jpg";
 import UjjainDevelop from "../assets/logos/Clientele/UjjainDevelop.png";
+import RamadaGurgaon from "../assets/logos/Clientele/RamadaGurgaon.png";
 
 export const clientele_1 = [
   {
@@ -117,7 +118,7 @@ export const clientele_2 = [
   },
   {
     id: 6,
-    name: "RSMML",
-    imageurl: SatyamevJayate
+    name: "Ramada",
+    imageurl: RamadaGurgaon
   }
 ];

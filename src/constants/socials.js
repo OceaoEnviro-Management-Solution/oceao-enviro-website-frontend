@@ -16,7 +16,7 @@ export const socialsData = [
   },
   {
     platform: 'X',
-    url: '#', // TODO: client to provide URL
+    url: 'https://x.com/OceaoenviroInd', // TODO: client to provide URL
     icon: 'X'
   }
 ];
