@@ -17,6 +17,7 @@ import CompanyProfile from '../pages/CompanyProfile.jsx';
 import VisionMission from '../pages/VisionMission.jsx';
 import Gallery from '../pages/Gallery.jsx';
 import ContactUs from '../pages/ContactUs.jsx';
+import Offices from '../pages/Offices.jsx'
 
 // ── Feedback page ──────────────────────────────────────────────────────────
 import FeedbackPage from '../pages/feedback/FeedbackPage.jsx';
@@ -61,6 +62,7 @@ export default function AppRoutes() {
           <Route path="about/gallery" element={<Gallery />} />
           <Route path="contact/quick-contact" element={<ContactUs />} />
           <Route path="contact/feedback" element={<FeedbackPage />} />
+          <Route path="contact/offices" element={<Offices />} />
 
           {/* ── Booking flow — single BookingProvider for all steps ─────── */}
           <Route path="booking-vm" element={<BookingLayout />}>
