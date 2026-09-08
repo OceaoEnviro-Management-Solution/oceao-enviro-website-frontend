@@ -87,10 +87,10 @@ export const wedgeData = [
 ];
 
 export const imageWedges = [
-  { id: 'tr', imageRef: 'imgResearch', containerPos: 'top-0 right-0' },
-  { id: 'br', imageRef: 'imgTesting', containerPos: 'bottom-0 right-0' },
-  { id: 'bl', imageRef: 'imgConsultancy', containerPos: 'bottom-0 left-0' },
-  { id: 'tl', imageRef: 'imgRiver', containerPos: 'top-0 left-0' }
+  { id: 'tr', imageRef: 'imgResearch' }, //containerPos: 'top-0 right-0' },
+  { id: 'br', imageRef: 'imgTesting' }, //containerPos: 'bottom-0 right-0' },
+  { id: 'bl', imageRef: 'imgConsultancy' }, //containerPos: 'bottom-0 left-0' },
+  { id: 'tl', imageRef: 'imgRiver' } //containerPos: 'top-0 left-0' }
 ];
 
 export const bottomStats = [
