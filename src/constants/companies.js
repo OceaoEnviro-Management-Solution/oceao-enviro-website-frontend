@@ -126,8 +126,7 @@ export const companies = [
       { name: 'QCI-NABET Certified', icon: 'Award' },
       { name: 'ISO 14001 Certified', icon: 'ShieldCheck' },
       { name: 'ISO 45001 Certified', icon: 'ShieldCheck' },
-      { name: 'ISO 9001 Certified', icon: 'ShieldCheck' },
-      { name: 'MoEF&CC Recognized Laboratory', icon: 'Star' },
+      { name: 'ISO 9001 Certified', icon: 'ShieldCheck' }
     ],
 
     ctaText: 'View Laboratory Services',

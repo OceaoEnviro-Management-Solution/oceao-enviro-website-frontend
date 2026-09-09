@@ -5,26 +5,20 @@
 export const directors = [
   {
     id: 1,
-    name: 'Dr. Rajesh Kumar',
-    designation: 'Chairman & Managing Director',
-    qualifications: 'Ph.D. Environmental Science | 25+ Years Experience',
+    name: 'Mr. Himanshu Goel',
+    designation: 'Director',
+    qualifications: 'M.Tech (Biotechnology), Post Graduate Diploma in Urban Environment Management Law and M.A. in Sociology',
   },
   {
     id: 2,
-    name: 'Mr. Anil Sharma',
-    designation: 'Director — Operations',
-    qualifications: 'M.Tech. Civil Engineering | Environmental Management Expert',
+    name: 'Mr. Krishan Chandra Panda',
+    designation: 'Director',
+    qualifications: 'B.Tech  in Biotechnology, M.Sc. (Environmental sciences)',
   },
   {
     id: 3,
-    name: 'Ms. Priya Verma',
-    designation: 'Director — Research & Analytics',
-    qualifications: 'M.Sc. Environmental Chemistry | NABL Certified Professional',
-  },
-  {
-    id: 4,
-    name: 'Mr. Suresh Patel',
-    designation: 'Director — Business Development',
-    qualifications: 'MBA | Environmental Compliance & Regulatory Affairs',
+    name: 'Mr. Vipul Aggarwal',
+    designation: 'Director',
+    qualifications: 'M.Tech in Environmental Engineering',
   },
 ];
