@@ -51,10 +51,10 @@ export default function Certifications() {
                 onClick={() => setSelectedCert(cert)}
               >
                 <div className="relative w-full aspect-[4/4] rounded-xl overflow-hidden mb-4 bg-gray-50 border border-gray-100 group">
-                  <iframe
-                    src={`${cert.imgUrl}#toolbar=0&navpanes=0&scrollbar=0`}
-                    title={cert.alt}
-                    className="w-full h-full object-cover transition-transform duration-500 border-none pointer-events-none"
+                  <img
+                    src={cert.imgUrl}
+                    alt={cert.alt}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                 </div>
 
@@ -106,19 +106,11 @@ export default function Certifications() {
             </div>
 
             <div className="p-4 overflow-auto bg-gray-50 flex-grow flex items-center justify-center w-full h-[70vh]">
-              {selectedCert.imgUrl ? (
-                <iframe
-                  src={`${selectedCert.imgUrl}#toolbar=0`}
-                  title={selectedCert.alt}
-                  className="w-full h-full border-none rounded shadow-sm"
-                />
-              ) : (
-                <img
-                  src={selectedCert.image}
-                  alt={selectedCert.alt}
-                  className="max-w-full h-auto max-h-[70vh] object-contain rounded border border-gray-200 shadow-sm"
-                />
-              )}
+              <img
+                src={selectedCert.imgUrl || selectedCert.image}
+                alt={selectedCert.alt}
+                className="max-w-full h-auto max-h-[70vh] object-contain rounded border border-gray-200 shadow-sm"
+              />
             </div>
           </div>
         </div>
