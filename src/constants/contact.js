@@ -5,6 +5,7 @@ export const contactInfo = {
   phone: {
     mobile: '+91-9220460040',
     landline: '0120-4338047',
+    landline2: '0120-3242787',
   },
   email: 'info@oceaoenviro.com',
   offices: {
@@ -64,8 +65,8 @@ export const dropdownOptions = {
   // Preferred callback time slots
   preferredTime: [
     { value: 'morning', label: 'Morning (9 AM – 12 PM)' },
-    { value: 'afternoon', label: 'Afternoon (12 PM – 5 PM)' },
-    { value: 'evening', label: 'Evening (5 PM – 8 PM)' },
+    { value: 'afternoon', label: 'Afternoon (12 PM – 3 PM)' },
+    { value: 'evening', label: 'Evening (3 PM – 6 PM)' },
   ],
 };
 
