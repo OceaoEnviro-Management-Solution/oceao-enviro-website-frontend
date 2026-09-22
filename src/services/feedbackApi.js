@@ -1,49 +1,30 @@
-// feedbackApi.js — Mock API service for the Feedback & Complaint page.
-// Phase 1: Simulates email sending with realistic delay.
-// Phase 2: Replace submitFeedback with a real fetch/axios call. Nothing else changes.
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-import { mockFeedbackSubmissions } from '../constants/feedbackMockData';
-
-// Simulate network + email-sending latency
-const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
-export const feedbackApi = {
-
-  // ── submitFeedback ───────────────────────────────────────────────────────────
-  // Simulates sending feedback email and returning a confirmation.
-  // Returns: { success, submissionId, message, confirmationEmail, submittedData }
-  submitFeedback: async (feedbackData) => {
-    await delay(1200); // Simulate network + email sending
-
-    // Generate unique submission ID
-    const submissionId = 'FB' + Date.now();
-
-    // Store in mock in-memory database
-    mockFeedbackSubmissions[submissionId] = {
-      id: submissionId,
-      ...feedbackData,
-      createdAt: new Date().toISOString(),
-      status: 'sent'
-    };
-
-    // Dev helper — log submission for verification during testing
-    console.log('[DEV] Mock feedback submission:', mockFeedbackSubmissions[submissionId]);
-
-    // Return confirmation payload (simulates successful email dispatch)
-    return {
-      success: true,
-      submissionId,
-      message: 'Feedback submitted successfully',
-      confirmationEmail: feedbackData.email,
-      submittedData: {
-        type: feedbackData.type,
-        name: feedbackData.name,
-        email: feedbackData.email,
-        phone: feedbackData.phone || null,
-        subject: feedbackData.subject,
-        message: feedbackData.message,
-        attachmentName: feedbackData.attachment?.name || null
-      }
-    };
+const submitFeedback = async (formData) => {
+  const formDataObj = new FormData();
+  formDataObj.append("type", formData.type);
+  formDataObj.append("name", formData.name);
+  formDataObj.append("email", formData.email);
+  if (formData.phone) {
+    formDataObj.append("mobileNumber", formData.phone);
   }
+  formDataObj.append("subject", formData.subject);
+  formDataObj.append("message", formData.message);
+  if (formData.attachment) {
+    formDataObj.append("attachment", formData.attachment);
+  }
+  const response = await fetch(
+    `${BASE_URL}/feedback/new-feedback`,
+    {
+      method: "POST",
+      body: formDataObj
+    }
+  );
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || "Something went wrong!");
+  }
+  return data;
 };
+
+export { submitFeedback };

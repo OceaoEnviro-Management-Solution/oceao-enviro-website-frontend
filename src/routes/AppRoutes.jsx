@@ -9,6 +9,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-
 import MainLayout from '../layouts/MainLayout.jsx';
 import AdminLayout from '../layouts/AdminLayout.jsx';
 import { BookingProvider } from '../context/BookingContext.jsx';
+import ScrollToTop from '../components/common/ScrollToTop.jsx';
 
 // ── Existing pages ─────────────────────────────────────────────────────────
 import Home from '../pages/Home.jsx';
@@ -18,6 +19,14 @@ import VisionMission from '../pages/VisionMission.jsx';
 import Gallery from '../pages/Gallery.jsx';
 import ContactUs from '../pages/ContactUs.jsx';
 import Offices from '../pages/Offices.jsx'
+
+// ── Service pages ───────────────────────────────────────────────────────────
+import ServicesHub from '../pages/services/ServicesHub.jsx';
+import EnvironmentalServices from '../pages/services/EnvironmentalServices.jsx';
+import SocialAssessmentStudies from '../pages/services/SocialAssessmentStudies.jsx';
+import StatutoryNOC from '../pages/services/StatutoryNOC.jsx';
+import WaterResourceManagement from '../pages/services/WaterResourceManagement.jsx';
+import LaboratoryServices from '../pages/services/LaboratoryServices.jsx';
 
 // ── Feedback page ──────────────────────────────────────────────────────────
 import FeedbackPage from '../pages/feedback/FeedbackPage.jsx';
@@ -49,6 +58,7 @@ function BookingLayout() {
 export default function AppRoutes() {
   return (
     <Router>
+      <ScrollToTop />
       <Routes>
 
         {/* ── Main Layout (Navbar + Footer wraps everything) ─────────────── */}
@@ -63,6 +73,14 @@ export default function AppRoutes() {
           <Route path="contact/quick-contact" element={<ContactUs />} />
           <Route path="contact/feedback" element={<FeedbackPage />} />
           <Route path="contact/offices" element={<Offices />} />
+
+          {/* ── Service pages ─────────────────────────────────────────────── */}
+          <Route path="services" element={<ServicesHub />} />
+          <Route path="services/environmental-services" element={<EnvironmentalServices />} />
+          <Route path="services/social-assessment-studies" element={<SocialAssessmentStudies />} />
+          <Route path="services/statutory-noc" element={<StatutoryNOC />} />
+          <Route path="services/water-resource-management" element={<WaterResourceManagement />} />
+          <Route path="services/laboratory-services" element={<LaboratoryServices />} />
 
           {/* ── Booking flow — single BookingProvider for all steps ─────── */}
           <Route path="booking-vm" element={<BookingLayout />}>

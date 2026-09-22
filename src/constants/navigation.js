@@ -11,24 +11,14 @@ export const navItems = [
   },
   {
     id: 'services', label: 'Services', href: '/services', hasDropdown: true, children: [
-      { label: 'Environment Clearance', href: '/services/clearance' },
-      { label: 'EPR & CPCB Registration', href: '/services/epr' },
-      { label: 'Environment Consultancy', href: '/services/consultancy' },
-      { label: 'Sustainability Consultancy', href: '/services/sustainability' },
-      { label: 'Health & Safety Audits', href: '/services/audits' },
-      { label: 'Laboratory Services', href: '/services/lab' },
-      { label: 'Legal Compliances', href: '/services/compliance' },
-      { label: 'Waste Management', href: '/services/waste' }
+      { label: 'Environmental Services', href: '/services/environmental-services' },
+      { label: 'Social Assessment Studies', href: '/services/social-assessment-studies' },
+      { label: 'Statutory NOCs/ Permissions/ Clearances', href: '/services/statutory-noc' },
+      { label: 'Water Resource Management', href: '/services/water-resource-management' },
+      { label: 'Laboratory Services', href: '/services/laboratory-services' },
     ]
   },
-  {
-    id: 'products', label: 'Products', href: '/products', hasDropdown: true, children: [
-      { label: 'OWC', href: '/products/owc' },
-      { label: 'STP/ETP', href: '/products/stp' },
-      { label: 'RWH', href: '/products/rwh' },
-      { label: 'Online Monitoring Product', href: '/products/monitoring' }
-    ]
-  },
+  { id: 'products', label: 'Products', href: '/products', hasDropdown: false },
   {
     id: 'our work', label: 'Our Work', href: '/our-work', hasDropdown: true, children: [
       { label: 'Projects', href: '/our-work/projects' },

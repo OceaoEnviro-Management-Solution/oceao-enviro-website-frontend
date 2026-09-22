@@ -4,7 +4,7 @@
 
 import { useState, forwardRef } from 'react';
 import { useFeedbackContext } from '../../hooks/useFeedbackContext';
-import { feedbackApi } from '../../services/feedbackApi';
+import { submitFeedback } from '../../services/feedbackApi';
 import { validateFeedbackForm } from '../../utils/validation';
 import { checkRateLimit, recordSubmission } from '../../utils/rateLimiter';
 import { FEEDBACK_TYPES } from '../../constants/feedbackTypes';
@@ -80,12 +80,7 @@ const FeedbackForm = forwardRef(function FeedbackForm(_, ref) {
     setError(null);
 
     try {
-      const result = await feedbackApi.submitFeedback({
-        ...formData,
-        attachment: formData.attachment
-          ? { name: formData.attachment.name, size: formData.attachment.size }
-          : null
-      });
+      const result = await submitFeedback(formData);
 
       if (result.success) {
         recordSubmission(); // Log timestamp for rate limiting

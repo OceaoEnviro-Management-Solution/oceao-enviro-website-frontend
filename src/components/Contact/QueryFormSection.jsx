@@ -8,7 +8,7 @@ import { useFormValidation } from '../../hooks/useFormValidation';
 import { formFields } from '../../constants/contact';
 import FormInput from './FormInput';
 import SuccessPopup from './SuccessPopup';
-import { submitQuery } from "../../services/queryApi.js";
+import { submitQuery } from '../../services/queryApi';
 
 export default function QueryFormSection() {
   const [showPopup, setShowPopup] = useState(false);
@@ -18,28 +18,28 @@ export default function QueryFormSection() {
     useFormValidation(formFields.queryForm);
 
   const onSuccess = async (data) => {
-
     setIsSubmitting(true);
+    // // TODO Phase 2: POST to /api/contact/query
+    // console.log('Query form ready for backend:', {
+    //   type: 'query',
+    //   data,
+    //   timestamp: new Date().toISOString(),
+    //   userAgent: navigator.userAgent,
+    // });
+    // // Simulate brief network delay for UX realism
+    // setTimeout(() => {
+    //   setIsSubmitting(false);
+    //   setShowPopup(true);
+    // }, 600);
 
     try {
-
-      await submitQuery(data);
-
+      await submitQuery(formData);
       setShowPopup(true);
-
     } catch (error) {
-
       console.error("Query submission failed:", error);
-
-      // Temporary handling.
-      // We'll improve the UI error handling next.
-
       alert(error.message);
-
     } finally {
-
       setIsSubmitting(false);
-
     }
   };
 
