@@ -45,7 +45,7 @@ export default function WaterResourceManagement() {
       </section>
 
       {/* ── Explore other services ── */}
-      <ExploreOtherServices otherCategories={otherCategories} />
+      <ExploreOtherServices otherCategories={otherCategories} showLabCard />
 
       {/* ── CTA ── */}
       <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { footerLinks } from '../../constants/footerLinks';
 import { locationsData } from '../../constants/locations';
 import { quickLinks } from '../../constants/quickLinks';
+import { importantLinks } from '../../constants/quickLinks';
 import AnimatedTagline from './AnimatedTagline';
 import LocationCard from './LocationCard';
 import SocialLinks from './SocialLinks';
@@ -24,11 +25,11 @@ export default function Footer() {
       </div>
 
       {/* Main Footer Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-0">
+      <div className="w-full px-14 lg:px-16 mb-8 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[5fr_2fr_2fr_2fr_3.5fr] gap-y-8 lg:gap-x-8 lg:gap-y-0">
 
           {/* Column 1: Brand & Tagline & Contact & Socials */}
-          <div className="flex flex-col lg:col-span-4 lg:pr-8">
+          <div className="flex flex-col lg:border-r border-white/10 lg:pl-10">
             <Link to="/" className="inline-block mb-2">
               <img
                 src={companyLogo}
@@ -74,7 +75,7 @@ export default function Footer() {
           </div>
 
           {/* Column 2: Quick Links */}
-          <div className="flex flex-col lg:col-span-2 lg:px-6 lg:border-r border-white/10">
+          <div className="flex flex-col lg:border-r border-white/10 lg:px-4">
             <h4 className="font-semibold text-[#8ec63f] text-sm mb-6 uppercase tracking-wider">Quick Links</h4>
             <ul className="flex flex-col gap-4">
               {quickLinks.map((link, index) => (
@@ -92,7 +93,7 @@ export default function Footer() {
           </div>
 
           {/* Column 3: Legal & Policy Links */}
-          <div className="flex flex-col lg:col-span-3 lg:px-8 lg:border-r border-white/10">
+          <div className="flex flex-col lg:border-r border-white/10 lg:px-4">
             <h4 className="font-semibold text-[#8ec63f] text-sm mb-6 uppercase tracking-wider">Legal &amp; Policy</h4>
             <ul className="flex flex-col gap-4">
               {footerLinks.map((link, index) => (
@@ -109,8 +110,28 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Column 4: Locations */}
-          <div className="flex flex-col gap-8 lg:col-span-3 lg:pl-8">
+          {/* Column 4: Important Links */}
+          <div className="flex flex-col lg:border-r border-white/10 lg:px-4">
+            <h4 className="font-semibold text-[#8ec63f] text-sm mb-6 uppercase tracking-wider">Important Links</h4>
+            <ul className="flex flex-col gap-4">
+              {importantLinks.map((link, index) => (
+                <li key={index}>
+                  <a
+                    href={link.href}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className="text-gray-300 hover:text-brand-orange transition-colors text-sm flex items-center gap-2 group"
+                  >
+                    <span className="text-gray-500 text-xs group-hover:text-brand-orange transition-colors">&gt;</span>
+                    {link.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Column 5: Locations */}
+          <div className="flex flex-col gap-8 lg:pl-4">
             <h4 className="font-semibold text-[#8ec63f] text-lg mb-0 uppercase tracking-wider">Our Locations</h4>
             <div className="flex flex-col gap-5 mt-1">
               {locationsData.map((loc, index) => (
@@ -123,7 +144,7 @@ export default function Footer() {
       </div>
 
       {/* Bottom Bar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-400 relative z-10">
+      <div className="w-full px-4 lg:px-6 pt-6 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-400 relative z-10">
         <p>
           &copy; {currentYear} Oceao-Enviro Management Solutions &amp; Research &amp; Analytics Laboratories.<br className="hidden md:block" /> All rights reserved.
         </p>

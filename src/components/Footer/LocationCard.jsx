@@ -13,7 +13,7 @@ export default function LocationCard({ city, badge, address, mapUrl }) {
           </span>
         )}
       </div>
-      <p className="text-xs text-gray-400 leading-relaxed pl-6">
+      <p className="text-xs text-gray-400 leading-snug pl-6">
         {address}
       </p>
       <a 
