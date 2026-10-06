@@ -44,5 +44,5 @@ export const navItems = [
 ];
 
 export const ctaButtons = {
-  quote: { text: 'Get a Quote', href: '/quote', icon: 'ArrowRight' }
+  quote: { text: 'Contact Us', href: '/contact/quick-contact', icon: 'ArrowRight' }
 };

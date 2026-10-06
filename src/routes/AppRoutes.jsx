@@ -28,6 +28,9 @@ import StatutoryNOC from '../pages/services/StatutoryNOC.jsx';
 import WaterResourceManagement from '../pages/services/WaterResourceManagement.jsx';
 import LaboratoryServices from '../pages/services/LaboratoryServices.jsx';
 
+// ── Products page ──────────────────────────────────────────────────────────
+import ProductsPage from '../pages/products/ProductsPage.jsx';
+
 // ── Feedback page ──────────────────────────────────────────────────────────
 import FeedbackPage from '../pages/feedback/FeedbackPage.jsx';
 
@@ -81,6 +84,8 @@ export default function AppRoutes() {
           <Route path="services/statutory-noc" element={<StatutoryNOC />} />
           <Route path="services/water-resource-management" element={<WaterResourceManagement />} />
           <Route path="services/laboratory-services" element={<LaboratoryServices />} />
+
+          <Route path="products" element={<ProductsPage />} />
 
           {/* ── Booking flow — single BookingProvider for all steps ─────── */}
           <Route path="booking-vm" element={<BookingLayout />}>

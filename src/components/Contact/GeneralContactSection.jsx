@@ -13,7 +13,7 @@ const ACCENT = {
 };
 
 export default function GeneralContactSection() {
-  const { phone, email, offices } = contactInfo;
+  const { phone, email, email2, offices } = contactInfo;
 
   return (
     <section className="py-10 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
@@ -88,13 +88,30 @@ export default function GeneralContactSection() {
               </>
             }
           />
+          {/* Divider */}
+          <hr className="border-gray-100" />
+
+          {/* Email 2 */}
+          <ContactRow
+            label="Email"
+            value={email2}
+            buttons={
+              <>
+                <PrimaryBtn href={`mailto:${email2}`}>
+                  <Mail className="w-3.5 h-3.5" /> Send Email
+                </PrimaryBtn>
+                <CopyBtn textToCopy={email2} toastLabel="Email Copied!" />
+              </>
+            }
+          />
+
           <p className="text-xs text-gray-400 leading-relaxed">
             We typically respond within 24–48 business hours.
           </p>
         </ContactCard>
 
         {/* ── Offices Card ────────────────────────────────────────── */}
-        <ContactCard icon={MapPin} title="Our Offices" accentColor={ACCENT.offices}>
+        <ContactCard icon={MapPin} title="Visit Us" accentColor={ACCENT.offices}>
           <ContactRow
             label="Presence"
             value="Pan-India Locations"

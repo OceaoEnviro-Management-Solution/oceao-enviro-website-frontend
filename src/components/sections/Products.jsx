@@ -1,14 +1,8 @@
-import React from 'react';
-import { ArrowRight, Droplet, Zap, Filter, Cloud, Check } from 'lucide-react';
+import { ArrowRight, Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { products, laboratoryCapabilities } from '../../constants/products';
+import { PRODUCTS, laboratoryCapabilities } from '../../constants/products';
 
-const IconMap = {
-  Droplet,
-  Zap,
-  Filter,
-  Cloud
-};
+const FEATURED_PRODUCTS = PRODUCTS.slice(0, 4);
 
 export default function Products() {
   return (
@@ -34,21 +28,25 @@ export default function Products() {
             </h3>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {products.map((product) => {
-                const Icon = IconMap[product.icon];
+              {FEATURED_PRODUCTS.map((product) => {
                 return (
                   <Link 
                     key={product.id}
                     to={`/products`}
                     className="bg-gray-50 rounded-xl p-6 border border-gray-100 hover:border-brand-green/30 hover:shadow-lg transition-all duration-300 group block"
                   >
-                    <div className="w-12 h-12 rounded-lg bg-brand-green/10 text-brand-green flex items-center justify-center mb-4 group-hover:bg-brand-green group-hover:text-white transition-colors">
-                      {Icon && <Icon className="w-6 h-6" />}
+                    <div className="w-full h-32 rounded-lg overflow-hidden bg-gray-100 mb-4">
+                      <img
+                        src={product.images[0]}
+                        alt={product.name}
+                        loading="lazy"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
                     </div>
                     <h4 className="text-lg font-bold text-brand-blue mb-2 group-hover:text-brand-green transition-colors">
-                      {product.title}
+                      {product.name}
                     </h4>
-                    <p className="text-sm text-gray-600 leading-relaxed">
+                    <p className="text-sm text-gray-600 leading-relaxed line-clamp-3">
                       {product.description}
                     </p>
                   </Link>

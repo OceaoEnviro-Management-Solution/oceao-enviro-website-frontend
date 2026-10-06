@@ -8,6 +8,7 @@ export const contactInfo = {
     landline2: '0120-3242787',
   },
   email: 'info@oceaoenviro.com',
+  email2: 'bd@oceaoenviro.com',
   offices: {
     text: 'Visit our offices across Pan-India',
     link: '/contact/offices',

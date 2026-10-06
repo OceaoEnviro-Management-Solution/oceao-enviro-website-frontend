@@ -27,11 +27,11 @@ export default function TopInfoBarV2() {
           <div className="w-px h-24 bg-orange-400 mx-2 mt-3 hidden lg:block"></div>
           <div className="hidden pt-3 lg:flex flex-col items-center text-base font-bold tracking-wide">
             <span className="bg-gradient-to-r from-[#011539] to-[#017119] bg-clip-text text-transparent">
-              OCEAO-ENVIRO Management Solutions India Pvt. Ltd.
+              OCEAO-ENVIRO Management Solutions (India) Pvt. Ltd.
             </span>
 
             <span className="bg-gradient-to-r from-[#017119] to-[#011539] bg-clip-text text-transparent">
-              OCEAO-ENVIRO Research & Analytics Laboratories India Pvt. Ltd.
+              OCEAO-ENVIRO Research & Analytics Laboratories (India) Pvt. Ltd.
             </span>
 
             <div className="flex items-center w-full my-1">

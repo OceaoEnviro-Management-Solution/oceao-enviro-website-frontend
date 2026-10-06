@@ -48,10 +48,10 @@ export default function Hero() {
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4">
             <a
-              href="#services"
+              href="/services"
               className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full text-white font-medium text-lg bg-gradient-to-r from-[#69b821] to-[#0c591c] hover:opacity-90 transition-opacity shadow-lg"
             >
-              Explore Solutions
+              Explore OEMSIPL
               <ArrowRight className="w-5 h-5" />
             </a>
             <a
