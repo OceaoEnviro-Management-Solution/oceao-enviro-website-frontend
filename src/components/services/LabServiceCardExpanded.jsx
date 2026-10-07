@@ -19,8 +19,14 @@ function ParametersList({ parametersString }) {
 
   return (
     <div>
-      <h4 className="text-sm font-bold uppercase tracking-wider text-[#0F1D75] mb-3">
+      <h4 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-[#0F1D75] mb-3">
         Parameters Tested
+        <span
+          className="px-2.5 py-0.5 rounded-full bg-brand-orange text-brand-primary-blue text-xs font-bold normal-case tracking-normal"
+          aria-label={`${items.length} parameters`}
+        >
+          {items.length}
+        </span>
       </h4>
       <div className="grid grid-cols-2 gap-x-6 gap-y-1.5 bg-white border border-gray-100 rounded-lg px-4 py-3">
         {/* Column A */}

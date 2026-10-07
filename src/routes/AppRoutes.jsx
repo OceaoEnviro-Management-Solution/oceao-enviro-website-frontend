@@ -19,6 +19,7 @@ import VisionMission from '../pages/VisionMission.jsx';
 import Gallery from '../pages/Gallery.jsx';
 import ContactUs from '../pages/ContactUs.jsx';
 import Offices from '../pages/Offices.jsx'
+import Team from '../pages/Team.jsx';
 
 // ── Service pages ───────────────────────────────────────────────────────────
 import ServicesHub from '../pages/services/ServicesHub.jsx';
@@ -72,6 +73,7 @@ export default function AppRoutes() {
           <Route path="about/accreditations" element={<Accreditations />} />
           <Route path="about/Company-Profile" element={<CompanyProfile />} />
           <Route path="about/Vision-Mission" element={<VisionMission />} />
+          <Route path="about/team" element={<Team />} />
           <Route path="about/gallery" element={<Gallery />} />
           <Route path="contact/quick-contact" element={<ContactUs />} />
           <Route path="contact/feedback" element={<FeedbackPage />} />
