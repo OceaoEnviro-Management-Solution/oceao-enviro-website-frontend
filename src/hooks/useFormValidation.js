@@ -80,5 +80,5 @@ export function useFormValidation(fields) {
     setErrors({});
   };
 
-  return { formData, handleChange, errors, handleSubmit, resetForm };
+  return { formData, handleChange, errors, setErrors, handleSubmit, resetForm };
 }

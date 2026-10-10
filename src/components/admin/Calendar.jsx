@@ -7,6 +7,7 @@
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { CALLBACK_SLOTS } from '../../constants/mockData';
+import { toDateKey } from '../../utils/dateKey';
 
 // ── VM status from availability map ──────────────────────────────────────────
 function getVMDayStatus(dateStr, availability) {
@@ -83,7 +84,7 @@ export default function Calendar({
 
   const isWeekend = (idx) => { const a = idx % 7; return a === 5 || a === 6; };
 
-  const todayStr = today.toISOString().split('T')[0];
+  const todayStr = toDateKey(today);
 
   function getDateStr(day) {
     if (!day) return '';
@@ -130,7 +131,7 @@ export default function Calendar({
           const dateStr     = getDateStr(day);
           const disabled    = isDateDisabled(day, idx);
           const isToday     = dateStr === todayStr;
-          const selDateStr  = selectedDate ? selectedDate.toISOString().split('T')[0] : null;
+          const selDateStr  = selectedDate ? toDateKey(selectedDate) : null;
           const isSelected  = dateStr === selDateStr;
           const status      = disabled ? null
             : mode === 'callback'

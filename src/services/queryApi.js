@@ -1,38 +1,31 @@
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import { request } from './http';
+import { adaptFormError } from './formErrors';
+
+// backend field -> form field (see formFields.queryForm in constants/contact.js)
+const QUERY_FIELD_MAP = {
+    name: 'fullName',
+    mobileNumber: 'phone',
+    organisation: 'company',
+    source: 'hearAbout',
+};
 
 const submitQuery = async (formData) => {
     try {
-        const response = await fetch(
-            `${BASE_URL}/query/new-query`,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(
-                    {
-                        name: formData.fullName,
-                        email: formData.email,
-                        mobileNumber: formData.phone,
-                        organisation: formData.company,
-                        industry: formData.industry,
-                        source: formData.hearAbout,
-                        subject: formData.subject,
-                        query: formData.query,
-                    }
-                ),
-            }
-        );
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.message || "Something went wrong!");
-        }
-
-        return data;
+        return await request('/query/new-query', {
+            method: 'POST',
+            json: {
+                name: formData.fullName,
+                email: formData.email,
+                mobileNumber: formData.phone,
+                organisation: formData.company,
+                industry: formData.industry,
+                source: formData.hearAbout,
+                subject: formData.subject,
+                query: formData.query,
+            },
+        });
     } catch (error) {
-        throw error;
+        throw adaptFormError(error, QUERY_FIELD_MAP);
     }
 };
 

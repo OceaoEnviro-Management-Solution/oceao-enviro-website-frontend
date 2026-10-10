@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { useBookingContext } from '../../hooks/useBookingContext';
 import { bookingApi } from '../../services/bookingApi';
 import { formatDateDisplay, formatTimeDisplay } from '../../utils/validation';
+import { toDateKey } from '../../utils/dateKey';
 import BookingStepper from '../../components/booking/BookingStepper';
 import ConfirmationSummary from '../../components/booking/ConfirmationSummary';
 import { AlertCircle, Edit2, CheckCircle, ClipboardList } from 'lucide-react';
@@ -47,7 +48,7 @@ export default function ConfirmationReview() {
     try {
       const bookingData = {
         ...userDetails,
-        date: selectedDate.toISOString().split('T')[0],
+        date: toDateKey(selectedDate),
         time: selectedTime,
         type: 'virtual-meeting'
       };

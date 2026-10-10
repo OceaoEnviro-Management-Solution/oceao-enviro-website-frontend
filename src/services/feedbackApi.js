@@ -1,4 +1,10 @@
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import { request } from './http';
+import { adaptFormError } from './formErrors';
+
+// backend field -> form field (FeedbackContext form state)
+const FEEDBACK_FIELD_MAP = {
+  mobileNumber: 'phone',
+};
 
 const submitFeedback = async (formData) => {
   const formDataObj = new FormData();
@@ -13,18 +19,15 @@ const submitFeedback = async (formData) => {
   if (formData.attachment) {
     formDataObj.append("attachment", formData.attachment);
   }
-  const response = await fetch(
-    `${BASE_URL}/feedback/new-feedback`,
-    {
-      method: "POST",
-      body: formDataObj
-    }
-  );
-  const data = await response.json();
-  if (!response.ok) {
-    throw new Error(data.message || "Something went wrong!");
+
+  try {
+    return await request('/feedback/new-feedback', {
+      method: 'POST',
+      formData: formDataObj,
+    });
+  } catch (error) {
+    throw adaptFormError(error, FEEDBACK_FIELD_MAP);
   }
-  return data;
 };
 
 export { submitFeedback };

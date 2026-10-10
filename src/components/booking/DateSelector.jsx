@@ -5,6 +5,7 @@
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { CalendarDays } from 'lucide-react';
+import { toDateKey } from '../../utils/dateKey';
 
 export default function DateSelector({ selectedDate, onChange, blockedDates = [] }) {
   const today = new Date();
@@ -24,7 +25,7 @@ export default function DateSelector({ selectedDate, onChange, blockedDates = []
     // Disable past dates
     if (date < today) return false;
     // Disable fully blocked dates
-    const dateStr = date.toISOString().split('T')[0];
+    const dateStr = toDateKey(date);
     if (blockedDateSet.has(dateStr)) return false;
     return true;
   };

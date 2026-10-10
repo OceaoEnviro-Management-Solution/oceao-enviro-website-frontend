@@ -17,7 +17,7 @@ const FeedbackForm = forwardRef(function FeedbackForm(_, ref) {
     formData, setFormData,
     loading, setLoading,
     setSubmitted, setSubmissionData,
-    setError
+    error, setError
   } = useFeedbackContext();
 
   // Local validation errors — shown inline under each field
@@ -36,6 +36,7 @@ const FeedbackForm = forwardRef(function FeedbackForm(_, ref) {
       setFieldErrors(prev => ({ ...prev, [name]: null }));
     }
     setRateLimitMsg(null);
+    setError(null);
   }
 
   // ── Blur handler — validate single field on blur ────────────────────────────
@@ -80,16 +81,32 @@ const FeedbackForm = forwardRef(function FeedbackForm(_, ref) {
     setError(null);
 
     try {
-      const result = await submitFeedback(formData);
+      await submitFeedback(formData);
 
-      if (result.success) {
-        recordSubmission(); // Log timestamp for rate limiting
-        setSubmissionData(result.submittedData);
-        setSubmitted(true);
-      }
+      recordSubmission(); // Log timestamp for rate limiting
+      // The backend returns data: null, so the summary is built from what was submitted.
+      setSubmissionData({
+        type: formData.type,
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        subject: formData.subject,
+        message: formData.message,
+        attachmentName: formData.attachment ? formData.attachment.name : null
+      });
+      setSubmitted(true);
     } catch (err) {
-      setError('Something went wrong. Please try again.');
       console.error('[FeedbackForm] submitFeedback error:', err);
+
+      // Backend field errors (already keyed by form field) show under the fields.
+      const backendFieldErrors = err.fieldErrors || {};
+      if (Object.keys(backendFieldErrors).length > 0) {
+        setFieldErrors(backendFieldErrors);
+        const firstErrorId = Object.keys(backendFieldErrors)[0];
+        document.getElementById(firstErrorId)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else {
+        setError(err.message || 'Something went wrong. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
@@ -220,8 +237,13 @@ const FeedbackForm = forwardRef(function FeedbackForm(_, ref) {
             </div>
           )}
 
-          {/* Global error */}
-          {/* (from context setError — e.g. network failure) */}
+          {/* Global error (from context setError — e.g. network failure, rate limit, server error) */}
+          {error && (
+            <p className="text-xs text-red-500 flex items-center gap-1" role="alert">
+              <span aria-hidden="true">❌</span>
+              {error}
+            </p>
+          )}
 
           {/* Submit button */}
           <FeedbackSubmitButton

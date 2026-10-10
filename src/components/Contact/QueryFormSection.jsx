@@ -14,7 +14,7 @@ export default function QueryFormSection() {
   const [showPopup, setShowPopup] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { formData, handleChange, errors, handleSubmit, resetForm } =
+  const { formData, handleChange, errors, setErrors, handleSubmit, resetForm } =
     useFormValidation(formFields.queryForm);
 
   const onSuccess = async (data) => {
@@ -37,7 +37,14 @@ export default function QueryFormSection() {
       setShowPopup(true);
     } catch (error) {
       console.error("Query submission failed:", error);
-      alert(error.message);
+      // Backend field errors (already keyed by form field) show under the fields;
+      // anything else is shown as a message.
+      const fieldErrors = error.fieldErrors || {};
+      if (Object.keys(fieldErrors).length > 0) {
+        setErrors(fieldErrors);
+      } else {
+        alert(error.message);
+      }
     } finally {
       setIsSubmitting(false);
     }

@@ -8,6 +8,7 @@ import { useFormValidation } from '../../hooks/useFormValidation';
 import { formFields } from '../../constants/contact';
 import FormInput from './FormInput';
 import SuccessPopup from './SuccessPopup';
+import { toDateKey } from '../../utils/dateKey';
 
 export default function CallbackFormSection() {
   const [showPopup, setShowPopup] = useState(false);
@@ -24,7 +25,7 @@ export default function CallbackFormSection() {
       data: {
         ...data,
         preferredDate: data.preferredDate instanceof Date
-          ? data.preferredDate.toISOString().split('T')[0]
+          ? toDateKey(data.preferredDate)
           : data.preferredDate,
       },
       timestamp: new Date().toISOString(),
