@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { useBookingContext } from '../../hooks/useBookingContext';
 import { bookingApi } from '../../services/bookingApi';
 import { formatDateDisplay } from '../../utils/validation';
+import { SESSION_EXPIRED_MESSAGE } from '../../constants/virtualMeeting';
 import BookingStepper from '../../components/booking/BookingStepper';
 import DateSelector from '../../components/booking/DateSelector';
 import TimeSlotGrid from '../../components/booking/TimeSlotGrid';
@@ -16,6 +17,7 @@ export default function TimeSlotSelection() {
   const navigate = useNavigate();
   const {
     emailVerified,
+    hasValidBookingToken,
     userDetails,
     selectedDate, setSelectedDate,
     selectedTime, setSelectedTime
@@ -27,9 +29,12 @@ export default function TimeSlotSelection() {
 
   // Redirect guards
   useEffect(() => {
-    if (!userDetails?.email) navigate('/booking-vm', { replace: true });
-    else if (!emailVerified) navigate('/booking-vm/otp', { replace: true });
-  }, [emailVerified, userDetails, navigate]);
+    if (!userDetails?.email) {
+      navigate('/booking-vm', { replace: true });
+    } else if (!emailVerified || !hasValidBookingToken()) {
+      navigate('/booking-vm/otp', { replace: true, state: { notice: SESSION_EXPIRED_MESSAGE } });
+    }
+  }, [emailVerified, hasValidBookingToken, userDetails, navigate]);
 
   // Fetch slots whenever selected date changes
   useEffect(() => {

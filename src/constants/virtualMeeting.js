@@ -48,3 +48,6 @@ export const virtualMeetingContent = {
   ctaButtonText: "Book Your Meeting Now",
   ctaButtonLink: "/booking"
 };
+
+// Shown on the OTP page when someone reaches a later step without a valid booking token.
+export const SESSION_EXPIRED_MESSAGE = "Your verification expired. Please verify your email again.";

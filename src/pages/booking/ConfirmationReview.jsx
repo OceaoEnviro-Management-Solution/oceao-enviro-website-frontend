@@ -3,11 +3,12 @@
 // Edit → navigates back to form with data preserved in Context.
 
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { useBookingContext } from '../../hooks/useBookingContext';
 import { bookingApi } from '../../services/bookingApi';
 import { formatDateDisplay, formatTimeDisplay } from '../../utils/validation';
 import { toDateKey } from '../../utils/dateKey';
+import { SESSION_EXPIRED_MESSAGE } from '../../constants/virtualMeeting';
 import BookingStepper from '../../components/booking/BookingStepper';
 import ConfirmationSummary from '../../components/booking/ConfirmationSummary';
 import { AlertCircle, Edit2, CheckCircle, ClipboardList } from 'lucide-react';
@@ -17,6 +18,7 @@ export default function ConfirmationReview() {
   const {
     userDetails,
     emailVerified,
+    hasValidBookingToken,
     selectedDate,
     selectedTime,
     setBookingId,
@@ -26,22 +28,26 @@ export default function ConfirmationReview() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
 
-  // Redirect guards
+  // Redirect guards. <Navigate> is used because React Router ignores navigate() calls made
+  // while a component first renders, so the earlier guards never redirected.
   if (!userDetails?.email) {
-    navigate('/booking-vm', { replace: true });
-    return null;
+    return <Navigate to="/booking-vm" replace />;
   }
-  if (!emailVerified) {
-    navigate('/booking-vm/otp', { replace: true });
-    return null;
+  if (!emailVerified || !hasValidBookingToken()) {
+    return <Navigate to="/booking-vm/otp" replace state={{ notice: SESSION_EXPIRED_MESSAGE }} />;
   }
   if (!selectedDate || !selectedTime) {
-    navigate('/booking-vm/slots', { replace: true });
-    return null;
+    return <Navigate to="/booking-vm/slots" replace />;
   }
 
   // ── Confirm booking ────────────────────────────────────────────────────────
   const handleConfirm = async () => {
+    // The token may have expired while this page was open.
+    if (!hasValidBookingToken()) {
+      navigate('/booking-vm/otp', { replace: true, state: { notice: SESSION_EXPIRED_MESSAGE } });
+      return;
+    }
+
     setIsSubmitting(true);
     setSubmitError(null);
 

@@ -105,12 +105,19 @@ export default function VirtualMeetingForm() {
 
     setIsSubmitting(true);
     try {
-      await bookingApi.sendOtp(formData.email);
+      const result = await bookingApi.sendOtp(formData.email);
       setUserDetails({ ...formData });
       setOtpSent(true);
-      navigate('/booking-vm/otp');
-    } catch {
-      setErrors({ _global: 'Failed to send OTP. Please try again.' });
+      // The OTP page starts its resend countdown from the server's resendAfterSec.
+      navigate('/booking-vm/otp', { state: { resendAfterSec: result?.data?.resendAfterSec } });
+    } catch (error) {
+      // Stay on this page and show why the code could not be sent (502, 429, validation ...).
+      const emailError = Array.isArray(error?.fieldErrors?.email) ? error.fieldErrors.email[0] : null;
+      if (emailError) {
+        setErrors({ email: emailError });
+      } else {
+        setErrors({ _global: error?.message || 'Failed to send OTP. Please try again.' });
+      }
     } finally {
       setIsSubmitting(false);
     }

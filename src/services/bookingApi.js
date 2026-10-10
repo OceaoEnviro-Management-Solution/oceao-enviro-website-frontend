@@ -1,8 +1,10 @@
-// bookingApi.js — Mock API service for the Virtual Meeting Booking System.
-// Phase 1: All calls simulated with realistic delays.
-// Phase 2: Replace each function with real fetch/axios calls. Nothing else changes.
+// bookingApi.js — API service for the Virtual Meeting Booking System.
+// sendOtp and verifyOtp call the real backend through request().
+// getAvailability and createBooking are still simulated with realistic delays and are
+// replaced in later stages.
 
 import { mockAvailability, mockBookings } from '../constants/mockData';
+import { request } from './http';
 
 // Simulate network latency
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -10,58 +12,18 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 export const bookingApi = {
 
   // ── sendOtp ────────────────────────────────────────────────────────────────
-  // Generates a 6-digit OTP, stores in sessionStorage, returns success.
-  // In production: email service sends the code — server validates.
-  sendOtp: async (email) => {
-    await delay(800);
-
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    sessionStorage.setItem(`otp_${email}`, otp);
-    sessionStorage.setItem(`otp_timestamp_${email}`, Date.now().toString());
-
-    // Dev helper — check browser console for OTP during testing
-    console.log(`[DEV] Mock OTP for ${email}:`, otp);
-
-    return {
-      success: true,
-      message: 'OTP sent to email',
-      expiryMinutes: 5
-    };
-  },
+  // POST /vm/otp/send. Resolves with the response body; data = { expiresInSec, resendAfterSec }.
+  // Rejects with ApiRequestError (OTP_COOLDOWN and OTP_SEND_LIMIT carry
+  // fieldErrors.retryAfterSec; EMAIL_SEND_FAILED, RATE_LIMITED, VALIDATION_FAILED ...).
+  sendOtp: (email) =>
+    request('/vm/otp/send', { method: 'POST', json: { email } }),
 
   // ── verifyOtp ──────────────────────────────────────────────────────────────
-  // Checks entered OTP against sessionStorage value. Enforces 5-minute expiry.
-  verifyOtp: async (email, otp) => {
-    await delay(600);
-
-    const storedOtp = sessionStorage.getItem(`otp_${email}`);
-    const timestamp = parseInt(sessionStorage.getItem(`otp_timestamp_${email}`), 10);
-    const expiryMs = 5 * 60 * 1000; // 5 minutes
-
-    if (!storedOtp) {
-      return { success: false, error: 'OTP not found. Please request a new code.' };
-    }
-
-    if (Date.now() - timestamp > expiryMs) {
-      sessionStorage.removeItem(`otp_${email}`);
-      sessionStorage.removeItem(`otp_timestamp_${email}`);
-      return { success: false, error: 'OTP expired', expired: true };
-    }
-
-    if (otp !== storedOtp) {
-      return { success: false, error: 'Incorrect verification code. Please try again.' };
-    }
-
-    // Verification token (in production: JWT or session from backend)
-    const token = btoa(`${email}:verified:${Date.now()}`);
-    sessionStorage.setItem(`booking_token_${email}`, token);
-
-    // Clean up OTP from storage
-    sessionStorage.removeItem(`otp_${email}`);
-    sessionStorage.removeItem(`otp_timestamp_${email}`);
-
-    return { success: true, message: 'Email verified', token };
-  },
+  // POST /vm/otp/verify. Resolves with the response body; data = { bookingToken, expiresInSec }.
+  // Rejects with ApiRequestError (OTP_INVALID carries fieldErrors.attemptsLeft;
+  // OTP_NOT_FOUND, OTP_EXPIRED, OTP_LOCKED, RATE_LIMITED ...).
+  verifyOtp: (email, otp) =>
+    request('/vm/otp/verify', { method: 'POST', json: { email, otp } }),
 
   // ── getAvailability ────────────────────────────────────────────────────────
   // Returns slot status array for a given date.

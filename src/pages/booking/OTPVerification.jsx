@@ -1,34 +1,75 @@
 // OTPVerification.jsx — PAGE 2 of booking flow (/booking-vm/otp)
 // 6-box OTP input, 60-second resend countdown, 5 states (normal/loading/error/expired/success)
-// On mount: OTP already sent from Page 1. Verifies against sessionStorage mock.
+// On mount: OTP already sent from Page 1. Verifies with POST /vm/otp/verify and keeps the
+// booking token in context (memory only).
 
 import { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useBookingContext } from '../../hooks/useBookingContext';
 import { bookingApi } from '../../services/bookingApi';
+import { describeOtpError } from '../../utils/otpErrors';
 import { maskEmail } from '../../utils/validation';
 import BookingStepper from '../../components/booking/BookingStepper';
 import OTPInputField from '../../components/booking/OTPInputField';
 import { Mail, RefreshCw, ArrowLeft, CheckCircle, Clock, ShieldCheck } from 'lucide-react';
 
 const OTP_LENGTH = 6;
-const RESEND_COUNTDOWN = 60;
+const DEFAULT_RESEND_COUNTDOWN = 60; // used only if the server did not say
+
+// Heading of the "needs a new code" panel, by reason.
+const NEW_CODE_HEADINGS = {
+  expired: 'This code has expired',
+  locked: 'Too many incorrect attempts',
+  not_found: 'No active verification code',
+};
+
+// The one red message box used on this page.
+function ErrorMessage({ children }) {
+  return (
+    <div className="mt-4 flex items-start gap-2 px-4 py-3 bg-red-50 border border-red-200 rounded-xl">
+      <svg className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <p className="text-sm text-red-700">{children}</p>
+    </div>
+  );
+}
 
 export default function OTPVerification() {
   const navigate = useNavigate();
-  const { userDetails, setEmailVerified, otpSent, setOtpSent } = useBookingContext();
+  const location = useLocation();
+  const { userDetails, setEmailVerified, setOtpSent, storeBookingToken, clearBookingToken } = useBookingContext();
 
   const email = userDetails?.email || '';
+
+  // Arriving from the details form: resendAfterSec from the send response.
+  // Arriving from a later step without a valid token: a notice, and a new code is needed now.
+  const arrivalNotice = location.state?.notice || '';
+  const arrivalResendAfter = location.state?.resendAfterSec;
 
   // OTP state
   const [otpDigits, setOtpDigits] = useState(Array(OTP_LENGTH).fill(''));
   const [verifyStatus, setVerifyStatus] = useState('idle'); // idle | loading | error | expired | success
   const [errorMsg, setErrorMsg] = useState('');
+  const [newCodeReason, setNewCodeReason] = useState('expired'); // expired | locked | not_found
+  const [notice, setNotice] = useState(arrivalNotice);
+  const [resendError, setResendError] = useState('');
 
   // Resend countdown
-  const [countdown, setCountdown] = useState(RESEND_COUNTDOWN);
+  const [countdown, setCountdown] = useState(
+    arrivalNotice ? 0 : (Number.isFinite(arrivalResendAfter) ? arrivalResendAfter : DEFAULT_RESEND_COUNTDOWN)
+  );
   const [canResend, setCanResend] = useState(false);
   const [isResending, setIsResending] = useState(false);
+
+  // A notice means the earlier verification is no longer valid: forget it.
+  useEffect(() => {
+    if (arrivalNotice) {
+      clearBookingToken();
+      setEmailVerified(false);
+    }
+  }, [arrivalNotice, clearBookingToken, setEmailVerified]);
 
   // Redirect to form if no email in context
   useEffect(() => {
@@ -58,42 +99,57 @@ export default function OTPVerification() {
     // Auto-verify
     setVerifyStatus('loading');
     setErrorMsg('');
+    setResendError('');
+    setNotice('');
 
     try {
       const result = await bookingApi.verifyOtp(email, code);
-      if (result.success) {
-        setVerifyStatus('success');
-        setEmailVerified(true);
-        // Navigate after brief success display
-        setTimeout(() => navigate('/booking-vm/slots'), 1200);
-      } else if (result.expired) {
+      const { bookingToken, expiresInSec } = result.data;
+      storeBookingToken(bookingToken, expiresInSec);
+      setVerifyStatus('success');
+      setEmailVerified(true);
+      // Navigate after brief success display
+      setTimeout(() => navigate('/booking-vm/slots'), 1200);
+    } catch (error) {
+      const info = describeOtpError(error);
+      setErrorMsg(info.message);
+
+      if (info.kind === 'expired' || info.kind === 'locked' || info.kind === 'not_found') {
+        // These need a new code: show the "send a new code" panel with the backend message.
+        setNewCodeReason(info.kind);
         setVerifyStatus('expired');
-        setErrorMsg('');
       } else {
+        // Wrong code (with attempts left), rate limited, network ...
         setVerifyStatus('error');
-        setErrorMsg(result.error || 'Incorrect verification code. Please try again.');
         // Clear OTP boxes after short delay
         setTimeout(() => setOtpDigits(Array(OTP_LENGTH).fill('')), 600);
       }
-    } catch {
-      setVerifyStatus('error');
-      setErrorMsg('Verification failed. Please try again.');
     }
-  }, [email, setEmailVerified, navigate]);
+  }, [email, setEmailVerified, storeBookingToken, navigate]);
 
   // Resend OTP
   const handleResend = async () => {
     setIsResending(true);
-    setVerifyStatus('idle');
-    setErrorMsg('');
-    setOtpDigits(Array(OTP_LENGTH).fill(''));
+    setResendError('');
+    setNotice('');
     try {
-      await bookingApi.sendOtp(email);
+      const result = await bookingApi.sendOtp(email);
       setOtpSent(true);
-      setCountdown(RESEND_COUNTDOWN);
+      // A fresh code: back to the normal input.
+      setVerifyStatus('idle');
+      setErrorMsg('');
+      setOtpDigits(Array(OTP_LENGTH).fill(''));
+      const wait = result?.data?.resendAfterSec;
+      setCountdown(Number.isFinite(wait) ? wait : DEFAULT_RESEND_COUNTDOWN);
       setCanResend(false);
-    } catch {
-      setErrorMsg('Failed to resend OTP. Please try again.');
+    } catch (error) {
+      // Cooldown, hourly limit, email failure ...: show the reason and keep waiting if told to.
+      const info = describeOtpError(error);
+      setResendError(info.message);
+      if (info.retryAfterSec) {
+        setCountdown(info.retryAfterSec);
+        setCanResend(false);
+      }
     } finally {
       setIsResending(false);
     }
@@ -163,17 +219,24 @@ export default function OTPVerification() {
               <div className="w-16 h-16 rounded-full bg-orange-50 flex items-center justify-center mx-auto mb-4">
                 <Clock className="w-8 h-8 text-orange-500" />
               </div>
-              <p className="text-orange-600 font-semibold mb-1">This code has expired</p>
-              <p className="text-gray-500 text-sm mb-6">Request a new code to continue.</p>
+              <p className="text-orange-600 font-semibold mb-1">{NEW_CODE_HEADINGS[newCodeReason]}</p>
+              <p className="text-gray-500 text-sm mb-6">{errorMsg || 'Request a new code to continue.'}</p>
               <button
                 id="send-new-code-btn"
                 type="button"
                 onClick={handleResend}
-                disabled={isResending}
-                className="px-6 py-3 bg-[#017119] text-white font-semibold rounded-xl hover:bg-[#014D11] transition-colors"
+                disabled={isResending || !canResend}
+                className="px-6 py-3 bg-[#017119] text-white font-semibold rounded-xl hover:bg-[#014D11] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isResending ? 'Sending…' : 'Send New Code'}
               </button>
+              {!canResend && (
+                <p className="text-sm text-gray-500 mt-3">
+                  New code available in{' '}
+                  <span className="font-semibold text-[#011539] font-mono">{formatCountdown(countdown)}</span>
+                </p>
+              )}
+              {resendError && <ErrorMessage>{resendError}</ErrorMessage>}
             </div>
           )}
 
@@ -198,16 +261,10 @@ export default function OTPVerification() {
                 </div>
               )}
 
-              {/* Error message */}
-              {verifyStatus === 'error' && errorMsg && (
-                <div className="mt-4 flex items-start gap-2 px-4 py-3 bg-red-50 border border-red-200 rounded-xl">
-                  <svg className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                      d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <p className="text-sm text-red-700">{errorMsg}</p>
-                </div>
-              )}
+              {/* Error message: wrong code, a notice from an earlier step, or a failed resend */}
+              {verifyStatus === 'error' && errorMsg && <ErrorMessage>{errorMsg}</ErrorMessage>}
+              {verifyStatus !== 'error' && notice && <ErrorMessage>{notice}</ErrorMessage>}
+              {resendError && <ErrorMessage>{resendError}</ErrorMessage>}
 
               {/* Resend section */}
               <div className="mt-8 text-center">
