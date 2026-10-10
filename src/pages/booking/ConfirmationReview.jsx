@@ -8,7 +8,7 @@ import { useBookingContext } from '../../hooks/useBookingContext';
 import { bookingApi } from '../../services/bookingApi';
 import { formatDateDisplay, formatTimeDisplay } from '../../utils/validation';
 import { toDateKey } from '../../utils/dateKey';
-import { SESSION_EXPIRED_MESSAGE } from '../../constants/virtualMeeting';
+import { SESSION_EXPIRED_MESSAGE, SLOT_TAKEN_MESSAGE } from '../../constants/virtualMeeting';
 import BookingStepper from '../../components/booking/BookingStepper';
 import ConfirmationSummary from '../../components/booking/ConfirmationSummary';
 import { AlertCircle, Edit2, CheckCircle, ClipboardList } from 'lucide-react';
@@ -19,8 +19,10 @@ export default function ConfirmationReview() {
     userDetails,
     emailVerified,
     hasValidBookingToken,
+    bookingToken,
     selectedDate,
     selectedTime,
+    meetingTopic,
     setBookingId,
     setMeetingLink
   } = useBookingContext();
@@ -52,24 +54,43 @@ export default function ConfirmationReview() {
     setSubmitError(null);
 
     try {
-      const bookingData = {
-        ...userDetails,
-        date: toDateKey(selectedDate),
-        time: selectedTime,
-        type: 'virtual-meeting'
-      };
+      const result = await bookingApi.createBooking(
+        {
+          fullName: userDetails.fullName,
+          mobile: userDetails.mobile,
+          company: userDetails.company,
+          designation: userDetails.designation,
+          meetingTopic,
+          date: toDateKey(selectedDate),
+          time: selectedTime,
+        },
+        bookingToken
+      );
 
-      const result = await bookingApi.createBooking(bookingData);
-
-      if (result.success) {
-        setBookingId(result.bookingId);
-        setMeetingLink(result.meetingLink);
-        navigate('/booking-vm/success');
-      } else {
-        setSubmitError('Booking failed. Please try again.');
+      const { bookingId, meetLink } = result.data;
+      setBookingId(bookingId);
+      setMeetingLink(meetLink);
+      navigate('/booking-vm/success');
+    } catch (error) {
+      if (error?.status === 409 && error.code === 'SLOT_TAKEN') {
+        // Someone else got the slot first: back to the slots, which load again and clear the
+        // selection. (Do not clear selectedTime here: this page's own guard would then redirect
+        // to /booking-vm/slots without the notice.)
+        navigate('/booking-vm/slots', { replace: true, state: { notice: SLOT_TAKEN_MESSAGE } });
+        return;
       }
-    } catch {
-      setSubmitError('Unable to complete booking. Please check your connection and retry.');
+      if (error?.status === 401) {
+        // The verification is no longer valid.
+        navigate('/booking-vm/otp', { replace: true, state: { notice: SESSION_EXPIRED_MESSAGE } });
+        return;
+      }
+      if (error?.status === 422) {
+        // The date or time can no longer be booked (past, holiday, inside the lead time ...).
+        navigate('/booking-vm/slots', { replace: true, state: { notice: error.message } });
+        return;
+      }
+      // ACTIVE_BOOKING_EXISTS, rate limits, network and server errors: show and stay.
+      setSubmitError(error?.message || 'Unable to complete booking. Please try again.');
     } finally {
       setIsSubmitting(false);
     }

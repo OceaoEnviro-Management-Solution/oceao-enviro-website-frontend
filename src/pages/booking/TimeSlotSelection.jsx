@@ -2,11 +2,12 @@
 // Two-column: DateSelector (left) + TimeSlotGrid (right)
 // Fetches slots on date change, shows skeleton loaders, allows one slot selection.
 
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useBookingContext } from '../../hooks/useBookingContext';
 import { bookingApi } from '../../services/bookingApi';
 import { formatDateDisplay } from '../../utils/validation';
+import { toDateKey } from '../../utils/dateKey';
 import { SESSION_EXPIRED_MESSAGE } from '../../constants/virtualMeeting';
 import BookingStepper from '../../components/booking/BookingStepper';
 import DateSelector from '../../components/booking/DateSelector';
@@ -15,6 +16,7 @@ import { CalendarDays, AlertCircle, RefreshCw } from 'lucide-react';
 
 export default function TimeSlotSelection() {
   const navigate = useNavigate();
+  const location = useLocation();
   const {
     emailVerified,
     hasValidBookingToken,
@@ -26,6 +28,9 @@ export default function TimeSlotSelection() {
   const [slots, setSlots] = useState([]);
   const [isLoadingSlots, setIsLoadingSlots] = useState(false);
   const [slotError, setSlotError] = useState(null);
+  // Message sent here by the confirmation step ("That slot was just taken ...").
+  const [notice, setNotice] = useState(location.state?.notice || '');
+  const latestRequest = useRef(0);
 
   // Redirect guards
   useEffect(() => {
@@ -43,17 +48,19 @@ export default function TimeSlotSelection() {
   }, [selectedDate]);
 
   const fetchSlots = async (date) => {
+    const requestId = ++latestRequest.current;   // ignore answers that arrive out of order
     setIsLoadingSlots(true);
     setSlotError(null);
     setSelectedTime(null); // Clear previous selection
     try {
-      const result = await bookingApi.getAvailability(date);
-      if (result.success) setSlots(result.slots);
-      else setSlotError('Failed to load availability.');
-    } catch {
-      setSlotError('Unable to fetch availability. Please check your connection.');
+      const result = await bookingApi.getAvailability(toDateKey(date));
+      if (requestId !== latestRequest.current) return;
+      setSlots(result.data.slots);
+    } catch (error) {
+      if (requestId !== latestRequest.current) return;
+      setSlotError(error?.message || 'Unable to fetch availability. Please check your connection.');
     } finally {
-      setIsLoadingSlots(false);
+      if (requestId === latestRequest.current) setIsLoadingSlots(false);
     }
   };
 
@@ -62,6 +69,7 @@ export default function TimeSlotSelection() {
   };
 
   const handleSlotSelect = (time) => {
+    setNotice('');
     setSelectedTime(time);
   };
 
@@ -146,6 +154,14 @@ export default function TimeSlotSelection() {
                 <CalendarDays className="w-10 h-10 text-gray-300 mb-3" />
                 <p className="text-sm text-gray-500 font-medium">Please select a date first</p>
                 <p className="text-xs text-gray-400 mt-1">Available time slots will appear here</p>
+              </div>
+            )}
+
+            {/* Notice from the confirmation step */}
+            {notice && (
+              <div className="mb-4 flex items-start gap-3 px-4 py-3.5 bg-red-50 border border-red-200 rounded-2xl" role="alert">
+                <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+                <p className="text-sm text-red-700 font-medium">{notice}</p>
               </div>
             )}
 

@@ -51,3 +51,6 @@ export const virtualMeetingContent = {
 
 // Shown on the OTP page when someone reaches a later step without a valid booking token.
 export const SESSION_EXPIRED_MESSAGE = "Your verification expired. Please verify your email again.";
+
+// Shown on the slot page when the chosen slot was booked by someone else first.
+export const SLOT_TAKEN_MESSAGE = "That slot was just taken. Please pick another.";

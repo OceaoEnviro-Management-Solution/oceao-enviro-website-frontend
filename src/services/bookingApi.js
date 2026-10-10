@@ -1,13 +1,28 @@
 // bookingApi.js — API service for the Virtual Meeting Booking System.
-// sendOtp and verifyOtp call the real backend through request().
-// getAvailability and createBooking are still simulated with realistic delays and are
-// replaced in later stages.
+// Every call goes through request(). Field names are mapped to the backend's here, so the
+// pages keep their own names (fullName, mobile, company ...).
 
-import { mockAvailability, mockBookings } from '../constants/mockData';
 import { request } from './http';
 
-// Simulate network latency
-const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+// Page field names -> POST /vm/bookings body. The email is never sent: the backend takes
+// it from the booking token. Optional fields that are empty are left out.
+const toBookingBody = (payload) => {
+  const body = {
+    name: payload.fullName,
+    mobileNumber: payload.mobile,
+    date: payload.date,
+    time: payload.time,
+  };
+  const optional = {
+    organisation: payload.company,
+    designation: payload.designation,
+    topic: payload.meetingTopic,
+  };
+  for (const [key, value] of Object.entries(optional)) {
+    if (typeof value === 'string' && value.trim() !== '') body[key] = value.trim();
+  }
+  return body;
+};
 
 export const bookingApi = {
 
@@ -25,65 +40,25 @@ export const bookingApi = {
   verifyOtp: (email, otp) =>
     request('/vm/otp/verify', { method: 'POST', json: { email, otp } }),
 
+  // ── getCalendar ────────────────────────────────────────────────────────────
+  // GET /vm/calendar?from&to (date keys, at most 62 dates).
+  // data = { days: [{ date, bookable, reason, availableCount }] }
+  getCalendar: (fromKey, toKey) =>
+    request(`/vm/calendar?from=${encodeURIComponent(fromKey)}&to=${encodeURIComponent(toKey)}`),
+
   // ── getAvailability ────────────────────────────────────────────────────────
-  // Returns slot status array for a given date.
-  // Weekends always return empty slots (no meetings on Sat/Sun).
-  getAvailability: async (date) => {
-    await delay(500);
-
-    const dateStr = date.toISOString().split('T')[0];
-
-    // Weekends — no slots
-    const day = date.getDay();
-    if (day === 0 || day === 6) {
-      return { success: true, date: dateStr, slots: [] };
-    }
-
-    // Default slots if date not in mock data
-    const dayData = mockAvailability[dateStr] || {
-      meetings: {
-        '10:00': 'available',
-        '12:00': 'available',
-        '14:00': 'available',
-        '16:00': 'available'
-      }
-    };
-
-    const slots = Object.entries(dayData.meetings).map(([time, status]) => ({
-      time,
-      status
-    }));
-
-    return { success: true, date: dateStr, slots };
-  },
+  // GET /vm/availability?date (a date key).
+  // data = { date, bookable, reason, slots: [{ time, status: 'available' | 'booked' }] }
+  // A day that cannot be booked has slots: [].
+  getAvailability: (dateKey) =>
+    request(`/vm/availability?date=${encodeURIComponent(dateKey)}`),
 
   // ── createBooking ──────────────────────────────────────────────────────────
-  // Creates a booking record, marks the slot as booked in mock data.
-  createBooking: async (bookingData) => {
-    await delay(1000);
-
-    const bookingId = 'OE-' + Date.now().toString().slice(-8);
-
-    // Store in mock bookings
-    mockBookings[bookingId] = {
-      id: bookingId,
-      ...bookingData,
-      createdAt: new Date().toISOString(),
-      status: 'confirmed'
-    };
-
-    // Mark slot as booked in availability
-    const { date, time } = bookingData;
-    if (!mockAvailability[date]) {
-      mockAvailability[date] = { meetings: {} };
-    }
-    mockAvailability[date].meetings[time] = 'booked';
-
-    return {
-      success: true,
-      bookingId,
-      message: 'Booking confirmed',
-      meetingLink: 'https://zoom.us/j/mock-meeting-' + bookingId
-    };
-  }
+  // POST /vm/bookings with the booking token.
+  // payload = { fullName, mobile, company, designation, meetingTopic, date, time }
+  // data = { bookingId, date, time, durationMinutes, meetLink, meetStatus }
+  // Rejects with ApiRequestError: SLOT_TAKEN and ACTIVE_BOOKING_EXISTS (409),
+  // DATE_NOT_BOOKABLE (422), BOOKING_TOKEN_INVALID (401), VALIDATION_FAILED (400).
+  createBooking: (payload, token) =>
+    request('/vm/bookings', { method: 'POST', json: toBookingBody(payload), token }),
 };

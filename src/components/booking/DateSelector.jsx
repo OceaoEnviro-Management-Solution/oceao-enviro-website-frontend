@@ -1,10 +1,13 @@
 // DateSelector.jsx — Calendar date picker using react-datepicker.
-// Disables: weekends, past dates, and any fully-blocked dates from availability.
+// Disables: weekends, past dates, and every date the backend calendar reports as not bookable
+// (holidays, full days ...). The calendar is fetched once, for today to today + 30.
 // Props: selectedDate, onChange, blockedDates (array of date strings 'YYYY-MM-DD')
 
+import { useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { CalendarDays } from 'lucide-react';
+import { CalendarDays, Loader2 } from 'lucide-react';
+import { bookingApi } from '../../services/bookingApi';
 import { toDateKey } from '../../utils/dateKey';
 
 export default function DateSelector({ selectedDate, onChange, blockedDates = [] }) {
@@ -13,6 +16,38 @@ export default function DateSelector({ selectedDate, onChange, blockedDates = []
 
   const maxDate = new Date();
   maxDate.setDate(maxDate.getDate() + 30);
+
+  // dateKey -> { date, bookable, reason, availableCount } from GET /vm/calendar
+  const [calendar, setCalendar] = useState({});
+  const [calendarStatus, setCalendarStatus] = useState('loading'); // loading | ready | error
+  const [calendarError, setCalendarError] = useState('');
+  const isLoading = calendarStatus === 'loading';
+
+  // Load the bookable window once, on mount.
+  useEffect(() => {
+    let cancelled = false;
+
+    const start = new Date();
+    start.setHours(0, 0, 0, 0);
+    const end = new Date(start);
+    end.setDate(end.getDate() + 30);
+
+    bookingApi.getCalendar(toDateKey(start), toDateKey(end))
+      .then((result) => {
+        if (cancelled) return;
+        const byDate = {};
+        for (const day of result.data.days) byDate[day.date] = day;
+        setCalendar(byDate);
+        setCalendarStatus('ready');
+      })
+      .catch((error) => {
+        if (cancelled) return;
+        setCalendarError(error?.message || 'Unable to load available dates.');
+        setCalendarStatus('error');
+      });
+
+    return () => { cancelled = true; };
+  }, []);
 
   // Convert blocked date strings to Date objects for comparison
   const blockedDateSet = new Set(blockedDates);
@@ -27,6 +62,9 @@ export default function DateSelector({ selectedDate, onChange, blockedDates = []
     // Disable fully blocked dates
     const dateStr = toDateKey(date);
     if (blockedDateSet.has(dateStr)) return false;
+    // Disable dates the backend says cannot be booked
+    const calendarDay = calendar[dateStr];
+    if (calendarDay && !calendarDay.bookable) return false;
     return true;
   };
 
@@ -35,14 +73,18 @@ export default function DateSelector({ selectedDate, onChange, blockedDates = []
     <button
       type="button"
       onClick={onClick}
+      disabled={isLoading}
       className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border-2 border-gray-200
         hover:border-[#017119] focus:border-[#017119] focus:outline-none transition-colors duration-200
-        bg-white text-left text-sm"
+        bg-white text-left text-sm disabled:cursor-wait disabled:opacity-70"
       aria-label="Select a date"
+      aria-busy={isLoading}
     >
-      <CalendarDays className="w-5 h-5 text-[#017119] flex-shrink-0" />
+      {isLoading
+        ? <Loader2 className="w-5 h-5 text-[#017119] flex-shrink-0 animate-spin" />
+        : <CalendarDays className="w-5 h-5 text-[#017119] flex-shrink-0" />}
       <span className={value ? 'text-[#011539] font-medium' : 'text-gray-400'}>
-        {value || 'Select a date'}
+        {isLoading ? 'Loading available dates…' : (value || 'Select a date')}
       </span>
     </button>
   );
@@ -64,6 +106,10 @@ export default function DateSelector({ selectedDate, onChange, blockedDates = []
         popperProps={{ strategy: 'fixed' }}
         portalId="datepicker-portal"
       />
+
+      {calendarStatus === 'error' && (
+        <p className="mt-2 text-xs text-red-500" role="alert">{calendarError}</p>
+      )}
 
       <style>{`
         /* ── Popper z-index — must sit above navbar (z-50), hero, footer ── */

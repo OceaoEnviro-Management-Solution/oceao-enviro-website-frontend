@@ -53,7 +53,7 @@ export default function BookingSuccessCard({
           <div>
             <p className="text-xs text-gray-400 uppercase tracking-wide font-medium">Time</p>
             <p className="text-sm font-semibold text-[#011539]">
-              {selectedTime ? formatTimeDisplay(selectedTime) : '—'}
+              {selectedTime ? `${formatTimeDisplay(selectedTime)} IST` : '—'}
             </p>
           </div>
         </div>
@@ -77,8 +77,8 @@ export default function BookingSuccessCard({
         </div>
       </div>
 
-      {/* Meeting link */}
-      {meetingLink && (
+      {/* Meeting link, or a note that it will be emailed */}
+      {meetingLink ? (
         <a
           href={meetingLink}
           target="_blank"
@@ -88,6 +88,10 @@ export default function BookingSuccessCard({
           <ExternalLink className="w-4 h-4" />
           Join Meeting Link
         </a>
+      ) : (
+        <p className="w-full text-sm text-gray-500 mb-4">
+          Your Google Meet link will be emailed to you shortly.
+        </p>
       )}
 
       {/* Back to home */}
