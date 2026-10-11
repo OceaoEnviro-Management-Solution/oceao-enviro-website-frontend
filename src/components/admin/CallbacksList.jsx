@@ -1,10 +1,14 @@
 // CallbacksList.jsx — Callback bookings list for the admin panel.
 // Similar to MeetingsList but tailored for callback records.
 // Supports grouped mode (date headers) for the Bookings page.
-// Props: callbacks (array), grouped (bool)
+// Props: callbacks (array), grouped (bool),
+//        onStatusChange(item, status) optional: sets the request's status (async); each row
+//        then shows a compact Pending / Completed / No answer select.
 
+import { useState } from 'react';
 import { PhoneCall, CheckCircle } from 'lucide-react';
 import { CALLBACK_SLOTS } from '../../constants/mockData';
+import CallbackStatusSelect from './CallbackStatusSelect';
 
 const WEEKDAY = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 const MONTHS  = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -14,11 +18,27 @@ function formatDateHeader(dateStr) {
   return `${WEEKDAY[d.getDay()]}, ${MONTHS[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
 }
 
-function CallbackRow({ item }) {
+function CallbackRow({ item, onStatusChange }) {
   const slotConfig = CALLBACK_SLOTS[item.slot] || { label: item.slot, timeRange: '' };
+  const isCancelled = item.status === 'cancelled';
+
+  const [busy, setBusy] = useState(false);
+  const [problem, setProblem] = useState('');
+
+  const changeStatus = async (status) => {
+    setBusy(true);
+    setProblem('');
+    try {
+      await onStatusChange(item, status);
+    } catch (error) {
+      setProblem(error?.message || 'Something went wrong. Please try again.');
+    } finally {
+      setBusy(false);
+    }
+  };
 
   return (
-    <div className="flex items-center gap-4 px-5 py-4 border-b border-gray-50 last:border-none">
+    <div className={`flex items-center gap-4 px-5 py-4 border-b border-gray-50 last:border-none ${isCancelled ? 'opacity-50' : ''}`}>
       {/* Time slot label */}
       <div className="w-24 flex-shrink-0">
         <p className="text-sm font-bold text-[#011539]">{slotConfig.label}</p>
@@ -35,6 +55,20 @@ function CallbackRow({ item }) {
         <p className="text-sm font-semibold text-[#011539] truncate">{item.name}</p>
         {item.company && <p className="text-xs text-gray-400 truncate">{item.company}</p>}
         {item.phone   && <p className="text-xs text-gray-400">{item.phone}</p>}
+
+        {(onStatusChange || problem) && (
+          <div className="mt-1.5 flex flex-wrap items-center gap-2">
+            {onStatusChange && (
+              <CallbackStatusSelect
+                value={item.status}
+                name={item.name}
+                disabled={busy}
+                onChange={changeStatus}
+              />
+            )}
+            {problem && <p className="text-xs text-red-600" role="alert">{problem}</p>}
+          </div>
+        )}
       </div>
 
       {/* Type badge */}
@@ -47,7 +81,7 @@ function CallbackRow({ item }) {
   );
 }
 
-export default function CallbacksList({ callbacks = [], grouped = false }) {
+export default function CallbacksList({ callbacks = [], grouped = false, onStatusChange }) {
   if (!callbacks.length) {
     return (
       <div className="py-12 text-center">
@@ -57,10 +91,14 @@ export default function CallbacksList({ callbacks = [], grouped = false }) {
     );
   }
 
+  const renderRow = (item) => (
+    <CallbackRow key={item.id} item={item} onStatusChange={onStatusChange} />
+  );
+
   if (!grouped) {
     return (
       <div className="divide-y divide-gray-50">
-        {callbacks.map(item => <CallbackRow key={item.id} item={item} />)}
+        {callbacks.map(renderRow)}
       </div>
     );
   }
@@ -83,7 +121,7 @@ export default function CallbacksList({ callbacks = [], grouped = false }) {
             </p>
           </div>
           <div className="divide-y divide-gray-50">
-            {items.map(item => <CallbackRow key={item.id} item={item} />)}
+            {items.map(renderRow)}
           </div>
         </div>
       ))}

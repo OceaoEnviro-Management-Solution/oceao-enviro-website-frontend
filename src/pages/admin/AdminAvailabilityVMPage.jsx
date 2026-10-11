@@ -5,6 +5,7 @@
 import { useState, useCallback } from 'react';
 import { adminApi } from '../../services/adminApi';
 import { useAvailability } from '../../hooks/useAvailability';
+import { useAdminContext } from '../../hooks/useAdminContext';
 import Calendar from '../../components/admin/Calendar';
 import AvailabilityGrid from '../../components/admin/AvailabilityGrid';
 import BlockSlotModal from '../../components/admin/BlockSlotModal';
@@ -16,6 +17,7 @@ import { mockAvailability } from '../../constants/mockData';
 
 export default function AdminAvailabilityVMPage() {
   const { selectedDate, slotsData, loading, handleDateSelect, refresh } = useAvailability('vm');
+  const { triggerRefresh } = useAdminContext();
 
   // Block slot modal
   const [blockModal, setBlockModal] = useState({
@@ -50,19 +52,22 @@ export default function AdminAvailabilityVMPage() {
       await adminApi.blockEntireDay(selectedDate, employeeName, reason);
     }
     refresh();
-  }, [blockModal, selectedDate, refresh]);
+    triggerRefresh();
+  }, [blockModal, selectedDate, refresh, triggerRefresh]);
 
   // ── Unblock ───────────────────────────────────────────────────────────────
   const handleUnblock = useCallback(async (date, time) => {
     await adminApi.unblockSlot(date, time);
     refresh();
-  }, [refresh]);
+    triggerRefresh();
+  }, [refresh, triggerRefresh]);
 
   // ── Cancel meeting ────────────────────────────────────────────────────────
   const handleConfirmCancel = useCallback(async (bookingId, employeeName, reason) => {
     await adminApi.cancelVMMeeting(bookingId, employeeName, reason);
     refresh();
-  }, [refresh]);
+    triggerRefresh();
+  }, [refresh, triggerRefresh]);
 
   return (
     <div className="space-y-6">

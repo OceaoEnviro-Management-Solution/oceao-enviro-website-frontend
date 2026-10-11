@@ -5,6 +5,7 @@
 import { useState, useCallback } from 'react';
 import { adminApi } from '../../services/adminApi';
 import { useAvailability } from '../../hooks/useAvailability';
+import { useAdminContext } from '../../hooks/useAdminContext';
 import Calendar from '../../components/admin/Calendar';
 import CallbackCapacityDisplay from '../../components/admin/CallbackCapacityDisplay';
 import CancelCallbackModal from '../../components/admin/CancelCallbackModal';
@@ -15,6 +16,7 @@ import { mockCallbackAvailability } from '../../constants/mockData';
 
 export default function AdminAvailabilityCallbacksPage() {
   const { selectedDate, slotsData, loading, handleDateSelect, refresh } = useAvailability('callback');
+  const { triggerRefresh } = useAdminContext();
 
   // Cancel/block callback modal
   const [cbModal, setCbModal] = useState({
@@ -38,7 +40,8 @@ export default function AdminAvailabilityCallbacksPage() {
       mockCallbackAvailability[date][slotKey].blocked = false;
     }
     refresh();
-  }, [refresh]);
+    triggerRefresh();
+  }, [refresh, triggerRefresh]);
 
   // ── Block entire day ──────────────────────────────────────────────────────
   const handleBlockEntireDay = useCallback(async (date) => {
@@ -57,7 +60,8 @@ export default function AdminAvailabilityCallbacksPage() {
       await adminApi.blockCallbackSlot(selectedDate, cbModal.slot, employeeName, reason);
     }
     refresh();
-  }, [cbModal, selectedDate, refresh]);
+    triggerRefresh();
+  }, [cbModal, selectedDate, refresh, triggerRefresh]);
 
   return (
     <div className="space-y-6">

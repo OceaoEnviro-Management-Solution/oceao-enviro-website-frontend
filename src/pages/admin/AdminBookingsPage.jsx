@@ -1,9 +1,12 @@
 // AdminBookingsPage.jsx — All bookings (VM + Callbacks) with week pagination.
-// Shows 7 days per page (4 weeks = 4 pages). VM and Callback bookings
-// are displayed in separate grouped sections per week.
+// Shows 7 days per page (4 weeks = 4 pages), loaded from the backend for each week.
+// VM and Callback bookings are displayed in separate grouped sections per week.
+// Cancelled items are hidden unless "Show cancelled" is on.
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { adminApi } from '../../services/adminApi';
+import { useAdminContext } from '../../hooks/useAdminContext';
+import { toDateKey } from '../../utils/dateKey';
 import MeetingsList from '../../components/admin/MeetingsList';
 import CallbacksList from '../../components/admin/CallbacksList';
 import { RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -26,37 +29,77 @@ function formatWeekLabel(start, end) {
 }
 
 export default function AdminBookingsPage() {
+  const { refreshTrigger, triggerRefresh, requestName } = useAdminContext();
+
   const [weekOffset, setWeekOffset] = useState(0); // 0 = current week, max 3
-  const [vmBookings, setVmBookings] = useState([]);
-  const [cbBookings, setCbBookings] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [showCancelled, setShowCancelled] = useState(false);
 
   const { start, end } = getWeekRange(weekOffset);
+  const fromKey = toDateKey(start);
+  const toKey = toDateKey(end);
+
+  // The loaded week, tagged with the query it answers, so a slow answer for a week we have
+  // left is ignored and a refresh of the same week updates the page without a spinner.
+  const queryId = `${fromKey}|${toKey}|${showCancelled}`;
+  const [loaded, setLoaded] = useState({ id: null, vmBookings: [], cbBookings: [], error: '' });
 
   useEffect(() => {
-    async function load() {
-      setLoading(true);
-      try {
-        const result = await adminApi.getBookings(start, end);
-        if (result.success) {
-          // Attach date to each booking for grouped display
-          setVmBookings(result.vmBookings.map(b => ({
-            ...b, id: b.id, type: 'meeting', time: `${b.time.replace(':', ':')} (VM)`
-          })));
-          setCbBookings(result.callbackBookings);
+    let cancelled = false;
+
+    adminApi.getBookings(fromKey, toKey, { includeCancelled: showCancelled })
+      .then((result) => {
+        if (!cancelled) {
+          setLoaded({ id: queryId, vmBookings: result.vmBookings, cbBookings: result.callbackBookings, error: '' });
         }
-      } catch {
-        console.error('Failed to load bookings');
-      } finally {
-        setLoading(false);
-      }
+      })
+      .catch((error) => {
+        if (!cancelled) {
+          setLoaded({ id: queryId, vmBookings: [], cbBookings: [], error: error?.message || 'Could not load bookings.' });
+        }
+      });
+
+    return () => { cancelled = true; };
+  }, [fromKey, toKey, showCancelled, queryId, refreshTrigger]);
+
+  const loading = loaded.id !== queryId;
+  const { vmBookings, cbBookings } = loaded;
+
+  // ── Quick actions on a row (same flow as the dashboard) ───────────────────
+  const handleRetryMeet = useCallback(async (item) => {
+    const name = await requestName();
+    if (!name) return;
+    try {
+      await adminApi.retryMeet(item.id, name);
+    } finally {
+      triggerRefresh();
     }
-    load();
-  }, [weekOffset]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [requestName, triggerRefresh]);
+
+  const handleStatusChange = useCallback(async (item, status) => {
+    const name = await requestName();
+    if (!name) return;
+    try {
+      await adminApi.setCallbackStatus(item.id, status, name);
+    } finally {
+      triggerRefresh();
+    }
+  }, [requestName, triggerRefresh]);
 
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-bold text-[#011539]">Bookings</h2>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h2 className="text-xl font-bold text-[#011539]">Bookings</h2>
+
+        <label className="flex items-center gap-2 text-xs font-semibold text-gray-600 cursor-pointer select-none">
+          <input
+            type="checkbox"
+            checked={showCancelled}
+            onChange={(e) => setShowCancelled(e.target.checked)}
+            className="w-4 h-4 accent-[#017119] cursor-pointer"
+          />
+          Show cancelled
+        </label>
+      </div>
 
       {/* Week navigation */}
       <div className="flex items-center justify-between bg-white rounded-2xl border border-gray-100 shadow-sm px-5 py-4">
@@ -86,6 +129,10 @@ export default function AdminBookingsPage() {
         <div className="flex items-center justify-center h-48">
           <RefreshCw className="w-6 h-6 text-[#017119] animate-spin" />
         </div>
+      ) : loaded.error ? (
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-5 py-10 text-center">
+          <p className="text-sm text-red-600" role="alert">{loaded.error}</p>
+        </div>
       ) : (
         <div className="space-y-6">
           {/* VM Bookings */}
@@ -94,7 +141,7 @@ export default function AdminBookingsPage() {
               <h3 className="text-sm font-bold text-[#011539] uppercase tracking-wide">Virtual Meetings</h3>
             </div>
             {vmBookings.length > 0
-              ? <MeetingsList meetings={vmBookings} grouped={true} />
+              ? <MeetingsList meetings={vmBookings} grouped={true} onRetryMeet={handleRetryMeet} />
               : <p className="px-5 py-8 text-sm text-gray-400 text-center">No VM bookings this week</p>
             }
           </div>
@@ -105,7 +152,7 @@ export default function AdminBookingsPage() {
               <h3 className="text-sm font-bold text-[#011539] uppercase tracking-wide">Callback Requests</h3>
             </div>
             {cbBookings.length > 0
-              ? <CallbacksList callbacks={cbBookings} grouped={true} />
+              ? <CallbacksList callbacks={cbBookings} grouped={true} onStatusChange={handleStatusChange} />
               : <p className="px-5 py-8 text-sm text-gray-400 text-center">No callbacks this week</p>
             }
           </div>
