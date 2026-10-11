@@ -1,44 +1,56 @@
-// adminApi.js — Mock Admin API service.
-// Phase 1: Simulated with sessionStorage auth token.
-// Phase 2: Replace with real API calls — nothing else changes.
+// adminApi.js — Admin API service.
+// Auth (login, logout, getSession) talks to the real backend through request(); the session
+// lives in an httpOnly cookie that the browser sends, so nothing is stored client-side.
+// Every other function below is still a mock until Phase 5 replaces it with real calls.
 
 import {
   mockAvailability, mockBookings,
   mockVMBookings, mockCallbackBookings, mockCallbackAvailability,
   VM_SLOTS, CALLBACK_SLOTS
 } from '../constants/mockData';
+import { request, ApiRequestError } from './http';
 
 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-// ── Mock admin credentials (Phase 1 only) ─────────────────────────────────
-const MOCK_EMAIL = 'admin@oceaoenviro.com';
-const MOCK_PASSWORD = 'admin123';
+const isUnauthorized = (error) => error instanceof ApiRequestError && error.status === 401;
 
 export const adminApi = {
 
   // ── login ──────────────────────────────────────────────────────────────────
+  // POST /admin/auth/login. Resolves with { email }; the backend sets the session cookie.
+  // Rejects with ApiRequestError: INVALID_CREDENTIALS (401), RATE_LIMITED (429) ...
+  // The message is the backend's and is fit to show to the user.
   login: async (email, password) => {
-    await delay(600);
-
-    if (email === MOCK_EMAIL && password === MOCK_PASSWORD) {
-      const token = btoa(`${email}:${Date.now()}`);
-      sessionStorage.setItem('admin_token', token);
-      return { success: true, token };
-    }
-
-    return { success: false, error: 'Invalid credentials. Please check your email and password.' };
+    const payload = await request('/admin/auth/login', {
+      method: 'POST',
+      json: { email, password },
+    });
+    return payload.data;
   },
 
   // ── logout ─────────────────────────────────────────────────────────────────
-  logout: () => {
-    sessionStorage.removeItem('admin_token');
-    return { success: true };
+  // POST /admin/auth/logout. The backend clears the cookie. A 401 means there was no
+  // session left to end, which is the state we wanted, so it is not an error.
+  logout: async () => {
+    try {
+      await request('/admin/auth/logout', { method: 'POST', json: {} });
+    } catch (error) {
+      throw error;
+    }
   },
 
-  // ── isAuthenticated ────────────────────────────────────────────────────────
-  isAuthenticated: () => {
-    return !!sessionStorage.getItem('admin_token');
+  // ── getSession ─────────────────────────────────────────────────────────────
+  // GET /admin/auth/me. Resolves with { email, expiresAt } for a signed-in admin, or null on 401.
+  // Any other failure (network, 5xx) rejects.
+  getSession: async () => {
+    try {
+      const payload = await request('/admin/auth/me');
+      return payload.data;
+    } catch (error) {
+      if (isUnauthorized(error)) return null;
+      throw error;
+    }
   },
 
   // ── getDashboardData ───────────────────────────────────────────────────────

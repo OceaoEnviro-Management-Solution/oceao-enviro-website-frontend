@@ -1,14 +1,17 @@
 // AdminLogin.jsx — Admin authentication page (/admin/login)
 // Simple centered form with brand-green header.
-// Mock credentials: admin@oceaoenviro.com / admin123
+// Signs in through the backend (POST /admin/auth/login); the session is an httpOnly cookie.
+// /admin/login?expired=1 (set when a session ran out) shows a "session expired" notice.
 
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { adminApi } from '../../services/adminApi';
 import { Eye, EyeOff, ShieldCheck } from 'lucide-react';
 
 export default function AdminLogin() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const sessionExpired = searchParams.get('expired') === '1';
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -16,11 +19,20 @@ export default function AdminLogin() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  // Redirect if already logged in
-  if (adminApi.isAuthenticated()) {
-    navigate('/admin/dashboard', { replace: true });
-    return null;
-  }
+  // Already signed in (valid cookie)? Go straight to the dashboard.
+  useEffect(() => {
+    let cancelled = false;
+
+    adminApi.getSession()
+      .then((session) => {
+        if (!cancelled && session) navigate('/admin/dashboard', { replace: true });
+      })
+      .catch(() => {
+        // Backend unreachable: stay on the form; submitting will show the real error.
+      });
+
+    return () => { cancelled = true; };
+  }, [navigate]);
 
   const isFormFilled = email.trim() !== '' && password.trim() !== '';
 
@@ -32,14 +44,11 @@ export default function AdminLogin() {
     setError('');
 
     try {
-      const result = await adminApi.login(email.trim(), password);
-      if (result.success) {
-        navigate('/admin/dashboard', { replace: true });
-      } else {
-        setError(result.error || 'Invalid credentials');
-      }
-    } catch {
-      setError('Login failed. Please try again.');
+      await adminApi.login(email.trim(), password);
+      navigate('/admin/dashboard', { replace: true });
+    } catch (err) {
+      // INVALID_CREDENTIALS, RATE_LIMITED and the rest all carry a user-ready backend message.
+      setError(err?.message || 'Login failed. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -110,6 +119,17 @@ export default function AdminLogin() {
                   </div>
                 </div>
 
+                {/* Session expired notice (arrived via /admin/login?expired=1) */}
+                {sessionExpired && (
+                  <div className="flex items-center gap-2 px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-700" role="status">
+                    <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                        d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Your session expired. Please log in again.
+                  </div>
+                )}
+
                 {/* Error */}
                 {error && (
                   <div className="flex items-center gap-2 px-4 py-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700">
@@ -147,13 +167,6 @@ export default function AdminLogin() {
                 </button>
               </div>
             </form>
-
-            {/* Dev credentials hint */}
-            <div className="mt-6 pt-5 border-t border-gray-100 text-center">
-              <p className="text-xs text-gray-400">
-                <span className="font-medium">Dev:</span> admin@oceaoenviro.com / admin123
-              </p>
-            </div>
           </div>
         </div>
       </div>

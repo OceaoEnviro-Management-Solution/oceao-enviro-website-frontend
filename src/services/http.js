@@ -9,6 +9,12 @@
 //   signal    optional AbortSignal
 // Resolves with the parsed response body ({ statusCode, success, message, data }).
 // Rejects with ApiRequestError for any failed or unreadable response.
+//
+// A 401 from any /admin request other than /admin/auth/login also dispatches the window
+// event "admin:unauthorized" (the session is missing or has expired). AdminLayout listens
+// for it and sends the user to the login page.
+
+export const ADMIN_UNAUTHORIZED_EVENT = 'admin:unauthorized';
 
 const NETWORK_ERROR_MESSAGE = 'Unable to reach the server. Please check your connection and try again.';
 const INVALID_RESPONSE_MESSAGE = 'Unexpected response from the server. Please try again.';
@@ -32,6 +38,12 @@ const buildUrl = (path) => {
     );
   }
   return `${base.replace(/\/+$/, '')}/${String(path).replace(/^\/+/, '')}`;
+};
+
+// True for a path under /admin that is not the login call (a wrong password there is a 401 too).
+const isAdminSessionPath = (path) => {
+  const clean = `/${String(path).replace(/^\/+/, '').split('?')[0]}`;
+  return clean.startsWith('/admin/') && clean !== '/admin/auth/login';
 };
 
 const parseJson = (text) => {
@@ -81,6 +93,9 @@ export async function request(path, { method = 'GET', json, formData, token, sig
   }
 
   if (!response.ok) {
+    if (response.status === 401 && isAdminSessionPath(path)) {
+      window.dispatchEvent(new Event(ADMIN_UNAUTHORIZED_EVENT));
+    }
     throw new ApiRequestError({
       status: response.status,
       code: payload.code || 'UNKNOWN_ERROR',

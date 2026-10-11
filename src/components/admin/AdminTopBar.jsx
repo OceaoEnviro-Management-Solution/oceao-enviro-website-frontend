@@ -9,8 +9,14 @@ import { adminApi } from '../../services/adminApi';
 export default function AdminTopBar({ mobileSidebarOpen, onToggleMobile }) {
   const navigate = useNavigate();
 
-  function handleLogout() {
-    adminApi.logout();
+  async function handleLogout() {
+    try {
+      await adminApi.logout();
+    } catch (error) {
+      // The cookie could not be cleared (e.g. the server was unreachable); the login page
+      // checks the session again and shows the right state.
+      console.error('Logout request failed:', error);
+    }
     navigate('/admin/login', { replace: true });
   }
 
