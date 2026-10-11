@@ -1,27 +1,26 @@
 // Calendar.jsx — Reusable admin calendar with 30-day window enforcement.
 // Refactored from AdminCalendar.jsx. Key addition: past dates and dates
 // beyond today+30 are rendered as disabled/view-only (no onClick, grayed out).
-// Props: availability (mockAvailability map), callbackAvailability (optional),
-//        selectedDate, onDateSelect, mode ('vm'|'callback')
+// Props: availability (VM mode: a map from date key to { working, holidayName, booked,
+//        blocked, available }, as returned by adminApi.getMonthAvailability),
+//        callbackAvailability (optional), selectedDate, onDateSelect, mode ('vm'|'callback')
+// A day the backend says is not a working day (a holiday, a weekend) is shown unavailable;
+// a holiday has its name as a tooltip.
 
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { CALLBACK_SLOTS } from '../../constants/mockData';
 import { toDateKey } from '../../utils/dateKey';
 
-// ── VM status from availability map ──────────────────────────────────────────
+// ── VM status from the month's slot counts ───────────────────────────────────
 function getVMDayStatus(dateStr, availability) {
   const data = availability[dateStr];
   if (!data) return 'available';
-  const slots = Object.values(data.meetings || {});
-  if (!slots.length) return 'available';
-  const allBlocked = slots.every(s => s === 'blocked');
-  const allBooked  = slots.every(s => s === 'booked');
-  const hasBooked  = slots.some(s => s === 'booked');
-  const hasAvail   = slots.some(s => s === 'available');
-  if (allBlocked) return 'blocked';
-  if (allBooked)  return 'booked';
-  if (hasBooked && hasAvail) return 'partial';
+  const total = (data.booked || 0) + (data.blocked || 0) + (data.available || 0);
+  if (!total) return 'available';
+  if (data.blocked === total) return 'blocked';
+  if (!data.available)        return 'booked';     // nothing left to book
+  if (data.booked > 0)        return 'partial';
   return 'available';
 }
 
@@ -94,6 +93,8 @@ export default function Calendar({
   function isDateDisabled(day, cellIdx) {
     if (!day) return true;
     if (isWeekend(cellIdx)) return true;
+    // Holidays and other days VM does not run (from /admin/vm/calendar)
+    if (mode === 'vm' && availability[getDateStr(day)]?.working === false) return true;
     const d = new Date(viewYear, viewMonth, day);
     d.setHours(0, 0, 0, 0);
     return d < today || d > maxDate;  // ← 30-day window enforcement
@@ -137,14 +138,17 @@ export default function Calendar({
             : mode === 'callback'
               ? getCallbackDayStatus(dateStr, callbackAvailability)
               : getVMDayStatus(dateStr, availability);
+          const holidayName = mode === 'vm' ? availability[dateStr]?.holidayName : null;
 
           return (
             <button
               key={dateStr}
               type="button"
               onClick={() => !disabled && onDateSelect(new Date(viewYear, viewMonth, day))}
-              disabled={disabled}
-              aria-label={`${day} ${MONTH_NAMES[viewMonth]} ${viewYear}${isToday ? ' (today)' : ''}${disabled ? ' (unavailable)' : ''}`}
+              aria-disabled={disabled || undefined}
+              tabIndex={disabled ? -1 : undefined}
+              title={holidayName || undefined}
+              aria-label={`${day} ${MONTH_NAMES[viewMonth]} ${viewYear}${isToday ? ' (today)' : ''}${holidayName ? ` (holiday: ${holidayName})` : ''}${disabled ? ' (unavailable)' : ''}`}
               className={[
                 'relative flex flex-col items-center justify-center py-1.5 rounded-lg text-sm transition-all duration-150',
                 disabled    ? 'cursor-not-allowed opacity-25 text-gray-400' : 'cursor-pointer hover:bg-gray-50',

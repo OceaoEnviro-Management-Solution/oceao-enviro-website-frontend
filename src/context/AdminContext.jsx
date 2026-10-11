@@ -7,28 +7,9 @@
 import React, { createContext, useState, useCallback, useRef } from 'react';
 import { adminApi } from '../services/adminApi';
 import AdminNameModal from '../components/admin/AdminNameModal';
+import { getStoredAdminName, saveAdminName } from '../utils/adminName';
 
 export const AdminContext = createContext();
-
-// The name typed in the prompt, kept for the browser tab session. It only PREFILLS the
-// prompt next time; it is not an identity and the server never trusts it for access.
-const NAME_STORAGE_KEY = 'oe_admin_name';
-
-const readStoredName = () => {
-  try {
-    return window.sessionStorage.getItem(NAME_STORAGE_KEY) || '';
-  } catch {
-    return '';
-  }
-};
-
-const storeName = (name) => {
-  try {
-    window.sessionStorage.setItem(NAME_STORAGE_KEY, name);
-  } catch {
-    // storage unavailable (private mode ...): the prompt just starts empty next time
-  }
-};
 
 export function AdminProvider({ children }) {
 
@@ -55,7 +36,7 @@ export function AdminProvider({ children }) {
       return;
     }
     waitersRef.current.push(resolve);
-    setPrefill(readStoredName());
+    setPrefill(getStoredAdminName());
     setNameModalOpen(true);
   }), []);
 
@@ -68,7 +49,7 @@ export function AdminProvider({ children }) {
 
   const handleNameConfirm = (name) => {
     confirmedNameRef.current = name;
-    storeName(name);
+    saveAdminName(name);
     settleName(name);
   };
 

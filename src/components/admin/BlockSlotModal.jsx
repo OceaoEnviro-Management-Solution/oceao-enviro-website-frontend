@@ -4,13 +4,31 @@
 //   Step 2a (no cancel): employee name + reason → block only
 //   Step 2b (yes cancel): shows booking details, employee name + reason → cancel + block
 //   Step 1 is skipped entirely for available/blocked slots.
-// Props: isOpen, mode ('slot'|'day'), slotTime, date, slot (full slot obj), onClose, onConfirm, onCancelMeeting
+// The employee name is prefilled from sessionStorage ("oe_admin_name") and saved back on submit.
+// A request that fails (422, 409 ...) shows the backend's message here and the modal stays open.
+// A block that skipped some slots (booked, already blocked) lists them and stays open until closed.
+// Props: isOpen, mode ('slot'|'day'), slotTime, date, slot (full slot obj), onClose,
+//        onConfirm(employeeName, reason) -> { blocked, skipped },
+//        onCancelMeeting(bookingId, employeeName, reason, alsoBlock)
 
 import { useState, useEffect, useRef } from 'react';
 import { X, ShieldAlert } from 'lucide-react';
 import { formatDateDisplay, formatTimeDisplay } from '../../utils/validation';
+import { getStoredAdminName, saveAdminName } from '../../utils/adminName';
+import { modalErrorsFrom } from '../../utils/adminFormErrors';
 
 const ANIM = `@keyframes modalPop { from { transform: scale(0.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }`;
+
+// "Blocked 10:00, 12:00." plus one "16:00 skipped: booked" line per slot that was left alone.
+function describeBlockResult(result) {
+  const blocked = result?.blocked || [];
+  const skipped = result?.skipped || [];
+  const lines = [blocked.length ? `Blocked ${blocked.join(', ')}.` : 'Nothing was blocked.'];
+  for (const { time, reason } of skipped) {
+    lines.push(`${time} skipped: ${String(reason).replace(/_/g, ' ')}`);
+  }
+  return lines;
+}
 
 export default function BlockSlotModal({ isOpen, mode = 'slot', slotTime, date, slot, onClose, onConfirm, onCancelMeeting }) {
   const isBooked    = slot?.status === 'booked';
@@ -20,6 +38,7 @@ export default function BlockSlotModal({ isOpen, mode = 'slot', slotTime, date, 
   const [reason, setReason]             = useState('');
   const [errors, setErrors]             = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [notice, setNotice]             = useState(null); // lines shown after a block that skipped slots
   const firstInputRef = useRef(null);
 
   useEffect(() => {
@@ -27,7 +46,7 @@ export default function BlockSlotModal({ isOpen, mode = 'slot', slotTime, date, 
       // Skip step 1 for non-booked slots or day blocks
       setStep(isBooked && mode === 'slot' ? 1 : 2);
       setCancelDecision('no');
-      setEmployeeName(''); setReason(''); setErrors({});
+      setEmployeeName(getStoredAdminName()); setReason(''); setErrors({}); setNotice(null);
     }
   }, [isOpen, isBooked, mode]);
 
@@ -58,16 +77,24 @@ export default function BlockSlotModal({ isOpen, mode = 'slot', slotTime, date, 
 
   const handleConfirm = async () => {
     if (!validate()) return;
+    saveAdminName(employeeName);
     setIsSubmitting(true);
+    setErrors({});
     try {
       if (cancelDecision === 'yes' && slot?.booking) {
-        await onCancelMeeting(slot.booking.id, employeeName.trim(), reason.trim());
+        // cancel the meeting AND block the slot
+        await onCancelMeeting(slot.booking.id, employeeName.trim(), reason.trim(), true);
+        onClose();
       } else {
-        await onConfirm(employeeName.trim(), reason.trim());
+        const result = await onConfirm(employeeName.trim(), reason.trim());
+        if (result?.skipped?.length) {
+          setNotice(describeBlockResult(result));   // stay open so the skipped slots can be read
+        } else {
+          onClose();
+        }
       }
-      onClose();
-    } catch {
-      setErrors({ _global: 'Operation failed. Please try again.' });
+    } catch (error) {
+      setErrors(modalErrorsFrom(error, 'Operation failed. Please try again.'));
     } finally {
       setIsSubmitting(false);
     }
@@ -120,7 +147,7 @@ export default function BlockSlotModal({ isOpen, mode = 'slot', slotTime, date, 
             <div className="space-y-2.5">
               {[
                 { val: 'no',  label: 'No — just block (meeting stays booked)' },
-                { val: 'yes', label: 'Yes — cancel meeting and free the slot' },
+                { val: 'yes', label: 'Yes — cancel meeting and block the slot' },
               ].map(({ val, label }) => (
                 <label key={val} className="flex items-center gap-3 cursor-pointer group">
                   <input
@@ -188,10 +215,23 @@ export default function BlockSlotModal({ isOpen, mode = 'slot', slotTime, date, 
               {errors.reason && <p className="text-xs text-red-600 mt-1">{errors.reason}</p>}
             </div>
 
-            {errors._global && <p className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded-lg">{errors._global}</p>}
+            {errors._global && <p className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded-lg" role="alert">{errors._global}</p>}
+
+            {notice && (
+              <div className="bg-amber-50 rounded-xl px-4 py-3 space-y-1" role="status">
+                {notice.map((line) => (
+                  <p key={line} className="text-xs text-amber-700 font-medium">{line}</p>
+                ))}
+              </div>
+            )}
 
             <div className="flex gap-3 pt-2">
-              {isBooked && mode === 'slot' ? (
+              {notice ? (
+                <button type="button" onClick={onClose}
+                  className="flex-1 px-4 py-3 rounded-xl bg-orange-500 text-white text-sm font-semibold hover:bg-orange-600 transition-all">
+                  Close
+                </button>
+              ) : isBooked && mode === 'slot' ? (
                 <button type="button" onClick={() => setStep(1)}
                   className="flex-1 px-4 py-3 rounded-xl border-2 border-gray-200 text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-all">
                   Back
@@ -202,11 +242,13 @@ export default function BlockSlotModal({ isOpen, mode = 'slot', slotTime, date, 
                   Cancel
                 </button>
               )}
-              <button type="button" onClick={handleConfirm} disabled={isSubmitting}
-                className={`flex-1 px-4 py-3 rounded-xl text-white text-sm font-semibold transition-all disabled:opacity-60
-                  ${cancelDecision === 'yes' ? 'bg-red-500 hover:bg-red-600' : 'bg-orange-500 hover:bg-orange-600'}`}>
-                {isSubmitting ? 'Processing…' : cancelDecision === 'yes' ? 'Confirm Cancel' : 'Confirm Block'}
-              </button>
+              {!notice && (
+                <button type="button" onClick={handleConfirm} disabled={isSubmitting}
+                  className={`flex-1 px-4 py-3 rounded-xl text-white text-sm font-semibold transition-all disabled:opacity-60
+                    ${cancelDecision === 'yes' ? 'bg-red-500 hover:bg-red-600' : 'bg-orange-500 hover:bg-orange-600'}`}>
+                  {isSubmitting ? 'Processing…' : cancelDecision === 'yes' ? 'Confirm Cancel' : 'Confirm Block'}
+                </button>
+              )}
             </div>
           </div>
         )}

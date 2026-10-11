@@ -1,11 +1,16 @@
 // CancelMeetingModal.jsx — Modal for canceling a VM meeting.
 // Shows booking details (name, date, time) and asks for employee name + reason.
-// On confirm: calls onConfirm(bookingId, employeeName, reason).
+// On confirm: calls onConfirm(bookingId, employeeName, reason, alsoBlock) with alsoBlock false,
+// so the slot is freed. The employee name is prefilled from sessionStorage ("oe_admin_name")
+// and saved back on submit. A request that fails (409 NOT_CANCELLABLE ...) shows the backend's
+// message here and the modal stays open.
 // Props: isOpen, booking (full booking object), date, slotTime, onClose, onConfirm
 
 import { useState, useEffect, useRef } from 'react';
 import { X, AlertTriangle } from 'lucide-react';
 import { formatDateDisplay, formatTimeDisplay } from '../../utils/validation';
+import { getStoredAdminName, saveAdminName } from '../../utils/adminName';
+import { modalErrorsFrom } from '../../utils/adminFormErrors';
 
 const ANIM = `@keyframes modalPop { from { transform: scale(0.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }`;
 
@@ -18,7 +23,7 @@ export default function CancelMeetingModal({ isOpen, booking, date, slotTime, on
 
   useEffect(() => {
     if (isOpen) {
-      setEmployeeName(''); setReason(''); setErrors({});
+      setEmployeeName(getStoredAdminName()); setReason(''); setErrors({});
       setTimeout(() => firstInputRef.current?.focus(), 100);
     }
   }, [isOpen]);
@@ -41,12 +46,13 @@ export default function CancelMeetingModal({ isOpen, booking, date, slotTime, on
 
   const handleConfirm = async () => {
     if (!validate()) return;
+    saveAdminName(employeeName);
     setIsSubmitting(true);
     try {
-      await onConfirm(booking?.id, employeeName.trim(), reason.trim());
+      await onConfirm(booking?.id, employeeName.trim(), reason.trim(), false);
       onClose();
-    } catch {
-      setErrors({ _global: 'Failed to cancel meeting. Please try again.' });
+    } catch (error) {
+      setErrors(modalErrorsFrom(error, 'Failed to cancel meeting. Please try again.'));
     } finally {
       setIsSubmitting(false);
     }
@@ -131,7 +137,7 @@ export default function CancelMeetingModal({ isOpen, booking, date, slotTime, on
             {errors.reason && <p className="text-xs text-red-600 mt-1">{errors.reason}</p>}
           </div>
 
-          {errors._global && <p className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded-lg">{errors._global}</p>}
+          {errors._global && <p className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded-lg" role="alert">{errors._global}</p>}
         </div>
 
         {/* Footer */}

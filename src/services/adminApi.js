@@ -1,12 +1,14 @@
 // adminApi.js — Admin API service.
 // Real backend calls (through request(); the session is an httpOnly cookie the browser sends):
-//   login, logout, getSession, getDashboardData, getBookings, retryMeet, setCallbackStatus.
+//   login, logout, getSession, getDashboardData, getBookings, retryMeet, setCallbackStatus,
+//   and the VM availability set: getMonthAvailability, getDateSlots, getVMAvailability,
+//   blockSlot, unblockSlot, blockEntireDay, unblockEntireDay, cancelVMMeeting.
 // Every other function below is still a mock until a later stage replaces it.
 
 import {
-  mockAvailability, mockBookings,
-  mockVMBookings, mockCallbackBookings, mockCallbackAvailability,
-  VM_SLOTS, CALLBACK_SLOTS
+  mockBookings,
+  mockCallbackBookings, mockCallbackAvailability,
+  CALLBACK_SLOTS
 } from '../constants/mockData';
 import { request, ApiRequestError } from './http';
 import { toDateKey } from '../utils/dateKey';
@@ -56,6 +58,17 @@ const adaptCallbackRequest = (request) => ({
   email: request.email,
   phone: request.mobileNumber,
   status: request.status,
+});
+
+// One slot of GET /admin/vm/availability: booked slots carry the booking (adapted like the
+// bookings list), blocked slots carry who blocked it and why.
+const adaptSlot = (slot) => ({
+  time: slot.time,
+  status: slot.status,
+  booking: slot.booking ? adaptVmBooking(slot.booking) : null,
+  block: slot.block
+    ? { blockedBy: slot.block.blockedBy, blockReason: slot.block.blockReason, blockedAt: slot.block.blockedAt }
+    : null,
 });
 
 // One dashboard timeline entry (kind: meeting | callback | available | blocked).
@@ -195,71 +208,72 @@ export const adminApi = {
   },
 
   // ── getMonthAvailability ───────────────────────────────────────────────────
-  // Returns full availability map for admin calendar view.
+  // GET /admin/vm/calendar?month=YYYY-MM. `month` is 1-12.
+  // Resolves { success, month, availability } where availability maps a date key to
+  // { working, holidayName, booked, blocked, available } for the admin calendar.
   getMonthAvailability: async (year, month) => {
-    await delay(400);
-    return { success: true, availability: mockAvailability };
+    const key = `${year}-${String(month).padStart(2, '0')}`;
+    const payload = await request(`/admin/vm/calendar?month=${encodeURIComponent(key)}`);
+
+    const availability = {};
+    for (const day of payload.data.days) {
+      availability[day.date] = {
+        working: day.working,
+        holidayName: day.holidayName,
+        booked: day.booked,
+        blocked: day.blocked,
+        available: day.available,
+      };
+    }
+    return { success: true, month: payload.data.month, availability };
   },
 
   // ── getDateSlots ───────────────────────────────────────────────────────────
-  // Returns slot list for a specific date for the AvailabilityEditor.
-  getDateSlots: async (date) => {
-    await delay(300);
-
-    const dateStr = date.toISOString().split('T')[0];
-    const dayData = mockAvailability[dateStr] || {
-      meetings: {
-        '10:00': 'available',
-        '12:00': 'available',
-        '14:00': 'available',
-        '16:00': 'available'
-      }
-    };
-
-    const slots = Object.entries(dayData.meetings).map(([time, status]) => ({ time, status }));
-    return { success: true, date: dateStr, slots };
-  },
+  // The slot list of one date (same data as getVMAvailability).
+  getDateSlots: async (date) => adminApi.getVMAvailability(date),
 
   // ── blockSlot ──────────────────────────────────────────────────────────────
-  blockSlot: async (date, time, employeeName, reason) => {
-    await delay(400);
-
-    const dateStr = typeof date === 'string' ? date : date.toISOString().split('T')[0];
-    if (!mockAvailability[dateStr]) {
-      mockAvailability[dateStr] = { meetings: {} };
-    }
-    mockAvailability[dateStr].meetings[time] = 'blocked';
-
-    return { success: true, message: `Slot ${time} on ${dateStr} blocked by ${employeeName}` };
+  // POST /admin/vm/blocks { date, time, performedBy, reason }.
+  // Resolves { blocked: ['10:00'], skipped: [{ time, reason: 'booked' | 'already_blocked' }] }.
+  // Rejects with ApiRequestError: DATE_NOT_BOOKABLE (422), VALIDATION_FAILED (400) ...
+  blockSlot: async (date, time, performedBy, reason) => {
+    const payload = await request('/admin/vm/blocks', {
+      method: 'POST',
+      json: { date: asDateKey(date), time, performedBy, reason },
+    });
+    return payload.data;
   },
 
   // ── unblockSlot ────────────────────────────────────────────────────────────
-  unblockSlot: async (date, time) => {
-    await delay(300);
-
-    const dateStr = typeof date === 'string' ? date : date.toISOString().split('T')[0];
-    if (mockAvailability[dateStr]?.meetings[time] === 'blocked') {
-      mockAvailability[dateStr].meetings[time] = 'available';
-    }
-
-    return { success: true, message: `Slot ${time} on ${dateStr} unblocked` };
+  // POST /admin/vm/blocks/remove { date, time, performedBy, reason }. Resolves { unblocked }.
+  unblockSlot: async (date, time, performedBy, reason) => {
+    const payload = await request('/admin/vm/blocks/remove', {
+      method: 'POST',
+      json: { date: asDateKey(date), time, performedBy, reason },
+    });
+    return payload.data;
   },
 
   // ── blockEntireDay ─────────────────────────────────────────────────────────
-  blockEntireDay: async (date, employeeName, reason) => {
-    await delay(400);
+  // POST /admin/vm/blocks { date, allDay: true, performedBy, reason }.
+  // Resolves { blocked, skipped } (a booked slot is skipped, never overwritten).
+  blockEntireDay: async (date, performedBy, reason) => {
+    const payload = await request('/admin/vm/blocks', {
+      method: 'POST',
+      json: { date: asDateKey(date), allDay: true, performedBy, reason },
+    });
+    return payload.data;
+  },
 
-    const dateStr = typeof date === 'string' ? date : date.toISOString().split('T')[0];
-    mockAvailability[dateStr] = {
-      meetings: {
-        '10:00': 'blocked',
-        '12:00': 'blocked',
-        '14:00': 'blocked',
-        '16:00': 'blocked'
-      }
-    };
-
-    return { success: true, message: `Entire day ${dateStr} blocked by ${employeeName}` };
+  // ── unblockEntireDay ───────────────────────────────────────────────────────
+  // POST /admin/vm/blocks/remove { date, allDay: true, performedBy, reason }.
+  // Resolves { unblocked } (only blocks are removed, never bookings).
+  unblockEntireDay: async (date, performedBy, reason) => {
+    const payload = await request('/admin/vm/blocks/remove', {
+      method: 'POST',
+      json: { date: asDateKey(date), allDay: true, performedBy, reason },
+    });
+    return payload.data;
   },
 
   // ── getBookings ────────────────────────────────────────────────────────────
@@ -284,38 +298,27 @@ export const adminApi = {
   },
 
   // ── getVMAvailability ──────────────────────────────────────────────────────
-  // Returns VM slots for a specific date (cleaner alias of getDateSlots).
+  // GET /admin/vm/availability?date. `date` is a Date or a date key.
+  // Resolves { success, date, working, holidayName, slots: [{ time, status, booking, block }] }
+  // with status 'available' | 'booked' | 'blocked'.
   getVMAvailability: async (date) => {
-    await delay(300);
+    const payload = await request(`/admin/vm/availability?date=${encodeURIComponent(asDateKey(date))}`);
+    const { date: day, working, holidayName, slots } = payload.data;
 
-    const dateStr = date instanceof Date ? date.toISOString().split('T')[0] : date;
-    const dayData = mockAvailability[dateStr] || { meetings: Object.fromEntries(VM_SLOTS.map(t => [t, 'available'])) };
-
-    const slots = Object.entries(dayData.meetings).map(([time, status]) => {
-      const booking = Object.values(mockVMBookings).find(b => b.date === dateStr && b.time === time && b.status === 'booked');
-      return { time, status, booking: booking || null };
-    });
-
-    return { success: true, date: dateStr, slots };
+    return { success: true, date: day, working, holidayName, slots: slots.map(adaptSlot) };
   },
 
   // ── cancelVMMeeting ────────────────────────────────────────────────────────
-  // Cancels a VM booking, frees the slot back to available.
-  cancelVMMeeting: async (bookingId, employeeName, reason) => {
-    await delay(500);
-
-    const booking = mockVMBookings[bookingId];
-    if (!booking) return { success: false, error: 'Booking not found' };
-
-    // Mark cancelled
-    mockVMBookings[bookingId] = { ...booking, status: 'cancelled', cancelledBy: employeeName, cancelReason: reason };
-    // Free the slot
-    if (mockAvailability[booking.date]?.meetings) {
-      mockAvailability[booking.date].meetings[booking.time] = 'available';
-    }
-
-    console.log(`[DEV] VM meeting ${bookingId} cancelled by ${employeeName}. Reason: ${reason}`);
-    return { success: true, message: 'Meeting cancelled' };
+  // POST /admin/vm/bookings/:bookingId/cancel { performedBy, reason, alsoBlock }.
+  // alsoBlock false frees the slot; true turns it into a block. The customer is emailed.
+  // Resolves { bookingId, status: 'cancelled', slot: 'released' | 'blocked' }.
+  // Rejects with ApiRequestError: NOT_CANCELLABLE (409), NOT_FOUND (404) ...
+  cancelVMMeeting: async (bookingId, performedBy, reason, alsoBlock = false) => {
+    const payload = await request(`/admin/vm/bookings/${encodeURIComponent(bookingId)}/cancel`, {
+      method: 'POST',
+      json: { performedBy, reason, alsoBlock: Boolean(alsoBlock) },
+    });
+    return payload.data;
   },
 
   // ── getCallbackAvailability ────────────────────────────────────────────────
