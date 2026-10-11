@@ -1,21 +1,19 @@
 // adminApi.js — Admin API service.
-// Real backend calls (through request(); the session is an httpOnly cookie the browser sends):
-//   login, logout, getSession, getDashboardData, getBookings, retryMeet, setCallbackStatus,
-//   and the VM availability set: getMonthAvailability, getDateSlots, getVMAvailability,
-//   blockSlot, unblockSlot, blockEntireDay, unblockEntireDay, cancelVMMeeting.
-// Every other function below is still a mock until a later stage replaces it.
+// Every function calls the real backend through request(); the session is an httpOnly cookie
+// the browser sends. Grouped by what they serve:
+//   session      login, logout, getSession
+//   dashboard    getDashboardData, getBookings, retryMeet, setCallbackStatus
+//   VM           getMonthAvailability, getDateSlots, getVMAvailability, blockSlot, unblockSlot,
+//                blockEntireDay, unblockEntireDay, cancelVMMeeting
+//   callbacks    getCallbackAvailability, getCallbacksForSlot, blockCallbackSlot,
+//                unblockCallbackSlot, blockCallbackEntireDay, unblockCallbackEntireDay, cancelCallbacks
+//   settings     getSettings, updateCallbackCapacity, getHolidays, addHoliday, addHolidays,
+//                renameHoliday, removeHoliday
+// Failed calls reject with ApiRequestError, whose message is fit to show to the user.
 
-import {
-  mockBookings,
-  mockCallbackBookings, mockCallbackAvailability,
-  CALLBACK_SLOTS
-} from '../constants/mockData';
 import { request, ApiRequestError } from './http';
 import { toDateKey } from '../utils/dateKey';
 import { formatTimeDisplay } from '../utils/validation';
-
-
-const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 const isUnauthorized = (error) => error instanceof ApiRequestError && error.status === 401;
 
@@ -322,99 +320,164 @@ export const adminApi = {
   },
 
   // ── getCallbackAvailability ────────────────────────────────────────────────
-  // Returns callback slot capacity data for a specific date.
+  // GET /admin/callback/availability?date. `date` is a Date or a date key.
+  // Resolves { success, date, working, holidayName, slots: [{ key, label, timeRange,
+  // capacity, booked, blocked, block }] } with the saved capacity and the real booked count.
   getCallbackAvailability: async (date) => {
-    await delay(300);
+    const payload = await request(`/admin/callback/availability?date=${encodeURIComponent(asDateKey(date))}`);
+    const { date: day, working, holidayName, periods } = payload.data;
 
-    const dateStr = date instanceof Date ? date.toISOString().split('T')[0] : date;
-    const dayData = mockCallbackAvailability[dateStr] || Object.fromEntries(
-      Object.keys(CALLBACK_SLOTS).map(slot => [slot, { booked: 0, blocked: false }])
-    );
-
-    const slots = Object.entries(CALLBACK_SLOTS).map(([key, config]) => ({
-      key,
-      label: config.label,
-      timeRange: config.timeRange,
-      capacity: config.capacity,
-      booked: dayData[key]?.booked ?? 0,
-      blocked: dayData[key]?.blocked ?? false,
-    }));
-
-    return { success: true, date: dateStr, slots };
+    return {
+      success: true,
+      date: day,
+      working,
+      holidayName,
+      slots: periods.map((period) => ({
+        key: period.key,
+        label: period.label,
+        timeRange: period.timeRange,
+        capacity: period.capacity,
+        booked: period.booked,
+        blocked: period.blocked,
+        block: period.block,
+      })),
+    };
   },
 
   // ── getCallbacksForSlot ────────────────────────────────────────────────────
-  // Returns list of people booked in a specific callback slot on a date.
+  // GET /admin/callback/requests?date&period. Resolves { success, bookings } with the
+  // non-cancelled requests of that period (id, name, phone, company = the reason, status).
   getCallbacksForSlot: async (date, slot) => {
-    await delay(300);
+    const query = new URLSearchParams({ date: asDateKey(date), period: slot });
+    const payload = await request(`/admin/callback/requests?${query.toString()}`);
 
-    const dateStr = date instanceof Date ? date.toISOString().split('T')[0] : date;
-    const bookings = Object.values(mockCallbackBookings).filter(
-      b => b.date === dateStr && b.slot === slot && b.status !== 'cancelled'
-    );
-
-    return { success: true, bookings };
+    return { success: true, bookings: payload.data.requests.map(adaptCallbackRequest) };
   },
 
   // ── blockCallbackSlot ──────────────────────────────────────────────────────
-  // Blocks a callback slot (no cancellations — existing bookings remain).
-  blockCallbackSlot: async (date, slot, employeeName, reason) => {
-    await delay(400);
-
-    const dateStr = date instanceof Date ? date.toISOString().split('T')[0] : date;
-    if (!mockCallbackAvailability[dateStr]) {
-      mockCallbackAvailability[dateStr] = Object.fromEntries(
-        Object.keys(CALLBACK_SLOTS).map(s => [s, { booked: 0, blocked: false }])
-      );
-    }
-    mockCallbackAvailability[dateStr][slot] = {
-      ...mockCallbackAvailability[dateStr][slot],
-      blocked: true
-    };
-
-    return { success: true, message: `Callback slot ${slot} on ${dateStr} blocked by ${employeeName}` };
+  // POST /admin/callback/blocks { date, period, performedBy, reason }. Requests already in the
+  // period stay. Resolves { blocked: ['morning'] }.
+  blockCallbackSlot: async (date, slot, performedBy, reason) => {
+    const payload = await request('/admin/callback/blocks', {
+      method: 'POST',
+      json: { date: asDateKey(date), period: slot, performedBy, reason },
+    });
+    return payload.data;
   },
 
-  // ── cancelCallbacks ────────────────────────────────────────────────────────
-  // Cancels specific callback bookings by ID.
-  cancelCallbacks: async (bookingIds, employeeName, reason) => {
-    await delay(500);
-
-    bookingIds.forEach(id => {
-      if (mockCallbackBookings[id]) {
-        mockCallbackBookings[id] = {
-          ...mockCallbackBookings[id],
-          status: 'cancelled',
-          cancelledBy: employeeName,
-          cancelReason: reason
-        };
-        // Decrement booked count
-        const b = mockCallbackBookings[id];
-        const dayData = mockCallbackAvailability[b.date];
-        if (dayData?.[b.slot]) {
-          dayData[b.slot].booked = Math.max(0, dayData[b.slot].booked - 1);
-        }
-      }
+  // ── unblockCallbackSlot ────────────────────────────────────────────────────
+  // POST /admin/callback/blocks/remove { date, period, performedBy, reason }.
+  // Resolves { unblocked: ['morning'] }.
+  unblockCallbackSlot: async (date, slot, performedBy, reason) => {
+    const payload = await request('/admin/callback/blocks/remove', {
+      method: 'POST',
+      json: { date: asDateKey(date), period: slot, performedBy, reason },
     });
-
-    console.log(`[DEV] ${bookingIds.length} callback(s) cancelled by ${employeeName}. Reason: ${reason}`);
-    return { success: true, message: `${bookingIds.length} callback(s) cancelled` };
+    return payload.data;
   },
 
   // ── blockCallbackEntireDay ─────────────────────────────────────────────────
-  // Blocks all callback slots for a day.
-  blockCallbackEntireDay: async (date, employeeName, reason) => {
-    await delay(400);
+  // POST /admin/callback/blocks { date, allDay: true, performedBy, reason }.
+  blockCallbackEntireDay: async (date, performedBy, reason) => {
+    const payload = await request('/admin/callback/blocks', {
+      method: 'POST',
+      json: { date: asDateKey(date), allDay: true, performedBy, reason },
+    });
+    return payload.data;
+  },
 
-    const dateStr = date instanceof Date ? date.toISOString().split('T')[0] : date;
-    const existing = mockCallbackAvailability[dateStr] || {};
-    mockCallbackAvailability[dateStr] = Object.fromEntries(
-      Object.keys(CALLBACK_SLOTS).map(slot => [slot, {
-        booked: existing[slot]?.booked ?? 0,
-        blocked: true
-      }])
-    );
+  // ── unblockCallbackEntireDay ───────────────────────────────────────────────
+  // POST /admin/callback/blocks/remove { date, allDay: true, performedBy, reason }.
+  unblockCallbackEntireDay: async (date, performedBy, reason) => {
+    const payload = await request('/admin/callback/blocks/remove', {
+      method: 'POST',
+      json: { date: asDateKey(date), allDay: true, performedBy, reason },
+    });
+    return payload.data;
+  },
 
-    return { success: true, message: `All callback slots on ${dateStr} blocked by ${employeeName}` };
-  }
+  // ── cancelCallbacks ────────────────────────────────────────────────────────
+  // POST /admin/callback/requests/cancel { requestIds (1-50), performedBy, reason }.
+  // Resolves { cancelled: [ids], skipped: [{ id, reason }] }. Each customer is emailed.
+  cancelCallbacks: async (requestIds, performedBy, reason) => {
+    const payload = await request('/admin/callback/requests/cancel', {
+      method: 'POST',
+      json: { requestIds, performedBy, reason },
+    });
+    return payload.data;
+  },
+
+  // ── getSettings ────────────────────────────────────────────────────────────
+  // GET /admin/settings. Resolves { success, callbackCapacity: { morning, afternoon, evening } }.
+  getSettings: async () => {
+    const payload = await request('/admin/settings');
+    return { success: true, callbackCapacity: payload.data.callbackCapacity };
+  },
+
+  // ── updateCallbackCapacity ─────────────────────────────────────────────────
+  // PUT /admin/settings/callback-capacity. capacity: { morning, afternoon, evening } (0-50).
+  // Takes effect at once; lowering it never cancels anyone. Resolves the saved capacity.
+  updateCallbackCapacity: async (capacity, performedBy, reason) => {
+    const { morning, afternoon, evening } = capacity;
+    const payload = await request('/admin/settings/callback-capacity', {
+      method: 'PUT',
+      json: { morning, afternoon, evening, performedBy, reason },
+    });
+    return payload.data.callbackCapacity;
+  },
+
+  // ── getHolidays ────────────────────────────────────────────────────────────
+  // GET /admin/holidays?year. Resolves { success, holidays: [{ date, name }] } sorted by date.
+  getHolidays: async (year) => {
+    const payload = await request(`/admin/holidays?year=${encodeURIComponent(year)}`);
+    return { success: true, holidays: payload.data.holidays };
+  },
+
+  // ── addHoliday ─────────────────────────────────────────────────────────────
+  // POST /admin/holidays. Succeeds even when bookings exist on the date.
+  // Resolves { holiday, affected: { vmBookings, callbackRequests } }.
+  // Rejects with ApiRequestError: ALREADY_CLOSED (422), CONFLICT (409: already a holiday).
+  addHoliday: async (date, name, performedBy, reason) => {
+    const payload = await request('/admin/holidays', {
+      method: 'POST',
+      json: { date: asDateKey(date), name, performedBy, reason },
+    });
+    return payload.data;
+  },
+
+  // ── addHolidays ────────────────────────────────────────────────────────────
+  // POST /admin/holidays/bulk { holidays: [{ date, name }] (1-60) }.
+  // Resolves { added: [dates], skipped: [{ date, reason: 'exists' | 'closed_by_rule' }],
+  // affected: { vmBookings, callbackRequests } }.
+  addHolidays: async (holidays, performedBy, reason) => {
+    const payload = await request('/admin/holidays/bulk', {
+      method: 'POST',
+      json: {
+        holidays: holidays.map(({ date, name }) => ({ date: asDateKey(date), name })),
+        performedBy,
+        reason,
+      },
+    });
+    return payload.data;
+  },
+
+  // ── renameHoliday ──────────────────────────────────────────────────────────
+  // PATCH /admin/holidays/:date { name, performedBy, reason }. Resolves { holiday }.
+  renameHoliday: async (date, name, performedBy, reason) => {
+    const payload = await request(`/admin/holidays/${encodeURIComponent(asDateKey(date))}`, {
+      method: 'PATCH',
+      json: { name, performedBy, reason },
+    });
+    return payload.data;
+  },
+
+  // ── removeHoliday ──────────────────────────────────────────────────────────
+  // DELETE /admin/holidays/:date with { performedBy, reason } in the body. Resolves { date }.
+  removeHoliday: async (date, performedBy, reason) => {
+    const payload = await request(`/admin/holidays/${encodeURIComponent(asDateKey(date))}`, {
+      method: 'DELETE',
+      json: { performedBy, reason },
+    });
+    return payload.data;
+  },
 };

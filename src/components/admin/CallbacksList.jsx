@@ -7,7 +7,7 @@
 
 import { useState } from 'react';
 import { PhoneCall, CheckCircle } from 'lucide-react';
-import { CALLBACK_SLOTS } from '../../constants/mockData';
+import { CALLBACK_PERIODS } from '../../constants/callbackPeriods';
 import CallbackStatusSelect from './CallbackStatusSelect';
 
 const WEEKDAY = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
@@ -19,7 +19,7 @@ function formatDateHeader(dateStr) {
 }
 
 function CallbackRow({ item, onStatusChange }) {
-  const slotConfig = CALLBACK_SLOTS[item.slot] || { label: item.slot, timeRange: '' };
+  const slotConfig = CALLBACK_PERIODS[item.slot] || { label: item.slot, timeRange: '' };
   const isCancelled = item.status === 'cancelled';
 
   const [busy, setBusy] = useState(false);

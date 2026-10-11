@@ -3,14 +3,17 @@
 //   - Booked count vs capacity (X / Y booked)
 //   - Animated progress bar (green → orange → red as capacity fills)
 //   - [Block] / [Unblock] button per slot
-// Props: date, slots (from adminApi.getCallbackAvailability), onBlockSlot, onUnblockSlot, onBlockDay
+// Props: date, slots (from adminApi.getCallbackAvailability: key, label, timeRange, capacity,
+//        booked, blocked), onBlockSlot, onUnblockSlot, onBlockDay
+// capacity and booked are the backend's numbers. Capacity 0 means the period takes no
+// requests (shown full); booked can exceed capacity after staff lower it.
 
 import { formatDateDisplay } from '../../utils/validation';
 import { Shield, ShieldOff, PhoneCall } from 'lucide-react';
 
 function getProgressColor(booked, capacity, blocked) {
   if (blocked) return 'bg-gray-400';
-  const pct = booked / capacity;
+  const pct = capacity > 0 ? booked / capacity : 1;
   if (pct >= 1)   return 'bg-red-500';
   if (pct >= 0.6) return 'bg-orange-400';
   return 'bg-[#017119]';
@@ -18,7 +21,7 @@ function getProgressColor(booked, capacity, blocked) {
 
 function SlotCapacityRow({ slot, onBlock, onUnblock }) {
   const { key, label, timeRange, capacity, booked, blocked } = slot;
-  const pct          = Math.min(1, booked / capacity);
+  const pct          = capacity > 0 ? Math.min(1, booked / capacity) : 1;
   const progressColor = getProgressColor(booked, capacity, blocked);
   const remaining    = Math.max(0, capacity - booked);
 

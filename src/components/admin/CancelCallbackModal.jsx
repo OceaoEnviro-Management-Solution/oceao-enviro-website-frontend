@@ -8,7 +8,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { X, PhoneCall } from 'lucide-react';
 import { formatDateDisplay } from '../../utils/validation';
-import { CALLBACK_SLOTS } from '../../constants/mockData';
+import { CALLBACK_PERIODS } from '../../constants/callbackPeriods';
 
 const ANIM = `@keyframes modalPop { from { transform: scale(0.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }`;
 
@@ -41,7 +41,7 @@ export default function CancelCallbackModal({ isOpen, slot, date, bookings = [],
 
   if (!isOpen) return null;
 
-  const slotConfig = CALLBACK_SLOTS[slot] || { label: slot, timeRange: '' };
+  const slotConfig = CALLBACK_PERIODS[slot] || { label: slot, timeRange: '' };
 
   function toggleId(id) {
     setSelectedIds(prev => {

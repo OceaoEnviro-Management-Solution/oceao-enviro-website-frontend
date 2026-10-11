@@ -3,13 +3,14 @@
 // beyond today+30 are rendered as disabled/view-only (no onClick, grayed out).
 // Props: availability (VM mode: a map from date key to { working, holidayName, booked,
 //        blocked, available }, as returned by adminApi.getMonthAvailability),
-//        callbackAvailability (optional), selectedDate, onDateSelect, mode ('vm'|'callback')
+//        callbackAvailability (callback mode: a map from date key to { bookable, reason }, the
+//        days of GET /callback/calendar), selectedDate, onDateSelect, mode ('vm'|'callback')
 // A day the backend says is not a working day (a holiday, a weekend) is shown unavailable;
-// a holiday has its name as a tooltip.
+// in VM mode a holiday has its name as a tooltip. In callback mode a day with nothing left to
+// book is "Full" (that includes a day staff blocked completely).
 
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { CALLBACK_SLOTS } from '../../constants/mockData';
 import { toDateKey } from '../../utils/dateKey';
 
 // ── VM status from the month's slot counts ───────────────────────────────────
@@ -24,19 +25,17 @@ function getVMDayStatus(dateStr, availability) {
   return 'available';
 }
 
-// ── Callback status from callbackAvailability map ─────────────────────────────
+// ── Callback status from the public callback calendar ─────────────────────────
+// { bookable, reason }: bookable -> available; reason 'full' -> every period is full, blocked
+// or closed. (The exact split per period is shown for the selected day.)
 function getCallbackDayStatus(dateStr, callbackAvailability) {
   const data = callbackAvailability[dateStr];
-  if (!data) return 'available';
-  const slots = Object.entries(data);
-  const allBlocked = slots.every(([, v]) => v.blocked);
-  if (allBlocked) return 'blocked';
-  const totalCapacity = Object.values(CALLBACK_SLOTS).reduce((s, v) => s + v.capacity, 0);
-  const totalBooked   = slots.reduce((s, [, v]) => s + (v.booked || 0), 0);
-  if (totalBooked === 0) return 'available';
-  if (totalBooked >= totalCapacity) return 'booked';
-  return 'partial';
+  if (!data || data.bookable) return 'available';
+  return data.reason === 'full' ? 'booked' : 'available';
 }
+
+// Days callbacks do not run (a holiday, a closed Sunday or second Saturday)
+const CALLBACK_CLOSED_REASONS = ['holiday', 'non_working_day'];
 
 const STATUS_DOT = {
   available: 'bg-[#017119]',
@@ -95,6 +94,7 @@ export default function Calendar({
     if (isWeekend(cellIdx)) return true;
     // Holidays and other days VM does not run (from /admin/vm/calendar)
     if (mode === 'vm' && availability[getDateStr(day)]?.working === false) return true;
+    if (mode === 'callback' && CALLBACK_CLOSED_REASONS.includes(callbackAvailability[getDateStr(day)]?.reason)) return true;
     const d = new Date(viewYear, viewMonth, day);
     d.setHours(0, 0, 0, 0);
     return d < today || d > maxDate;  // ← 30-day window enforcement

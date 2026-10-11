@@ -4,7 +4,7 @@
 // Props: onNavigate (optional callback for mobile — closes overlay after navigation).
 
 import { useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, BookOpen, Calendar, Video, PhoneCall, ChevronDown, ChevronRight } from 'lucide-react';
+import { LayoutDashboard, BookOpen, Calendar, Video, PhoneCall, Settings, ChevronDown, ChevronRight } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 const ROUTES = {
@@ -12,6 +12,7 @@ const ROUTES = {
   bookings:     '/admin/bookings',
   availVm:      '/admin/availability-vm',
   availCb:      '/admin/availability-callbacks',
+  settings:     '/admin/settings',
 };
 
 export default function AdminSidebar({ onNavigate }) {
@@ -128,6 +129,18 @@ export default function AdminSidebar({ onNavigate }) {
             </div>
           )}
         </div>
+
+        {/* Settings */}
+        <button
+          id="admin-nav-settings"
+          type="button"
+          onClick={() => go(ROUTES.settings)}
+          className={`${navBtnBase} ${isActive(ROUTES.settings) ? activeStyle : inactiveStyle}`}
+        >
+          <Settings className="w-4 h-4 flex-shrink-0" />
+          <span className="flex-1">Settings</span>
+          {isActive(ROUTES.settings) && <ChevronRight className="w-3.5 h-3.5 opacity-70" />}
+        </button>
 
       </nav>
 
