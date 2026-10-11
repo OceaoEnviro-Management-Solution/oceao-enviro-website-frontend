@@ -102,6 +102,7 @@ export default function DateSelector({ selectedDate, onChange, blockedDates = []
         placeholderText="Select a date"
         showPopperArrow={false}
         calendarStartDay={1}  // Monday first
+        formatWeekDay={(dayName) => dayName.slice(0, 3)}  // Mon, Tue, Wed ...
         inline={false}
         popperProps={{ strategy: 'fixed' }}
         portalId="datepicker-portal"
@@ -139,12 +140,19 @@ export default function DateSelector({ selectedDate, onChange, blockedDates = []
           font-size: 15px;
           font-weight: 700;
         }
+        /* Weekday names (Mon, Tue ...) sit in their own row BELOW the green header, so they
+           need a dark colour; the earlier white text was invisible on the white background. */
+        .react-datepicker__day-names {
+          margin-top: 6px;
+          margin-bottom: 0;
+        }
         .react-datepicker__day-name {
-          color: rgba(255,255,255,0.75);
+          color: #017119;
           font-size: 12px;
-          font-weight: 600;
+          font-weight: 700;
           width: 36px;
           line-height: 36px;
+          margin: 2px;
         }
         .react-datepicker__navigation-icon::before {
           border-color: white;

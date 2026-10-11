@@ -18,7 +18,11 @@ const ERROR_INPUT_CLASS = `
   border-red-400 focus:border-red-400 focus:ring-red-400/10
 `;
 
-export default function FormInput({ field, value, onChange, error }) {
+// Optional props (all default to the static behaviour):
+//   options     dropdown only: [{ value, label, disabled? }] instead of dropdownOptions[id]
+//   filterDate  datepicker only: (date) => boolean, false disables that day
+//   disabled    datepicker and dropdown: locks the control
+export default function FormInput({ field, value, onChange, error, options, filterDate, disabled = false }) {
   const { id, label, type, required, placeholder } = field;
   const inputClass = `${BASE_INPUT_CLASS} ${error ? ERROR_INPUT_CLASS : ''}`;
 
@@ -38,11 +42,13 @@ export default function FormInput({ field, value, onChange, error }) {
           onChange={(date) => onChange(id, date)}
           minDate={today}
           maxDate={maxDate}
+          filterDate={filterDate}
+          disabled={disabled}
           placeholderText={placeholder}
           dateFormat="dd MMM yyyy"
           autoComplete="off"
           wrapperClassName="w-full"
-          className={`${inputClass} cursor-pointer`}
+          className={`${inputClass} cursor-pointer disabled:cursor-wait disabled:opacity-70`}
         />
         <ErrorMsg>{error}</ErrorMsg>
       </div>
@@ -51,19 +57,20 @@ export default function FormInput({ field, value, onChange, error }) {
 
   // ── Dropdown (select) ─────────────────────────────────────────────────────
   if (type === 'dropdown') {
-    const options = dropdownOptions[id] || [];
+    const dropdownItems = options || dropdownOptions[id] || [];
     return (
       <div className="flex flex-col gap-1">
         <Label htmlFor={id} required={required}>{label}</Label>
         <select
           id={id}
           value={value || ''}
+          disabled={disabled}
           onChange={(e) => onChange(id, e.target.value)}
-          className={`${inputClass} appearance-none bg-[url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")] bg-no-repeat bg-[right_14px_center] pr-10 cursor-pointer`}
+          className={`${inputClass} appearance-none bg-[url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")] bg-no-repeat bg-[right_14px_center] pr-10 cursor-pointer disabled:cursor-not-allowed disabled:opacity-70`}
         >
           <option value="" disabled>{placeholder}</option>
-          {options.map((opt) => (
-            <option key={opt.value} value={opt.value}>{opt.label}</option>
+          {dropdownItems.map((opt) => (
+            <option key={opt.value} value={opt.value} disabled={opt.disabled}>{opt.label}</option>
           ))}
         </select>
         <ErrorMsg>{error}</ErrorMsg>

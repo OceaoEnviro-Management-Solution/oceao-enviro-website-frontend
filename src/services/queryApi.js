@@ -9,7 +9,7 @@ const QUERY_FIELD_MAP = {
     source: 'hearAbout',
 };
 
-const submitQuery = async (formData) => {
+const submitQuery = async (formData, turnstileToken) => {
     try {
         return await request('/query/new-query', {
             method: 'POST',
@@ -22,6 +22,7 @@ const submitQuery = async (formData) => {
                 source: formData.hearAbout,
                 subject: formData.subject,
                 query: formData.query,
+                turnstileToken,
             },
         });
     } catch (error) {

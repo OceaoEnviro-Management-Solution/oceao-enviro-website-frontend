@@ -2,7 +2,7 @@
 // Reads/writes form data via FeedbackContext.
 // Handles: validation → rate limiting → API submission → success state transition.
 
-import { useState, forwardRef } from 'react';
+import { useState, useRef, forwardRef } from 'react';
 import { useFeedbackContext } from '../../hooks/useFeedbackContext';
 import { submitFeedback } from '../../services/feedbackApi';
 import { validateFeedbackForm } from '../../utils/validation';
@@ -11,6 +11,7 @@ import { FEEDBACK_TYPES } from '../../constants/feedbackTypes';
 import FeedbackFormInput from './FeedbackFormInput';
 import FileUploadField from './FileUploadField';
 import FeedbackSubmitButton from './FeedbackSubmitButton';
+import TurnstileWidget from '../common/TurnstileWidget';
 
 const FeedbackForm = forwardRef(function FeedbackForm(_, ref) {
   const {
@@ -26,6 +27,9 @@ const FeedbackForm = forwardRef(function FeedbackForm(_, ref) {
   const [fileError, setFileError] = useState(null);
   // Rate limit message — shown above submit button
   const [rateLimitMsg, setRateLimitMsg] = useState(null);
+  // Turnstile token: empty until the visitor passes the check; single-use.
+  const [captchaToken, setCaptchaToken] = useState('');
+  const captchaRef = useRef(null);
 
   // ── Field change handler ────────────────────────────────────────────────────
   function handleChange(e) {
@@ -81,7 +85,7 @@ const FeedbackForm = forwardRef(function FeedbackForm(_, ref) {
     setError(null);
 
     try {
-      await submitFeedback(formData);
+      await submitFeedback(formData, captchaToken);
 
       recordSubmission(); // Log timestamp for rate limiting
       // The backend returns data: null, so the summary is built from what was submitted.
@@ -109,6 +113,8 @@ const FeedbackForm = forwardRef(function FeedbackForm(_, ref) {
       }
     } finally {
       setLoading(false);
+      // The token is single-use: get a new one after every request, pass or fail.
+      captchaRef.current?.reset();
     }
   }
 
@@ -245,11 +251,18 @@ const FeedbackForm = forwardRef(function FeedbackForm(_, ref) {
             </p>
           )}
 
+          {/* CAPTCHA */}
+          <TurnstileWidget
+            ref={captchaRef}
+            onToken={setCaptchaToken}
+            onExpire={() => setCaptchaToken('')}
+          />
+
           {/* Submit button */}
           <FeedbackSubmitButton
             onClick={handleSubmit}
             loading={loading}
-            disabled={!!rateLimitMsg}
+            disabled={!!rateLimitMsg || !captchaToken}
           />
 
         </div>

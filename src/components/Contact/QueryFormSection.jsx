@@ -2,17 +2,21 @@
 // Uses useFormValidation hook + FormInput renderer + SuccessPopup.
 // On valid submit: shows success popup. On popup close: resets form.
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Send } from 'lucide-react';
 import { useFormValidation } from '../../hooks/useFormValidation';
 import { formFields } from '../../constants/contact';
 import FormInput from './FormInput';
 import SuccessPopup from './SuccessPopup';
+import TurnstileWidget from '../common/TurnstileWidget';
 import { submitQuery } from '../../services/queryApi';
 
 export default function QueryFormSection() {
   const [showPopup, setShowPopup] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // Turnstile token: empty until the visitor passes the check; single-use.
+  const [captchaToken, setCaptchaToken] = useState('');
+  const captchaRef = useRef(null);
 
   const { formData, handleChange, errors, setErrors, handleSubmit, resetForm } =
     useFormValidation(formFields.queryForm);
@@ -33,7 +37,7 @@ export default function QueryFormSection() {
     // }, 600);
 
     try {
-      await submitQuery(formData);
+      await submitQuery(formData, captchaToken);
       setShowPopup(true);
     } catch (error) {
       console.error("Query submission failed:", error);
@@ -47,6 +51,8 @@ export default function QueryFormSection() {
       }
     } finally {
       setIsSubmitting(false);
+      // The token is single-use: get a new one after every request, pass or fail.
+      captchaRef.current?.reset();
     }
   };
 
@@ -142,15 +148,22 @@ export default function QueryFormSection() {
           </p>
         )}
 
+        {/* CAPTCHA */}
+        <TurnstileWidget
+          ref={captchaRef}
+          onToken={setCaptchaToken}
+          onExpire={() => setCaptchaToken('')}
+        />
+
         {/* Submit */}
         <div className="flex justify-center mt-2">
           <button
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || !captchaToken}
             className={`
               flex items-center gap-2 px-8 py-3 rounded-lg text-sm font-bold text-white
               transition-all duration-200 shadow-sm
-              ${isSubmitting
+              ${isSubmitting || !captchaToken
                 ? 'bg-gray-400 cursor-not-allowed opacity-70'
                 : 'bg-[#017119] hover:bg-[#015a14] active:scale-[0.98] hover:shadow-md'
               }

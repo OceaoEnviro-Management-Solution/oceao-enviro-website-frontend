@@ -6,7 +6,7 @@ const FEEDBACK_FIELD_MAP = {
   mobileNumber: 'phone',
 };
 
-const submitFeedback = async (formData) => {
+const submitFeedback = async (formData, turnstileToken) => {
   const formDataObj = new FormData();
   formDataObj.append("type", formData.type);
   formDataObj.append("name", formData.name);
@@ -19,6 +19,7 @@ const submitFeedback = async (formData) => {
   if (formData.attachment) {
     formDataObj.append("attachment", formData.attachment);
   }
+  formDataObj.append("turnstileToken", turnstileToken);
 
   try {
     return await request('/feedback/new-feedback', {
