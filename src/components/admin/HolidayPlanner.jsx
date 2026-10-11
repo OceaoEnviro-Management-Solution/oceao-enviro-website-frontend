@@ -12,7 +12,7 @@ import { ChevronLeft, ChevronRight, ListChecks, X, RefreshCw } from 'lucide-reac
 import { adminApi } from '../../services/adminApi';
 import { useAdminContext } from '../../hooks/useAdminContext';
 import { fromDateKey } from '../../utils/dateKey';
-import { formatDateDisplay } from '../../utils/validation';
+import { formatDateDisplay, FIELD_LIMITS } from '../../utils/validation';
 import { getStoredAdminName, saveAdminName } from '../../utils/adminName';
 import { modalErrorsFrom } from '../../utils/adminFormErrors';
 import HolidayYearCalendar from './HolidayYearCalendar';
@@ -136,9 +136,20 @@ export default function HolidayPlanner() {
   async function saveBulk() {
     const errors = {};
     const unnamed = pickedDates.filter((date) => picked[date].trim().length < 2);
+    const tooLong = pickedDates.filter((date) => picked[date].trim().length > FIELD_LIMITS.holidayName.max);
     if (unnamed.length) errors.names = 'Give every selected date a name (at least 2 characters).';
+    else if (tooLong.length) errors.names = `Holiday names cannot exceed ${FIELD_LIMITS.holidayName.max} characters.`;
+    else if (pickedDates.length > FIELD_LIMITS.holidayBatch) {
+      errors.names = `Select at most ${FIELD_LIMITS.holidayBatch} dates at a time.`;
+    }
     if (bulk.employeeName.trim().length < 2) errors.employeeName = 'Employee name is required';
+    else if (bulk.employeeName.trim().length > FIELD_LIMITS.employeeName.max) {
+      errors.employeeName = `Employee name cannot exceed ${FIELD_LIMITS.employeeName.max} characters`;
+    }
     if (bulk.reason.trim().length < 3) errors.reason = 'Please give a reason (at least 3 characters)';
+    else if (bulk.reason.trim().length > FIELD_LIMITS.adminReason.max) {
+      errors.reason = `Reason cannot exceed ${FIELD_LIMITS.adminReason.max} characters`;
+    }
     if (Object.keys(errors).length) {
       setBulk((b) => ({ ...b, errors }));
       return;

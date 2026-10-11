@@ -10,7 +10,7 @@
 import { useState, useEffect } from 'react';
 import { X, CalendarDays } from 'lucide-react';
 import { fromDateKey } from '../../utils/dateKey';
-import { formatDateDisplay } from '../../utils/validation';
+import { formatDateDisplay, FIELD_LIMITS } from '../../utils/validation';
 import { getStoredAdminName, saveAdminName } from '../../utils/adminName';
 import { modalErrorsFrom } from '../../utils/adminFormErrors';
 
@@ -35,8 +35,17 @@ function HolidayDialog({ mode, date, holidayName, onClose, onAdd, onRename, onRe
   const validate = ({ needsName }) => {
     const e = {};
     if (needsName && name.trim().length < 2) e.name = 'Holiday name must be at least 2 characters';
+    else if (needsName && name.trim().length > FIELD_LIMITS.holidayName.max) {
+      e.name = `Holiday name cannot exceed ${FIELD_LIMITS.holidayName.max} characters`;
+    }
     if (employeeName.trim().length < 2)      e.employeeName = 'Employee name is required';
+    else if (employeeName.trim().length > FIELD_LIMITS.employeeName.max) {
+      e.employeeName = `Employee name cannot exceed ${FIELD_LIMITS.employeeName.max} characters`;
+    }
     if (reason.trim().length < 3)            e.reason = 'Please give a reason (at least 3 characters)';
+    else if (reason.trim().length > FIELD_LIMITS.adminReason.max) {
+      e.reason = `Reason cannot exceed ${FIELD_LIMITS.adminReason.max} characters`;
+    }
     setErrors(e);
     return Object.keys(e).length === 0;
   };

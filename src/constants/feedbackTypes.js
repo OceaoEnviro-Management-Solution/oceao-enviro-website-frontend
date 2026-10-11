@@ -38,7 +38,7 @@ export const FEEDBACK_TYPES = [
 // ── File upload constraints ────────────────────────────────────────────────────
 export const ALLOWED_FILE_TYPES = ['application/pdf', 'image/jpeg', 'image/png'];
 export const ALLOWED_FILE_EXTENSIONS = ['PDF', 'JPG', 'PNG'];
-export const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+export const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB (API_CONTRACT.md: FILE_TOO_LARGE above this)
 
 // ── Rate limiting ─────────────────────────────────────────────────────────────
 export const RATE_LIMIT_WINDOW = 60 * 60 * 1000;  // 1 hour in ms

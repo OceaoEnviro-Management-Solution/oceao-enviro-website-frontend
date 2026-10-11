@@ -1,5 +1,27 @@
 // validation.js — Standalone form validation helpers.
 // Used by BookingFormInput and OTP pages.
+//
+// Field rules follow docs/API_CONTRACT.md ("Common field rules" and each endpoint), so a form
+// refuses what the backend would answer with 400 VALIDATION_FAILED.
+
+// Limits the contract states for the fields the website sends.
+export const FIELD_LIMITS = Object.freeze({
+  name:        { min: 2, max: 100 },
+  employeeName: { min: 2, max: 60 },     // performedBy
+  adminReason: { min: 3, max: 300 },
+  holidayName: { min: 2, max: 100 },
+  holidayBatch: 60,                       // dates in one bulk request
+});
+
+// ── Mobile number ──────────────────────────────────────────────────────────────
+// Contract: spaces and hyphens are stripped, an optional +91 or 0 prefix is dropped, then the
+// number must match ^[6-9]\d{9}$.
+export const normalizeMobile = (value) =>
+  String(value ?? '').trim().replace(/[\s-]/g, '').replace(/^(\+91|0)/, '');
+
+export const isValidMobile = (value) => /^[6-9]\d{9}$/.test(normalizeMobile(value));
+
+export const MOBILE_ERROR = 'Please enter a valid 10-digit Indian mobile number';
 
 // ── Email ──────────────────────────────────────────────────────────────────────
 export function validateEmail(value) {
@@ -12,8 +34,7 @@ export function validateEmail(value) {
 // ── Phone ──────────────────────────────────────────────────────────────────────
 export function validatePhone(value) {
   if (!value || !value.trim()) return 'Mobile number is required';
-  const phoneRegex = /^[\d\-+\s]{10,}$/;
-  if (!phoneRegex.test(value.trim())) return 'Please enter a valid phone number (min. 10 digits)';
+  if (!isValidMobile(value)) return MOBILE_ERROR;
   return null;
 }
 
@@ -51,17 +72,38 @@ export function validateField(field, value) {
 
   // Phone format
   if (field.type === 'tel') {
-    const phoneRegex = /^[\d\-+\s]{10,}$/;
-    if (!phoneRegex.test(v)) return 'Please enter a valid phone number (min. 10 digits)';
+    if (!isValidMobile(v)) return MOBILE_ERROR;
   }
 
-  // Min length
-  if (field.validation?.startsWith('minLength:')) {
-    const min = parseInt(field.validation.split(':')[1], 10);
-    if (v.length < min) return `${field.label} must be at least ${min} characters`;
+  // Length limits (minLength / maxLength on the field, or the older 'minLength:N' string)
+  const min = field.minLength
+    ?? (field.validation?.startsWith('minLength:') ? parseInt(field.validation.split(':')[1], 10) : undefined);
+  if (typeof v === 'string' && min && v.length < min) return `${field.label} must be at least ${min} characters`;
+  if (typeof v === 'string' && field.maxLength && v.length > field.maxLength) {
+    return `${field.label} cannot exceed ${field.maxLength} characters`;
   }
 
   return null; // valid
+}
+
+// ── Admin write fields (performedBy 2-60, reason 3-300) ───────────────────────
+// Return an error message, or null when the value is fine.
+export function validateEmployeeName(value) {
+  const { min, max } = FIELD_LIMITS.employeeName;
+  const v = (value || '').trim();
+  if (!v) return 'Employee name is required';
+  if (v.length < min) return `Employee name must be at least ${min} characters`;
+  if (v.length > max) return `Employee name cannot exceed ${max} characters`;
+  return null;
+}
+
+export function validateAdminReason(value) {
+  const { min, max } = FIELD_LIMITS.adminReason;
+  const v = (value || '').trim();
+  if (!v) return 'Reason is required';
+  if (v.length < min) return `Reason must be at least ${min} characters`;
+  if (v.length > max) return `Reason cannot exceed ${max} characters`;
+  return null;
 }
 
 // ── Format date for display ────────────────────────────────────────────────────
@@ -109,20 +151,28 @@ export function validateFeedbackForm(formData) {
   // Name — reuse validateMinLength
   const nameErr = validateMinLength(formData.name, 2, 'Name');
   if (nameErr) errors.name = nameErr;
+  else if (formData.name.trim().length > FIELD_LIMITS.name.max) {
+    errors.name = `Name cannot exceed ${FIELD_LIMITS.name.max} characters`;
+  }
 
   // Email — reuse validateEmail
   const emailErr = validateEmail(formData.email);
   if (emailErr) errors.email = emailErr;
 
-  // Phone — optional, no validation
+  // Phone — optional; when given it must be a valid Indian mobile number
+  if (formData.phone && formData.phone.trim() && !isValidMobile(formData.phone)) {
+    errors.phone = MOBILE_ERROR;
+  }
 
-  // Subject — reuse validateMinLength
-  const subjectErr = validateMinLength(formData.subject, 3, 'Subject');
+  // Subject — 10 to 100 characters (API_CONTRACT.md)
+  const subjectErr = validateMinLength(formData.subject, 10, 'Subject');
   if (subjectErr) errors.subject = subjectErr;
+  else if (formData.subject.trim().length > 100) errors.subject = 'Subject cannot exceed 100 characters';
 
-  // Message — reuse validateMinLength
+  // Message — 10 to 5000 characters
   const messageErr = validateMinLength(formData.message, 10, 'Message');
   if (messageErr) errors.message = messageErr;
+  else if (formData.message.trim().length > 5000) errors.message = 'Message cannot exceed 5000 characters';
 
   return errors;
 }

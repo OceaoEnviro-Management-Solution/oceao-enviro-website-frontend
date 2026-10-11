@@ -8,7 +8,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { X, AlertTriangle } from 'lucide-react';
-import { formatDateDisplay, formatTimeDisplay } from '../../utils/validation';
+import { formatDateDisplay, formatTimeDisplay, validateEmployeeName, validateAdminReason } from '../../utils/validation';
 import { getStoredAdminName, saveAdminName } from '../../utils/adminName';
 import { modalErrorsFrom } from '../../utils/adminFormErrors';
 
@@ -46,8 +46,10 @@ export default function CancelMeetingModal({ isOpen, booking, date, slotTime, on
 
   const validate = () => {
     const e = {};
-    if (!employeeName.trim()) e.employeeName = 'Employee name is required';
-    if (!reason.trim())       e.reason       = 'Reason is required';
+    const nameProblem = validateEmployeeName(employeeName);
+    if (nameProblem) e.employeeName = nameProblem;
+    const reasonProblem = validateAdminReason(reason);
+    if (reasonProblem) e.reason = reasonProblem;
     setErrors(e);
     return !Object.keys(e).length;
   };

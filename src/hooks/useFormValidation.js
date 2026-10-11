@@ -3,6 +3,7 @@
 // Handles formData state, per-field error messages, validation logic, and form reset.
 
 import { useState } from 'react';
+import { isValidMobile, MOBILE_ERROR } from '../utils/validation';
 
 export function useFormValidation(fields) {
   const [formData, setFormData] = useState({});
@@ -42,11 +43,19 @@ export function useFormValidation(fields) {
         }
       }
 
-      // Phone format (10+ digits, allows +, -, spaces)
+      // Phone: a valid Indian mobile number (the contract's rule)
       if (field.type === 'tel' && strVal) {
-        const phoneRegex = /^[\d\-+\s]{10,}$/;
-        if (!phoneRegex.test(strVal)) {
-          newErrors[field.id] = 'Please enter a valid phone number (min. 10 digits)';
+        if (!isValidMobile(strVal)) {
+          newErrors[field.id] = MOBILE_ERROR;
+        }
+      }
+
+      // Length limits from the field definition (docs/API_CONTRACT.md)
+      if (typeof strVal === 'string' && strVal) {
+        if (field.minLength && strVal.length < field.minLength) {
+          newErrors[field.id] = `${field.label} must be at least ${field.minLength} characters`;
+        } else if (field.maxLength && strVal.length > field.maxLength) {
+          newErrors[field.id] = `${field.label} cannot exceed ${field.maxLength} characters`;
         }
       }
 

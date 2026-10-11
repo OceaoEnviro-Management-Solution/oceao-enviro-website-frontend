@@ -8,6 +8,7 @@ import { PhoneCall, RefreshCw } from 'lucide-react';
 import { adminApi } from '../../services/adminApi';
 import { useAdminContext } from '../../hooks/useAdminContext';
 import { CALLBACK_PERIODS } from '../../constants/callbackPeriods';
+import { FIELD_LIMITS } from '../../utils/validation';
 import { getStoredAdminName, saveAdminName } from '../../utils/adminName';
 import { modalErrorsFrom } from '../../utils/adminFormErrors';
 
@@ -56,7 +57,13 @@ export default function CapacitySettingsCard() {
       }
     }
     if (employeeName.trim().length < 2) e.employeeName = 'Employee name is required';
+    else if (employeeName.trim().length > FIELD_LIMITS.employeeName.max) {
+      e.employeeName = `Employee name cannot exceed ${FIELD_LIMITS.employeeName.max} characters`;
+    }
     if (reason.trim().length < 3)       e.reason = 'Please give a reason (at least 3 characters)';
+    else if (reason.trim().length > FIELD_LIMITS.adminReason.max) {
+      e.reason = `Reason cannot exceed ${FIELD_LIMITS.adminReason.max} characters`;
+    }
     setErrors(e);
     return Object.keys(e).length === 0;
   }

@@ -19,7 +19,8 @@ const FIELDS = [
     type: 'text',
     required: true,
     placeholder: 'Your full name',
-    validation: 'minLength:3',
+    minLength: 2,
+    maxLength: 100,
     autoComplete: 'name'
   },
   {
@@ -43,6 +44,7 @@ const FIELDS = [
     label: 'Company / Organisation',
     type: 'text',
     required: false,
+    maxLength: 150,
     placeholder: 'Your company name',
     autoComplete: 'organization'
   },
@@ -51,6 +53,7 @@ const FIELDS = [
     label: 'Designation',
     type: 'text',
     required: false,
+    maxLength: 100,
     placeholder: 'Your job title',
     autoComplete: 'organization-title'
   }
