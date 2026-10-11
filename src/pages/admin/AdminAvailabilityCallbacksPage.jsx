@@ -47,8 +47,9 @@ export default function AdminAvailabilityCallbacksPage() {
         for (const day of result.data.days) byDate[day.date] = day;
         setCalendarDays(byDate);
       })
-      .catch(() => {
-        // The calendar simply stays uncoloured; picking a date still loads its periods.
+      .catch((err) => {
+        // The calendar stays uncoloured; picking a date still loads its periods.
+        if (!cancelled) setActionError(err?.message || 'Could not load the calendar.');
       });
 
     return () => { cancelled = true; };

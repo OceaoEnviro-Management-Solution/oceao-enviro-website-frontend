@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { X, ChevronDown, ChevronRight, ArrowRight } from 'lucide-react';
 import { navItems, ctaButtons } from '../../constants/navigation';

@@ -5,7 +5,7 @@
 
 import { useLocation, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, BookOpen, Calendar, Video, PhoneCall, Settings, ChevronDown, ChevronRight } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 const ROUTES = {
   dashboard:    '/admin/dashboard',
@@ -25,11 +25,13 @@ export default function AdminSidebar({ onNavigate }) {
     location.pathname === ROUTES.availCb;
 
   const [availOpen, setAvailOpen] = useState(isAvailActive);
+  const [wasAvailActive, setWasAvailActive] = useState(isAvailActive);
 
   // Keep expanded when navigating to an availability sub-route
-  useEffect(() => {
+  if (isAvailActive !== wasAvailActive) {
+    setWasAvailActive(isAvailActive);
     if (isAvailActive) setAvailOpen(true);
-  }, [isAvailActive]);
+  }
 
   function go(path) {
     navigate(path);

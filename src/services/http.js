@@ -16,7 +16,7 @@
 
 export const ADMIN_UNAUTHORIZED_EVENT = 'admin:unauthorized';
 
-const NETWORK_ERROR_MESSAGE = 'Unable to reach the server. Please check your connection and try again.';
+const NETWORK_ERROR_MESSAGE = "Can't reach the server. Check your connection and try again.";
 const INVALID_RESPONSE_MESSAGE = 'Unexpected response from the server. Please try again.';
 const GENERIC_ERROR_MESSAGE = 'Something went wrong. Please try again.';
 

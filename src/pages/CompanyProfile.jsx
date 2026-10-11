@@ -2,7 +2,7 @@
 // Composes: Hero → Tabs (with CompanySection) → StatsCard → DirectorsGrid → Core Values → CTA
 
 import { Link } from 'react-router-dom';
-import * as Icons from 'lucide-react';
+import * as Icons from '../utils/lucideIcons';
 import CompanyProfileHero from '../components/sections/CompanyProfileHero';
 import CompanyProfileTabs from '../components/CompanyProfile/CompanyProfileTabs';
 import StatsCard from '../components/CompanyProfile/StatsCard';

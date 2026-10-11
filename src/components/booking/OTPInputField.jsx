@@ -6,12 +6,7 @@ import { useRef } from 'react';
 const OTP_LENGTH = 6;
 
 export default function OTPInputField({ value = [], onChange, disabled = false, hasError = false }) {
-  const refs = useRef([]);
-
-  // Ensure refs array has correct length
-  if (refs.current.length !== OTP_LENGTH) {
-    refs.current = Array(OTP_LENGTH).fill(null);
-  }
+  const refs = useRef(Array(OTP_LENGTH).fill(null));
 
   // Handle single digit input
   const handleChange = (index, e) => {

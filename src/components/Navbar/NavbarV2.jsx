@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Menu, Search, ArrowRight } from 'lucide-react';
 import { navItems, ctaButtons } from '../../constants/navigation';
 import NavDropdown from './NavDropdown';
@@ -9,7 +9,6 @@ export default function NavbarV2({ onOpenMobileDrawer }) {
   const [isSticky, setIsSticky] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
   const timeoutRef = React.useRef(null);
-  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {

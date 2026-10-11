@@ -1,4 +1,3 @@
-import React from 'react';
 import { socialsData } from '../../constants/socials';
 
 const LinkedinIcon = (props) => (

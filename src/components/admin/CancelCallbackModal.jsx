@@ -9,6 +9,7 @@ import { useState, useEffect, useRef } from 'react';
 import { X, PhoneCall } from 'lucide-react';
 import { formatDateDisplay } from '../../utils/validation';
 import { CALLBACK_PERIODS } from '../../constants/callbackPeriods';
+import { modalErrorsFrom } from '../../utils/adminFormErrors';
 
 const ANIM = `@keyframes modalPop { from { transform: scale(0.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }`;
 
@@ -22,12 +23,15 @@ export default function CancelCallbackModal({ isOpen, slot, date, bookings = [],
   const [isSubmitting, setIsSubmitting]     = useState(false);
   const firstInputRef = useRef(null);
 
-  useEffect(() => {
+  // Start from a clean form each time the modal opens.
+  const [wasOpen, setWasOpen] = useState(false);
+  if (isOpen !== wasOpen) {
+    setWasOpen(isOpen);
     if (isOpen) {
       setStep(1); setCancelDecision('keep'); setSelectedIds(new Set());
       setEmployeeName(''); setReason(''); setErrors({});
     }
-  }, [isOpen]);
+  }
 
   useEffect(() => {
     if (isOpen && step === 3) setTimeout(() => firstInputRef.current?.focus(), 100);
@@ -68,8 +72,9 @@ export default function CancelCallbackModal({ isOpen, slot, date, bookings = [],
       const ids = cancelDecision === 'cancel' ? [...selectedIds] : [];
       await onConfirm(ids, employeeName.trim(), reason.trim());
       onClose();
-    } catch {
-      setErrors({ _global: 'Operation failed. Please try again.' });
+    } catch (error) {
+      // The backend message (or "Can't reach the server ...") stays in the modal.
+      setErrors(modalErrorsFrom(error, 'Operation failed. Please try again.'));
     } finally {
       setIsSubmitting(false);
     }

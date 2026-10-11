@@ -21,26 +21,14 @@ export default function QueryFormSection() {
   const { formData, handleChange, errors, setErrors, handleSubmit, resetForm } =
     useFormValidation(formFields.queryForm);
 
-  const onSuccess = async (data) => {
+  const onSuccess = async () => {
     setIsSubmitting(true);
-    // // TODO Phase 2: POST to /api/contact/query
-    // console.log('Query form ready for backend:', {
-    //   type: 'query',
-    //   data,
-    //   timestamp: new Date().toISOString(),
-    //   userAgent: navigator.userAgent,
-    // });
-    // // Simulate brief network delay for UX realism
-    // setTimeout(() => {
-    //   setIsSubmitting(false);
-    //   setShowPopup(true);
-    // }, 600);
 
     try {
       await submitQuery(formData, captchaToken);
       setShowPopup(true);
     } catch (error) {
-      console.error("Query submission failed:", error);
+      console.error('Query submission failed:', error?.code);
       // Backend field errors (already keyed by form field) show under the fields;
       // anything else is shown as a message.
       const fieldErrors = error.fieldErrors || {};

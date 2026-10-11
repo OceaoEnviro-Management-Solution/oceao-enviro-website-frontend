@@ -2,9 +2,8 @@
 // Wraps all booking pages so data persists across navigation steps.
 // Usage: wrap booking routes with <BookingProvider> in AppRoutes.jsx
 
-import React, { createContext, useState, useCallback } from 'react';
-
-export const BookingContext = createContext();
+import { useState, useCallback } from 'react';
+import { BookingContext } from './bookingContextObject';
 
 export function BookingProvider({ children }) {
   // ── Step 1: User details from form ──────────────────────────────────────────

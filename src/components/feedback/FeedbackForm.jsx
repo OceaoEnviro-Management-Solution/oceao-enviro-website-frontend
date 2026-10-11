@@ -100,7 +100,7 @@ const FeedbackForm = forwardRef(function FeedbackForm(_, ref) {
       });
       setSubmitted(true);
     } catch (err) {
-      console.error('[FeedbackForm] submitFeedback error:', err);
+      console.error('Feedback submission failed:', err?.code);
 
       // Backend field errors (already keyed by form field) show under the fields.
       const backendFieldErrors = err.fieldErrors || {};

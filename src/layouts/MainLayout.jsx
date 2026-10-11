@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import TopInfoBarV2 from '../components/TopInfoBar/TopInfoBarV2.jsx'
 import NavbarV2 from '../components/Navbar/NavbarV2.jsx'

@@ -10,6 +10,30 @@ import { CalendarDays, Loader2 } from 'lucide-react';
 import { bookingApi } from '../../services/bookingApi';
 import { toDateKey } from '../../utils/dateKey';
 
+// Custom input — shows calendar icon + selected date.
+// react-datepicker adds `value` and `onClick`; `isLoading` comes from DateSelector.
+function CustomInput({ value, onClick, isLoading }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={isLoading}
+      className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border-2 border-gray-200
+        hover:border-[#017119] focus:border-[#017119] focus:outline-none transition-colors duration-200
+        bg-white text-left text-sm disabled:cursor-wait disabled:opacity-70"
+      aria-label="Select a date"
+      aria-busy={isLoading}
+    >
+      {isLoading
+        ? <Loader2 className="w-5 h-5 text-[#017119] flex-shrink-0 animate-spin" />
+        : <CalendarDays className="w-5 h-5 text-[#017119] flex-shrink-0" />}
+      <span className={value ? 'text-[#011539] font-medium' : 'text-gray-400'}>
+        {isLoading ? 'Loading available dates…' : (value || 'Select a date')}
+      </span>
+    </button>
+  );
+}
+
 export default function DateSelector({ selectedDate, onChange, blockedDates = [] }) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -68,27 +92,6 @@ export default function DateSelector({ selectedDate, onChange, blockedDates = []
     return true;
   };
 
-  // Custom input — shows calendar icon + selected date
-  const CustomInput = ({ value, onClick }) => (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={isLoading}
-      className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border-2 border-gray-200
-        hover:border-[#017119] focus:border-[#017119] focus:outline-none transition-colors duration-200
-        bg-white text-left text-sm disabled:cursor-wait disabled:opacity-70"
-      aria-label="Select a date"
-      aria-busy={isLoading}
-    >
-      {isLoading
-        ? <Loader2 className="w-5 h-5 text-[#017119] flex-shrink-0 animate-spin" />
-        : <CalendarDays className="w-5 h-5 text-[#017119] flex-shrink-0" />}
-      <span className={value ? 'text-[#011539] font-medium' : 'text-gray-400'}>
-        {isLoading ? 'Loading available dates…' : (value || 'Select a date')}
-      </span>
-    </button>
-  );
-
   return (
     <div className="date-selector-wrapper">
       <DatePicker
@@ -97,7 +100,7 @@ export default function DateSelector({ selectedDate, onChange, blockedDates = []
         filterDate={filterDate}
         minDate={today}
         maxDate={maxDate}
-        customInput={<CustomInput />}
+        customInput={<CustomInput isLoading={isLoading} />}
         dateFormat="EEEE, d MMMM yyyy"
         placeholderText="Select a date"
         showPopperArrow={false}

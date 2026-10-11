@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { footerLinks } from '../../constants/footerLinks';
 import { locationsData } from '../../constants/locations';

@@ -2,8 +2,8 @@
 // Manages active tab state and passes company data to CompanySection
 // Supports optional URL query param: ?company=management-solutions | research-labs
 
-import { useState, useEffect } from 'react';
-import * as Icons from 'lucide-react';
+import { useState } from 'react';
+import * as Icons from '../../utils/lucideIcons';
 import { companies } from '../../constants/companies';
 import CompanySection from './CompanySection';
 

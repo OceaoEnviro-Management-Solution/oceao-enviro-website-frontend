@@ -1,4 +1,3 @@
-import React from 'react';
 import { clientele_1, clientele_2 } from '../../constants/clientele';
 
 export default function Clientele() {

@@ -21,11 +21,19 @@ export default function CancelMeetingModal({ isOpen, booking, date, slotTime, on
   const [isSubmitting, setIsSubmitting] = useState(false);
   const firstInputRef = useRef(null);
 
-  useEffect(() => {
+  // Start from a clean form each time the modal opens.
+  const [wasOpen, setWasOpen] = useState(false);
+  if (isOpen !== wasOpen) {
+    setWasOpen(isOpen);
     if (isOpen) {
       setEmployeeName(getStoredAdminName()); setReason(''); setErrors({});
-      setTimeout(() => firstInputRef.current?.focus(), 100);
     }
+  }
+
+  useEffect(() => {
+    if (!isOpen) return undefined;
+    const timer = setTimeout(() => firstInputRef.current?.focus(), 100);
+    return () => clearTimeout(timer);
   }, [isOpen]);
 
   useEffect(() => {

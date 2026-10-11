@@ -60,7 +60,7 @@ export default function OTPVerification() {
   const [countdown, setCountdown] = useState(
     arrivalNotice ? 0 : (Number.isFinite(arrivalResendAfter) ? arrivalResendAfter : DEFAULT_RESEND_COUNTDOWN)
   );
-  const [canResend, setCanResend] = useState(false);
+  const canResend = countdown <= 0;
   const [isResending, setIsResending] = useState(false);
 
   // A notice means the earlier verification is no longer valid: forget it.
@@ -78,7 +78,7 @@ export default function OTPVerification() {
 
   // Countdown timer
   useEffect(() => {
-    if (countdown <= 0) { setCanResend(true); return; }
+    if (countdown <= 0) return undefined;
     const timer = setTimeout(() => setCountdown(c => c - 1), 1000);
     return () => clearTimeout(timer);
   }, [countdown]);
@@ -141,14 +141,12 @@ export default function OTPVerification() {
       setOtpDigits(Array(OTP_LENGTH).fill(''));
       const wait = result?.data?.resendAfterSec;
       setCountdown(Number.isFinite(wait) ? wait : DEFAULT_RESEND_COUNTDOWN);
-      setCanResend(false);
     } catch (error) {
       // Cooldown, hourly limit, email failure ...: show the reason and keep waiting if told to.
       const info = describeOtpError(error);
       setResendError(info.message);
       if (info.retryAfterSec) {
         setCountdown(info.retryAfterSec);
-        setCanResend(false);
       }
     } finally {
       setIsResending(false);

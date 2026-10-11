@@ -1,7 +1,7 @@
 // StatsCard.jsx — "At a Glance" stats section showing both companies side-by-side
 // Always visible regardless of active tab
 
-import * as Icons from 'lucide-react';
+import * as Icons from '../../utils/lucideIcons';
 import { companies } from '../../constants/companies';
 
 function DynamicIcon({ name, className }) {

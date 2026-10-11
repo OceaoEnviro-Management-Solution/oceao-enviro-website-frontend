@@ -3,7 +3,7 @@
 // Mirrors the pattern of useBookingContext.js.
 
 import { useContext } from 'react';
-import { FeedbackContext } from '../context/FeedbackContext';
+import { FeedbackContext } from '../context/feedbackContextObject';
 
 export function useFeedbackContext() {
   const context = useContext(FeedbackContext);

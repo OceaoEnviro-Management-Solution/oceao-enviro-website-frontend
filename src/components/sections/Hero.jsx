@@ -1,5 +1,4 @@
-import React from 'react';
-import { ArrowRight, Leaf } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 // Inline leaf icon for the small top label
 const LeafIconSmall = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-[#3a912a]">

@@ -148,7 +148,7 @@ export default function CallbackFormSection() {
       // A unit of capacity was just used; refresh what the calendar shows.
       setCalendarTick((tick) => tick + 1);
     } catch (error) {
-      console.error('Callback request failed:', error);
+      console.error('Callback request failed:', error?.code);
 
       if (error.code === 'PERIOD_FULL' || error.code === 'PERIOD_BLOCKED') {
         // Someone else took it first: ask again and make the visitor choose another.

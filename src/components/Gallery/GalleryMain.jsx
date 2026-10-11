@@ -29,14 +29,6 @@ export default function GalleryMain({ openLightbox, onActiveIdChange }) {
     onActiveIdChange(activeId);
   }
 
-  const scrollTo = (id) => {
-    const el = document.getElementById(id);
-    if (el) {
-      const offset = 130;
-      window.scrollTo({ top: el.getBoundingClientRect().top + window.pageYOffset - offset, behavior: 'smooth' });
-    }
-  };
-
   return (
     <div className="flex-1 md:pl-8 lg:pl-12 min-w-0">
       <div id="gallery-top" className="space-y-16">

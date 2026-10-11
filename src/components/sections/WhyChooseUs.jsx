@@ -1,4 +1,3 @@
-import React from 'react';
 import { Target, FlaskConical, ShieldCheck, Users, Leaf, ClipboardCheck, Microscope, TestTube2, FileBadge, HardHat, Award, Building2, UsersRound, MapPin, Globe2 } from 'lucide-react';
 import { whyChooseUsFeatures, wedgeData, imageWedges, bottomStats } from '../../constants/whyChooseUs';
 
@@ -69,13 +68,6 @@ export default function WhyChooseUs() {
                   if (wedge.imageRef === 'imgResearch') bgImage = imgResearch;
                   if (wedge.imageRef === 'imgConsultancy') bgImage = imgConsultancy;
                   if (wedge.imageRef === 'imgTesting') bgImage = imgTesting;
-
-                  const clipPaths = {
-                    tr: 'polygon(50% 50%, 69.13% 3.81%, 96.19% 30.87%)',
-                    br: 'polygon(50% 50%, 96.19% 69.13%, 69.13% 96.19%)',
-                    bl: 'polygon(50% 50%, 30.87% 96.19%, 3.81% 69.13%)',
-                    tl: 'polygon(50% 50%, 3.81% 30.87%, 30.87% 3.81%)',
-                  };
 
 
                   return (

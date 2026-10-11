@@ -1,4 +1,3 @@
-import React from 'react';
 import { useTypewriterLoop } from '../../hooks/useTypewriterLoop';
 
 export default function AnimatedTagline() {

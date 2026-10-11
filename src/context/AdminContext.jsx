@@ -1,15 +1,13 @@
 // AdminContext.jsx — Lightweight shared state for the admin panel.
-// Holds: a refreshTrigger for cross-page data invalidation, logout, and requestName(),
+// Holds: a refreshTrigger for cross-page data invalidation and requestName(),
 // which asks which employee is making a change (once per admin session).
 // Each page manages its own local data state — this context is intentionally thin.
 // Mirrors BookingContext.jsx pattern for consistency.
 
-import React, { createContext, useState, useCallback, useRef } from 'react';
-import { adminApi } from '../services/adminApi';
+import { useState, useCallback, useRef } from 'react';
+import { AdminContext } from './adminContextObject';
 import AdminNameModal from '../components/admin/AdminNameModal';
 import { getStoredAdminName, saveAdminName } from '../utils/adminName';
-
-export const AdminContext = createContext();
 
 export function AdminProvider({ children }) {
 
@@ -53,17 +51,11 @@ export function AdminProvider({ children }) {
     settleName(name);
   };
 
-  // ── Logout ────────────────────────────────────────────────────────────────
-  const logout = useCallback(() => {
-    adminApi.logout();
-  }, []);
-
   return (
     <AdminContext.Provider value={{
       refreshTrigger,
       triggerRefresh,
-      requestName,
-      logout
+      requestName
     }}>
       {children}
       <AdminNameModal

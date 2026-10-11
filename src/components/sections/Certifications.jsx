@@ -1,18 +1,10 @@
-import React, { useState } from 'react';
-import { certifications, certifications_HP } from '../../constants/certifications';
-import { X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState } from 'react';
+import { certifications_HP } from '../../constants/certifications';
+import { X } from 'lucide-react';
 
 export default function Certifications() {
   const [selectedCert, setSelectedCert] = useState(null);
-  const [items, setItems] = useState(certifications_HP);
-
-  const nextSlide = () => {
-    setItems((prev) => [...prev.slice(1), prev[0]]);
-  };
-
-  const prevSlide = () => {
-    setItems((prev) => [prev[prev.length - 1], ...prev.slice(0, -1)]);
-  };
+  const items = certifications_HP;
 
   return (
     <section className="py-16 lg:py-24 bg-white relative overflow-hidden">

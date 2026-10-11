@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import companyLogo from '../../assets/logos/company-logo2.png';
 import nablLogo from '../../assets/logos/nabl-logo.png';

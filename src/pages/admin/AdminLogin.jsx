@@ -27,8 +27,9 @@ export default function AdminLogin() {
       .then((session) => {
         if (!cancelled && session) navigate('/admin/dashboard', { replace: true });
       })
-      .catch(() => {
-        // Backend unreachable: stay on the form; submitting will show the real error.
+      .catch((err) => {
+        // Backend unreachable: stay on the form and say why.
+        if (!cancelled) setError(err?.message || 'Could not check your session. Please try again.');
       });
 
     return () => { cancelled = true; };

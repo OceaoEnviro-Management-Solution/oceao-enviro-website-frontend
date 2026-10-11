@@ -41,14 +41,18 @@ export default function BlockSlotModal({ isOpen, mode = 'slot', slotTime, date, 
   const [notice, setNotice]             = useState(null); // lines shown after a block that skipped slots
   const firstInputRef = useRef(null);
 
-  useEffect(() => {
-    if (isOpen) {
+  // Start from a clean form each time the modal opens (or its slot / mode changes while open).
+  const openKey = isOpen ? `${isBooked}|${mode}` : null;
+  const [shownKey, setShownKey] = useState(null);
+  if (openKey !== shownKey) {
+    setShownKey(openKey);
+    if (openKey !== null) {
       // Skip step 1 for non-booked slots or day blocks
       setStep(isBooked && mode === 'slot' ? 1 : 2);
       setCancelDecision('no');
       setEmployeeName(getStoredAdminName()); setReason(''); setErrors({}); setNotice(null);
     }
-  }, [isOpen, isBooked, mode]);
+  }
 
   useEffect(() => {
     if (isOpen && step === 2) setTimeout(() => firstInputRef.current?.focus(), 100);

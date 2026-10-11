@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { gallery, homepageGalleryCategories } from '../../constants/gallery';
 import { ArrowRight, Image as ImageIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';

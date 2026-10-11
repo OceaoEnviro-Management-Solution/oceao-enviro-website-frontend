@@ -2,22 +2,28 @@
 // Contains: Logo/brand area (left), mobile hamburger button (left), logout (right).
 // Extracted from the old AdminDashboard.jsx top bar section.
 
+import { useState } from 'react';
 import { Menu, X, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { adminApi } from '../../services/adminApi';
 
 export default function AdminTopBar({ mobileSidebarOpen, onToggleMobile }) {
   const navigate = useNavigate();
+  const [loggingOut, setLoggingOut] = useState(false);
+  const [logoutError, setLogoutError] = useState('');
 
   async function handleLogout() {
+    setLoggingOut(true);
+    setLogoutError('');
     try {
       await adminApi.logout();
+      navigate('/admin/login', { replace: true });
     } catch (error) {
-      // The cookie could not be cleared (e.g. the server was unreachable); the login page
-      // checks the session again and shows the right state.
-      console.error('Logout request failed:', error);
+      // The cookie could not be cleared (e.g. the server was unreachable): stay signed in
+      // and say so, rather than looking logged out while the session is still open.
+      setLogoutError(error?.message || 'Could not log out. Please try again.');
+      setLoggingOut(false);
     }
-    navigate('/admin/login', { replace: true });
   }
 
   return (
@@ -49,11 +55,22 @@ export default function AdminTopBar({ mobileSidebarOpen, onToggleMobile }) {
         id="admin-topbar-logout"
         type="button"
         onClick={handleLogout}
-        className="flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-red-600 transition-colors duration-150 px-3 py-2 rounded-lg hover:bg-red-50"
+        disabled={loggingOut}
+        aria-busy={loggingOut}
+        className="flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-red-600 transition-colors duration-150 px-3 py-2 rounded-lg hover:bg-red-50 disabled:opacity-60 disabled:cursor-wait"
       >
         <LogOut className="w-4 h-4" />
-        <span className="hidden sm:inline">Logout</span>
+        <span className="hidden sm:inline">{loggingOut ? 'Logging out…' : 'Logout'}</span>
       </button>
+
+      {logoutError && (
+        <p
+          role="alert"
+          className="absolute right-4 top-full mt-1 max-w-xs text-xs text-red-600 bg-red-50 px-3 py-2 rounded-lg shadow-sm"
+        >
+          {logoutError}
+        </p>
+      )}
 
     </div>
   );

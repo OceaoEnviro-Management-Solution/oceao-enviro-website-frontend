@@ -3,7 +3,7 @@
 // Displays formatted time + status badge. Click selects if available.
 
 import { formatTimeDisplay } from '../../utils/validation';
-import { CheckCircle, Clock, Ban, Loader2 } from 'lucide-react';
+import { CheckCircle, Clock, Ban } from 'lucide-react';
 
 export default function TimeSlotCard({ time, status, isSelected, onClick }) {
   const isAvailable = status === 'available';

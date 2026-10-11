@@ -12,7 +12,7 @@ export function validateEmail(value) {
 // ── Phone ──────────────────────────────────────────────────────────────────────
 export function validatePhone(value) {
   if (!value || !value.trim()) return 'Mobile number is required';
-  const phoneRegex = /^[\d\-\+\s]{10,}$/;
+  const phoneRegex = /^[\d\-+\s]{10,}$/;
   if (!phoneRegex.test(value.trim())) return 'Please enter a valid phone number (min. 10 digits)';
   return null;
 }
@@ -51,7 +51,7 @@ export function validateField(field, value) {
 
   // Phone format
   if (field.type === 'tel') {
-    const phoneRegex = /^[\d\-\+\s]{10,}$/;
+    const phoneRegex = /^[\d\-+\s]{10,}$/;
     if (!phoneRegex.test(v)) return 'Please enter a valid phone number (min. 10 digits)';
   }
 

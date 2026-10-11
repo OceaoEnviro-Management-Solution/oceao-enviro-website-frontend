@@ -2,7 +2,7 @@
 // Throws a clear error if used outside <BookingProvider>.
 
 import { useContext } from 'react';
-import { BookingContext } from '../context/BookingContext';
+import { BookingContext } from '../context/bookingContextObject';
 
 export function useBookingContext() {
   const context = useContext(BookingContext);

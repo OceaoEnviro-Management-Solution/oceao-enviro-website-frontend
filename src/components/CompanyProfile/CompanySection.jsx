@@ -3,7 +3,7 @@
 //           → Our Presence → Industries We Serve
 
 import { Link } from 'react-router-dom';
-import * as Icons from 'lucide-react';
+import * as Icons from '../../utils/lucideIcons';
 import { sharedPresence, industriesServed } from '../../constants/companies';
 
 // ── Helper: resolve a Lucide icon by string name ─────────────────────────────

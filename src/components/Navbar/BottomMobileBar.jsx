@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Menu, FileText } from 'lucide-react';
 import { ctaButtons } from '../../constants/navigation';

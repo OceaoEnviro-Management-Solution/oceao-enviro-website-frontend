@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, ChevronDown, Menu, X } from 'lucide-react';
+import { Search, ChevronDown, X } from 'lucide-react';
 
 export default function AccreditationsSidebar({ 
   categories, 

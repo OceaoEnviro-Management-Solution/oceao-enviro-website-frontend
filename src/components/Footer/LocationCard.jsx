@@ -1,4 +1,3 @@
-import React from 'react';
 import { MapPin } from 'lucide-react';
 
 export default function LocationCard({ city, badge, address, mapUrl }) {

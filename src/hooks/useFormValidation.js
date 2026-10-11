@@ -44,7 +44,7 @@ export function useFormValidation(fields) {
 
       // Phone format (10+ digits, allows +, -, spaces)
       if (field.type === 'tel' && strVal) {
-        const phoneRegex = /^[\d\-\+\s]{10,}$/;
+        const phoneRegex = /^[\d\-+\s]{10,}$/;
         if (!phoneRegex.test(strVal)) {
           newErrors[field.id] = 'Please enter a valid phone number (min. 10 digits)';
         }

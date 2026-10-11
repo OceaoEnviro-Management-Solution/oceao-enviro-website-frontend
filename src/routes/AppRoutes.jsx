@@ -20,6 +20,7 @@ import Gallery from '../pages/Gallery.jsx';
 import ContactUs from '../pages/ContactUs.jsx';
 import Offices from '../pages/Offices.jsx'
 import Team from '../pages/Team.jsx';
+import NotFound from '../pages/NotFound.jsx';
 
 // ── Service pages ───────────────────────────────────────────────────────────
 import ServicesHub from '../pages/services/ServicesHub.jsx';
@@ -101,6 +102,9 @@ export default function AppRoutes() {
 
           {/* Admin login — inside MainLayout so Navbar/Footer still render */}
           <Route path="admin/login" element={<AdminLogin />} />
+
+          {/* Anything else: a simple Not Found page, still inside MainLayout */}
+          <Route path="*" element={<NotFound />} />
 
         </Route>
 

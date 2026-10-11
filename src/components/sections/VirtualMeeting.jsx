@@ -1,4 +1,3 @@
-import React from 'react';
 import { virtualMeetingContent } from '../../constants/virtualMeeting';
 import { Leaf, Globe2, Clock, MessageSquare, Calendar, Users, Shield, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';

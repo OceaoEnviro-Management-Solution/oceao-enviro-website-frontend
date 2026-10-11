@@ -64,12 +64,8 @@ const TurnstileWidget = forwardRef(function TurnstileWidget({ onToken, onExpire 
   });
 
   useEffect(() => {
-    if (!SITE_KEY) {
-      console.error(
-        'VITE_TURNSTILE_SITE_KEY is not set. Copy .env.example to .env.local, set it, then restart the dev server.'
-      );
-      return undefined;
-    }
+    // Without a site key the widget shows MISSING_KEY_MESSAGE (see .env.example).
+    if (!SITE_KEY) return undefined;
 
     let cancelled = false;
 

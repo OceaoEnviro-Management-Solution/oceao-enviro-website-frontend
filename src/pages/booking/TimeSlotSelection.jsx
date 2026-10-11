@@ -2,7 +2,7 @@
 // Two-column: DateSelector (left) + TimeSlotGrid (right)
 // Fetches slots on date change, shows skeleton loaders, allows one slot selection.
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useBookingContext } from '../../hooks/useBookingContext';
 import { bookingApi } from '../../services/bookingApi';
@@ -41,13 +41,7 @@ export default function TimeSlotSelection() {
     }
   }, [emailVerified, hasValidBookingToken, userDetails, navigate]);
 
-  // Fetch slots whenever selected date changes
-  useEffect(() => {
-    if (!selectedDate) return;
-    fetchSlots(selectedDate);
-  }, [selectedDate]);
-
-  const fetchSlots = async (date) => {
+  const fetchSlots = useCallback(async (date) => {
     const requestId = ++latestRequest.current;   // ignore answers that arrive out of order
     setIsLoadingSlots(true);
     setSlotError(null);
@@ -62,7 +56,15 @@ export default function TimeSlotSelection() {
     } finally {
       if (requestId === latestRequest.current) setIsLoadingSlots(false);
     }
-  };
+  }, [setSelectedTime]);
+
+  // Fetch slots whenever selected date changes (starting the fetch sets the loading state and
+  // clears the previous selection).
+  useEffect(() => {
+    if (!selectedDate) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchSlots(selectedDate);
+  }, [selectedDate, fetchSlots]);
 
   const handleDateChange = (date) => {
     setSelectedDate(date);

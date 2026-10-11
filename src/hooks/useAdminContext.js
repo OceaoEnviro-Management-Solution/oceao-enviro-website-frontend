@@ -3,7 +3,7 @@
 // Mirrors useBookingContext.js pattern.
 
 import { useContext } from 'react';
-import { AdminContext } from '../context/AdminContext';
+import { AdminContext } from '../context/adminContextObject';
 
 export function useAdminContext() {
   const context = useContext(AdminContext);

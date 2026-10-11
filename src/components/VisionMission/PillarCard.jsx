@@ -1,7 +1,7 @@
 // PillarCard.jsx — Reusable card for the "What Drives Us" pillar grid
 // Accepts: icon (Lucide name), title, description, accentColor, bgColor
 
-import * as Icons from 'lucide-react';
+import * as Icons from '../../utils/lucideIcons';
 
 export default function PillarCard({ lucideIcon, title, description, accentColor, bgColor }) {
   const Icon = Icons[lucideIcon] ?? Icons.Circle;

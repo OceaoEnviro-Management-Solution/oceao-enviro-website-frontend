@@ -59,8 +59,9 @@ export default function AdminAvailabilityVMPage() {
       .then((results) => {
         if (!cancelled) setMonthData(Object.assign({}, ...results.map((result) => result.availability)));
       })
-      .catch(() => {
-        // The calendar simply stays uncoloured; picking a date still loads its slots.
+      .catch((err) => {
+        // The calendar stays uncoloured; picking a date still loads its slots.
+        if (!cancelled) setActionError(err?.message || 'Could not load the calendar.');
       });
 
     return () => { cancelled = true; };

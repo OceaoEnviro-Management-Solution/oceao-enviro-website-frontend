@@ -6,7 +6,6 @@ import { useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useBookingContext } from '../../hooks/useBookingContext';
 import { bookingApi } from '../../services/bookingApi';
-import { formatDateDisplay, formatTimeDisplay } from '../../utils/validation';
 import { toDateKey } from '../../utils/dateKey';
 import { SESSION_EXPIRED_MESSAGE, SLOT_TAKEN_MESSAGE } from '../../constants/virtualMeeting';
 import BookingStepper from '../../components/booking/BookingStepper';

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Award, Calendar, MapPin, Leaf, Microscope, FlaskConical } from 'lucide-react';
 import envEarth from '../../assets/images/homePage/AboutSection/EnviornmentEarth.png';
 import envResearch from '../../assets/images/homePage/AboutSection/EnvironmentResearch.png';
