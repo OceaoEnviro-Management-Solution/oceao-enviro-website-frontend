@@ -12,7 +12,7 @@ Related documents: `docs/API_CONTRACT.md` (every endpoint), `docs/AGENT_CONTEXT.
 - **Send us your query**: form with Cloudflare Turnstile. The company inbox receives the query and the customer a confirmation.
 - **Feedback and complaint**: form with an optional PDF, JPG or PNG attachment (up to 5 MB), Turnstile, and the same two emails.
 - **Request a callback**: pick a date (today to 30 days ahead; Monday to Saturday, closed Sundays, second Saturdays and holidays) and a period (Morning 9 AM to 12 PM, Afternoon 12 to 3 PM, Evening 3 to 6 PM). Each period has a capacity set by staff and a request stops being offered when it is full. Customer and company are emailed.
-- **Virtual meeting booking** (`/booking-vm`): details, email OTP (6 digits, valid 5 minutes), date and slot (Monday to Friday, 10:00, 12:00, 14:00, 16:00 IST, one hour, up to 30 days ahead, at least 2 hours from now), review, confirmation. A Google Meet link is created and emailed. One upcoming booking per email address.
+- **Virtual meeting booking** (`/booking-vm`): details, email OTP (6 digits, valid 5 minutes), date and slot (Monday to Saturday, closed Sundays and the 2nd Saturday of the month, 10:00, 12:00, 14:00, 16:00 IST, one hour, up to 30 days ahead, at least 2 hours from now), review, confirmation. A Google Meet link is created and emailed. One upcoming booking per email address.
 - Responsive layout, a Not Found page for unknown addresses, and readable messages when the server cannot be reached.
 
 ### Admin panel (`/admin`)

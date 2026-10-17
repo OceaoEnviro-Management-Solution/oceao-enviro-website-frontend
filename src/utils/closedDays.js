@@ -20,3 +20,21 @@ export function isSecondSaturday(dateKey) {
 export function isClosedByRule(dateKey) {
   return isSunday(dateKey) || isSecondSaturday(dateKey);
 }
+
+/** Shown when a closed day is chosen anyway (stale calendar, typed input). */
+export const CLOSED_DAY_MESSAGE =
+  'We are closed on Sundays and the 2nd Saturday of the month. Please pick another date.';
+
+/**
+ * How a day is closed, for colouring the booking calendars:
+ *   'closed'  a Sunday or 2nd Saturday (the company is closed, every month)
+ *   'holiday' a festival or company holiday (the backend calendar answers reason "holiday")
+ *   null      anything else
+ * @param {string} dateKey 'YYYY-MM-DD'
+ * @param {{ reason?: string | null } | undefined} backendDay the day's entry of GET /vm|callback/calendar
+ */
+export function closedDayKind(dateKey, backendDay) {
+  if (isClosedByRule(dateKey)) return 'closed';
+  if (backendDay?.reason === 'holiday') return 'holiday';
+  return null;
+}

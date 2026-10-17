@@ -1,7 +1,7 @@
 // CallbackFormSection.jsx — Tab 3: Request a Callback (6-field form)
-// Uses react-datepicker (via FormInput) with min=today, max=today+30.
+// Date field: the website's standard picker (components/common/BookingDatePicker.jsx), window today..+30.
 // Same pattern as QueryFormSection, plus live availability from the backend:
-//   - the date picker disables every day GET /callback/calendar reports as not bookable
+//   - the date picker closes Sundays, 2nd Saturdays and every day GET /callback/calendar reports as not bookable
 //   - picking a date loads GET /callback/availability and fills Preferred Time
 //   - a Cloudflare Turnstile token is required to submit
 
@@ -12,13 +12,14 @@ import { formFields } from '../../constants/contact';
 import FormInput from './FormInput';
 import SuccessPopup from './SuccessPopup';
 import TurnstileWidget from '../common/TurnstileWidget';
+import ClosedDaysNote from '../common/ClosedDaysNote';
+import { useBookableCalendar } from '../../hooks/useBookableCalendar';
 import { callbackApi } from '../../services/callbackApi';
 import { toDateKey } from '../../utils/dateKey';
 
 const PERIOD_FILLED_MESSAGE = 'That time just filled up. Please choose another.';
 const SLOTS_LOADING_PLACEHOLDER = 'Loading time slots…';
 const NO_SLOTS_PLACEHOLDER = 'No time slots available';
-const DATES_LOADING_PLACEHOLDER = 'Loading available dates…';
 
 export default function CallbackFormSection() {
   const [showPopup, setShowPopup] = useState(false);
@@ -29,9 +30,8 @@ export default function CallbackFormSection() {
   const [captchaToken, setCaptchaToken] = useState('');
   const captchaRef = useRef(null);
 
-  // dateKey -> { date, bookable, reason } from GET /callback/calendar
-  const [calendar, setCalendar] = useState({ status: 'loading', byDate: {}, error: '' });
-  const [calendarTick, setCalendarTick] = useState(0);
+  // dateKey -> { date, bookable, reason } from GET /callback/calendar (today .. today + 30)
+  const calendar = useBookableCalendar(callbackApi.getCalendar);
 
   // Periods for the chosen date from GET /callback/availability, tagged with the request they
   // answer so a stale or in-flight answer is never mistaken for the current one.
@@ -42,34 +42,6 @@ export default function CallbackFormSection() {
     useFormValidation(formFields.callbackForm);
 
   const dateKey = toDateKey(formData.preferredDate);
-
-  // ── Calendar: today .. today + 30, loaded on mount and after a conflict ─────
-  useEffect(() => {
-    let cancelled = false;
-
-    const start = new Date();
-    start.setHours(0, 0, 0, 0);
-    const end = new Date(start);
-    end.setDate(end.getDate() + 30);
-
-    callbackApi.getCalendar(toDateKey(start), toDateKey(end))
-      .then((result) => {
-        if (cancelled) return;
-        const byDate = {};
-        for (const day of result.data.days) byDate[day.date] = day;
-        setCalendar({ status: 'ready', byDate, error: '' });
-      })
-      .catch((error) => {
-        if (cancelled) return;
-        setCalendar({
-          status: 'error',
-          byDate: {},
-          error: error?.message || 'Unable to load available dates.',
-        });
-      });
-
-    return () => { cancelled = true; };
-  }, [calendarTick]);
 
   // ── Availability: periods for the chosen date ───────────────────────────────
   useEffect(() => {
@@ -99,14 +71,6 @@ export default function CallbackFormSection() {
     && !(availability.key === dateKey && availability.tick === availabilityTick);
   const availabilityError = !availabilityLoading && dateKey ? availability.error : '';
 
-  // Disable days the backend says cannot be booked. A day missing from the answer (or the
-  // whole answer, when the calendar failed to load) stays selectable; the backend still
-  // enforces every rule when the request is submitted.
-  const filterDate = (date) => {
-    const day = calendar.byDate[toDateKey(date)];
-    return !day || day.bookable;
-  };
-
   // Preferred Time options: every period, unavailable ones disabled.
   const timeOptions = useMemo(() => {
     if (!dateKey || availabilityLoading) return [];
@@ -124,10 +88,7 @@ export default function CallbackFormSection() {
     timeField = { ...timeField, placeholder: NO_SLOTS_PLACEHOLDER };
   }
 
-  let dateField = formFields.callbackForm[3];
-  if (calendarLoading) {
-    dateField = { ...dateField, placeholder: DATES_LOADING_PLACEHOLDER };
-  }
+  const dateField = formFields.callbackForm[3];
 
   // Changing the date clears the chosen time: the periods belong to the old date.
   const handleFieldChange = (id, value) => {
@@ -146,7 +107,7 @@ export default function CallbackFormSection() {
       await callbackApi.createRequest(data, captchaToken);
       setShowPopup(true);
       // A unit of capacity was just used; refresh what the calendar shows.
-      setCalendarTick((tick) => tick + 1);
+      calendar.reload();
     } catch (error) {
       console.error('Callback request failed:', error?.code);
 
@@ -155,7 +116,7 @@ export default function CallbackFormSection() {
         handleChange('preferredTime', '');
         setErrors((prev) => ({ ...prev, preferredTime: PERIOD_FILLED_MESSAGE }));
         setAvailabilityTick((tick) => tick + 1);
-        setCalendarTick((tick) => tick + 1);
+        calendar.reload();
       } else {
         // Backend field errors (already keyed by form field) show under the fields;
         // anything else (DUPLICATE_REQUEST, CAPTCHA_FAILED ...) is shown as a message.
@@ -200,6 +161,9 @@ export default function CallbackFormSection() {
         </p>
       </div>
 
+      {/* Closed days (the same colour as the closed days in the calendar) */}
+      <ClosedDaysNote className="mb-6" />
+
       <form
         onSubmit={(e) => handleSubmit(e, onSuccess)}
         noValidate
@@ -236,8 +200,8 @@ export default function CallbackFormSection() {
             value={formData.preferredDate}
             onChange={handleFieldChange}
             error={errors.preferredDate}
-            filterDate={filterDate}
-            disabled={calendarLoading}
+            calendarDays={calendar.byDate}
+            loading={calendarLoading}
           />
           <FormInput
             field={timeField}

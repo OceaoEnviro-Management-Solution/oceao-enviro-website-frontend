@@ -1,196 +1,31 @@
-// DateSelector.jsx — Calendar date picker using react-datepicker.
-// Disables: weekends, past dates, and every date the backend calendar reports as not bookable
-// (holidays, full days ...). The calendar is fetched once, for today to today + 30.
-// Props: selectedDate, onChange, blockedDates (array of date strings 'YYYY-MM-DD')
+// DateSelector.jsx — The date picker of the virtual meeting booking (step 3).
+// A thin wrapper: it loads GET /vm/calendar and hands the answer to the website's one date
+// picker (components/common/BookingDatePicker.jsx), which holds every rule and the colours.
+// Props: selectedDate, onChange
 
-import { useEffect, useState } from 'react';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-import { CalendarDays, Loader2 } from 'lucide-react';
+import BookingDatePicker from '../common/BookingDatePicker';
+import ClosedDaysNote from '../common/ClosedDaysNote';
+import { useBookableCalendar } from '../../hooks/useBookableCalendar';
 import { bookingApi } from '../../services/bookingApi';
-import { toDateKey } from '../../utils/dateKey';
 
-// Custom input — shows calendar icon + selected date.
-// react-datepicker adds `value` and `onClick`; `isLoading` comes from DateSelector.
-function CustomInput({ value, onClick, isLoading }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={isLoading}
-      className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border-2 border-gray-200
-        hover:border-[#017119] focus:border-[#017119] focus:outline-none transition-colors duration-200
-        bg-white text-left text-sm disabled:cursor-wait disabled:opacity-70"
-      aria-label="Select a date"
-      aria-busy={isLoading}
-    >
-      {isLoading
-        ? <Loader2 className="w-5 h-5 text-[#017119] flex-shrink-0 animate-spin" />
-        : <CalendarDays className="w-5 h-5 text-[#017119] flex-shrink-0" />}
-      <span className={value ? 'text-[#011539] font-medium' : 'text-gray-400'}>
-        {isLoading ? 'Loading available dates…' : (value || 'Select a date')}
-      </span>
-    </button>
-  );
-}
-
-export default function DateSelector({ selectedDate, onChange, blockedDates = [] }) {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  const maxDate = new Date();
-  maxDate.setDate(maxDate.getDate() + 30);
-
-  // dateKey -> { date, bookable, reason, availableCount } from GET /vm/calendar
-  const [calendar, setCalendar] = useState({});
-  const [calendarStatus, setCalendarStatus] = useState('loading'); // loading | ready | error
-  const [calendarError, setCalendarError] = useState('');
-  const isLoading = calendarStatus === 'loading';
-
-  // Load the bookable window once, on mount.
-  useEffect(() => {
-    let cancelled = false;
-
-    const start = new Date();
-    start.setHours(0, 0, 0, 0);
-    const end = new Date(start);
-    end.setDate(end.getDate() + 30);
-
-    bookingApi.getCalendar(toDateKey(start), toDateKey(end))
-      .then((result) => {
-        if (cancelled) return;
-        const byDate = {};
-        for (const day of result.data.days) byDate[day.date] = day;
-        setCalendar(byDate);
-        setCalendarStatus('ready');
-      })
-      .catch((error) => {
-        if (cancelled) return;
-        setCalendarError(error?.message || 'Unable to load available dates.');
-        setCalendarStatus('error');
-      });
-
-    return () => { cancelled = true; };
-  }, []);
-
-  // Convert blocked date strings to Date objects for comparison
-  const blockedDateSet = new Set(blockedDates);
-
-  // Filter function — returns false for dates that should be disabled
-  const filterDate = (date) => {
-    const day = date.getDay();
-    // Disable weekends
-    if (day === 0 || day === 6) return false;
-    // Disable past dates
-    if (date < today) return false;
-    // Disable fully blocked dates
-    const dateStr = toDateKey(date);
-    if (blockedDateSet.has(dateStr)) return false;
-    // Disable dates the backend says cannot be booked
-    const calendarDay = calendar[dateStr];
-    if (calendarDay && !calendarDay.bookable) return false;
-    return true;
-  };
+export default function DateSelector({ selectedDate, onChange }) {
+  const calendar = useBookableCalendar(bookingApi.getCalendar);
 
   return (
-    <div className="date-selector-wrapper">
-      <DatePicker
+    <div className="flex flex-col gap-3">
+      <ClosedDaysNote />
+
+      <BookingDatePicker
         selected={selectedDate}
         onChange={onChange}
-        filterDate={filterDate}
-        minDate={today}
-        maxDate={maxDate}
-        customInput={<CustomInput isLoading={isLoading} />}
-        dateFormat="EEEE, d MMMM yyyy"
-        placeholderText="Select a date"
-        showPopperArrow={false}
-        calendarStartDay={1}  // Monday first
-        formatWeekDay={(dayName) => dayName.slice(0, 3)}  // Mon, Tue, Wed ...
-        inline={false}
-        popperProps={{ strategy: 'fixed' }}
-        portalId="datepicker-portal"
+        calendarDays={calendar.byDate}
+        loading={calendar.status === 'loading'}
+        placeholder="Select a date"
       />
 
-      {calendarStatus === 'error' && (
-        <p className="mt-2 text-xs text-red-500" role="alert">{calendarError}</p>
+      {calendar.status === 'error' && (
+        <p className="text-xs text-red-500" role="alert">{calendar.error}</p>
       )}
-
-      <style>{`
-        /* ── Popper z-index — must sit above navbar (z-50), hero, footer ── */
-        #datepicker-portal {
-          position: fixed;
-          z-index: 9999;
-        }
-        .react-datepicker-popper {
-          z-index: 9999 !important;
-        }
-
-        /* react-datepicker brand overrides */
-        .react-datepicker {
-          border: 2px solid #e5e7eb;
-          border-radius: 16px;
-          box-shadow: 0 20px 60px rgba(0,0,0,0.12);
-          font-family: inherit;
-          overflow: hidden;
-        }
-        .react-datepicker__header {
-          background: #017119;
-          border: none;
-          padding: 14px;
-        }
-        .react-datepicker__current-month {
-          color: white;
-          font-size: 15px;
-          font-weight: 700;
-        }
-        /* Weekday names (Mon, Tue ...) sit in their own row BELOW the green header, so they
-           need a dark colour; the earlier white text was invisible on the white background. */
-        .react-datepicker__day-names {
-          margin-top: 6px;
-          margin-bottom: 0;
-        }
-        .react-datepicker__day-name {
-          color: #017119;
-          font-size: 12px;
-          font-weight: 700;
-          width: 36px;
-          line-height: 36px;
-          margin: 2px;
-        }
-        .react-datepicker__navigation-icon::before {
-          border-color: white;
-        }
-        .react-datepicker__day {
-          width: 36px;
-          height: 36px;
-          line-height: 36px;
-          border-radius: 50%;
-          margin: 2px;
-          font-size: 13px;
-          transition: all 0.15s;
-        }
-        .react-datepicker__day:hover:not(.react-datepicker__day--disabled) {
-          background-color: #E4F3E6;
-          color: #017119;
-        }
-        .react-datepicker__day--selected,
-        .react-datepicker__day--keyboard-selected {
-          background-color: #017119 !important;
-          color: white !important;
-          font-weight: 700;
-        }
-        .react-datepicker__day--today {
-          font-weight: 700;
-          border: 2px solid #017119;
-        }
-        .react-datepicker__day--disabled {
-          color: #d1d5db !important;
-          cursor: not-allowed;
-        }
-        .react-datepicker__navigation {
-          top: 14px;
-        }
-      `}</style>
     </div>
   );
 }

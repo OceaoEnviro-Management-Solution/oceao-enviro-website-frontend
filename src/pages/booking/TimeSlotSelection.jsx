@@ -11,6 +11,7 @@ import { toDateKey } from '../../utils/dateKey';
 import { SESSION_EXPIRED_MESSAGE } from '../../constants/virtualMeeting';
 import BookingStepper from '../../components/booking/BookingStepper';
 import DateSelector from '../../components/booking/DateSelector';
+import CalendarLegend from '../../components/common/CalendarLegend';
 import TimeSlotGrid from '../../components/booking/TimeSlotGrid';
 import { CalendarDays, AlertCircle, RefreshCw } from 'lucide-react';
 
@@ -127,16 +128,12 @@ export default function TimeSlotSelection() {
               onChange={handleDateChange}
             />
 
-            {/* Helper text */}
-            <div className="mt-4 flex flex-wrap gap-3 text-xs text-gray-500">
-              <span className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-full bg-gray-200 inline-block" />
-                Weekends not available
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-full bg-[#017119] inline-block" />
-                Selected
-              </span>
+            {/* What the colours mean, and when meetings run */}
+            <div className="mt-4 flex flex-col gap-3">
+              <CalendarLegend />
+              <p className="text-xs text-gray-500">
+                Virtual meetings run Monday to Saturday. Slots start at 10:00, 12:00, 14:00 and 16:00 IST (one hour each).
+              </p>
             </div>
           </div>
 

@@ -12,6 +12,7 @@
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { toDateKey } from '../../utils/dateKey';
+import { isClosedByRule } from '../../utils/closedDays';
 
 // ── VM status from the month's slot counts ───────────────────────────────────
 function getVMDayStatus(dateStr, availability) {
@@ -80,8 +81,6 @@ export default function Calendar({
   for (let i = 0; i < startDow; i++) cells.push(null);
   for (let d = 1; d <= lastDay.getDate(); d++) cells.push(d);
 
-  const isWeekend = (idx) => { const a = idx % 7; return a === 5 || a === 6; };
-
   const todayStr = toDateKey(today);
 
   function getDateStr(day) {
@@ -89,9 +88,10 @@ export default function Calendar({
     return `${viewYear}-${String(viewMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
   }
 
-  function isDateDisabled(day, cellIdx) {
+  function isDateDisabled(day) {
     if (!day) return true;
-    if (isWeekend(cellIdx)) return true;
+    // Sundays and the 2nd Saturday are closed for both services; Saturdays otherwise run
+    if (isClosedByRule(getDateStr(day))) return true;
     // Holidays and other days VM does not run (from /admin/vm/calendar)
     if (mode === 'vm' && availability[getDateStr(day)]?.working === false) return true;
     if (mode === 'callback' && CALLBACK_CLOSED_REASONS.includes(callbackAvailability[getDateStr(day)]?.reason)) return true;
@@ -130,7 +130,7 @@ export default function Calendar({
           if (!day) return <div key={`e-${idx}`} />;
 
           const dateStr     = getDateStr(day);
-          const disabled    = isDateDisabled(day, idx);
+          const disabled    = isDateDisabled(day);
           const isToday     = dateStr === todayStr;
           const selDateStr  = selectedDate ? toDateKey(selectedDate) : null;
           const isSelected  = dateStr === selDateStr;

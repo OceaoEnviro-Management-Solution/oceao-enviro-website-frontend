@@ -35,7 +35,12 @@ const SKIP_TEXT = { exists: 'already a holiday', closed_by_rule: 'closed by rule
 export default function HolidayPlanner() {
   const { refreshTrigger, triggerRefresh } = useAdminContext();
 
-  const [year, setYear] = useState(new Date().getFullYear());
+  // Only the current year and the next one can be planned (the switcher stops at both).
+  const currentYear = new Date().getFullYear();
+  const [selectedYear, setSelectedYear] = useState(currentYear);
+  const year = Math.min(Math.max(selectedYear, currentYear), currentYear + 1);
+  const canGoBack = year > currentYear;
+  const canGoForward = year < currentYear + 1;
 
   // The year's holidays, tagged with the year they answer (a stale answer is never shown)
   const [loaded, setLoaded] = useState({ year: null, holidays: [], error: '' });
@@ -78,7 +83,9 @@ export default function HolidayPlanner() {
 
   // ── Year navigation ───────────────────────────────────────────────────────
   function changeYear(delta) {
-    setYear((y) => y + delta);
+    const next = year + delta;
+    if (next < currentYear || next > currentYear + 1) return;
+    setSelectedYear(next);
     setPicked({});
     setNotice(null);
   }
@@ -197,14 +204,16 @@ export default function HolidayPlanner() {
         </div>
 
         <div className="flex items-center gap-2">
-          <button type="button" onClick={() => changeYear(-1)}
-            className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors"
+          <button type="button" onClick={() => changeYear(-1)} disabled={!canGoBack}
+            className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors
+              disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-gray-100"
             aria-label="Previous year">
             <ChevronLeft className="w-4 h-4 text-gray-600" />
           </button>
           <p className="text-sm font-bold text-[#011539] min-w-[3.5rem] text-center">{year}</p>
-          <button type="button" onClick={() => changeYear(1)}
-            className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors"
+          <button type="button" onClick={() => changeYear(1)} disabled={!canGoForward}
+            className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors
+              disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-gray-100"
             aria-label="Next year">
             <ChevronRight className="w-4 h-4 text-gray-600" />
           </button>

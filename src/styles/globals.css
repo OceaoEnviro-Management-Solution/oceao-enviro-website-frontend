@@ -22,3 +22,92 @@
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
+
+/* ── Booking calendar (components/common/BookingDatePicker.jsx) ──────────────────────────
+   The one look of the website's date picker: brand header, round days, coloured closed days. */
+#datepicker-portal {
+  position: fixed;
+  z-index: 9999;
+}
+.react-datepicker-popper {
+  z-index: 9999 !important;
+}
+.react-datepicker {
+  border: 2px solid #e5e7eb;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+  font-family: inherit;
+  overflow: hidden;
+}
+.react-datepicker__header {
+  background: #017119;
+  border: none;
+  padding: 14px;
+}
+.react-datepicker__current-month {
+  color: white;
+  font-size: 15px;
+  font-weight: 700;
+}
+/* Weekday names sit in their own row below the green header, so they need a dark colour. */
+.react-datepicker__day-names {
+  margin-top: 6px;
+  margin-bottom: 0;
+}
+.react-datepicker__day-name {
+  color: #017119;
+  font-size: 12px;
+  font-weight: 700;
+  width: 36px;
+  line-height: 36px;
+  margin: 2px;
+}
+.react-datepicker__navigation-icon::before {
+  border-color: white;
+}
+.react-datepicker__navigation {
+  top: 14px;
+}
+.react-datepicker__day {
+  width: 36px;
+  height: 36px;
+  line-height: 36px;
+  border-radius: 50%;
+  margin: 2px;
+  font-size: 13px;
+  transition: all 0.15s;
+}
+.react-datepicker__day:hover:not(.react-datepicker__day--disabled) {
+  background-color: #E4F3E6;
+  color: #017119;
+}
+.react-datepicker__day--selected,
+.react-datepicker__day--keyboard-selected {
+  background-color: #017119 !important;
+  color: white !important;
+  font-weight: 700;
+}
+.react-datepicker__day--today {
+  font-weight: 700;
+  border: 2px solid #017119;
+}
+.react-datepicker__day--disabled {
+  color: #d1d5db !important;
+  cursor: not-allowed;
+}
+/* Closed days: Sundays and the 2nd Saturday (brand orange light), then festival / company holidays */
+.react-datepicker__day--disabled.oe-day-closed {
+  background-color: var(--color-brand-orange-light);
+  color: #8A5A00 !important;
+}
+.react-datepicker__day--disabled.oe-day-holiday {
+  background-color: #FDE4E4;
+  color: #B42318 !important;
+}
+/* The legend under the days */
+.react-datepicker__children-container {
+  width: auto;
+  margin: 0;
+  padding: 10px 14px 14px;
+  border-top: 1px solid #f3f4f6;
+}

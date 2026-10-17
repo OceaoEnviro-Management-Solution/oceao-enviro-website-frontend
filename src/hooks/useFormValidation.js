@@ -4,6 +4,8 @@
 
 import { useState } from 'react';
 import { isValidMobile, MOBILE_ERROR } from '../utils/validation';
+import { isClosedByRule, CLOSED_DAY_MESSAGE } from '../utils/closedDays';
+import { toDateKey } from '../utils/dateKey';
 
 export function useFormValidation(fields) {
   const [formData, setFormData] = useState({});
@@ -67,6 +69,8 @@ export function useFormValidation(fields) {
           newErrors[field.id] = 'Please select today or a future date';
         } else if (selected > maxDate) {
           newErrors[field.id] = 'Please select a date within the next 30 days';
+        } else if (isClosedByRule(toDateKey(selected))) {
+          newErrors[field.id] = CLOSED_DAY_MESSAGE;
         }
       }
     });

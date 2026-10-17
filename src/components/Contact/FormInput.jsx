@@ -2,8 +2,7 @@
 // Renders: text, email, tel, textarea, dropdown (select), datepicker (react-datepicker)
 // All styling is consistent; label is uppercase brand-green, focus turns border green.
 
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+import BookingDatePicker from '../common/BookingDatePicker';
 import { dropdownOptions } from '../../constants/contact';
 
 const BASE_INPUT_CLASS = `
@@ -20,35 +19,27 @@ const ERROR_INPUT_CLASS = `
 
 // Optional props (all default to the static behaviour):
 //   options     dropdown only: [{ value, label, disabled? }] instead of dropdownOptions[id]
-//   filterDate  datepicker only: (date) => boolean, false disables that day
-//   disabled    datepicker and dropdown: locks the control
-export default function FormInput({ field, value, onChange, error, options, filterDate, disabled = false }) {
+//   calendarDays  datepicker only: dateKey -> { bookable, reason } from the public calendar
+//   loading       datepicker only: the calendar answer is still on its way
+//   disabled      datepicker and dropdown: locks the control
+export default function FormInput({ field, value, onChange, error, options, calendarDays, loading = false, disabled = false }) {
   const { id, label, type, required, placeholder } = field;
   const inputClass = `${BASE_INPUT_CLASS} ${error ? ERROR_INPUT_CLASS : ''}`;
 
   // ── Date picker ──────────────────────────────────────────────────────────
   if (type === 'datepicker') {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const maxDate = new Date(today);
-    maxDate.setDate(maxDate.getDate() + 30);
-
     return (
       <div className="flex flex-col gap-1">
         <Label htmlFor={id} required={required}>{label}</Label>
-        <DatePicker
+        <BookingDatePicker
           id={id}
           selected={value instanceof Date ? value : null}
           onChange={(date) => onChange(id, date)}
-          minDate={today}
-          maxDate={maxDate}
-          filterDate={filterDate}
+          calendarDays={calendarDays}
+          loading={loading}
           disabled={disabled}
-          placeholderText={placeholder}
-          dateFormat="dd MMM yyyy"
-          autoComplete="off"
-          wrapperClassName="w-full"
-          className={`${inputClass} cursor-pointer disabled:cursor-wait disabled:opacity-70`}
+          hasError={Boolean(error)}
+          placeholder={placeholder}
         />
         <ErrorMsg>{error}</ErrorMsg>
       </div>
