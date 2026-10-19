@@ -1,4 +1,5 @@
 import Hero from '../components/sections/Hero';
+import UpdatesCarousel from '../components/sections/UpdatesCarousel';
 import Welcome from '../components/sections/Welcome';
 import Services from '../components/sections/Services';
 import WhyChooseUs from '../components/sections/WhyChooseUs';
@@ -11,6 +12,7 @@ export default function Home() {
   return (
     <div className="w-full flex flex-col">
       <Hero />
+      <UpdatesCarousel />
       <Welcome />
       <Services />
       {/* <Products /> */}

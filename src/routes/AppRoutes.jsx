@@ -20,6 +20,7 @@ import Gallery from '../pages/Gallery.jsx';
 import ContactUs from '../pages/ContactUs.jsx';
 import Offices from '../pages/Offices.jsx'
 import Team from '../pages/Team.jsx';
+import Updates from '../pages/Updates.jsx';
 import NotFound from '../pages/NotFound.jsx';
 
 // ── Service pages ───────────────────────────────────────────────────────────
@@ -90,6 +91,9 @@ export default function AppRoutes() {
           <Route path="services/laboratory-services" element={<LaboratoryServices />} />
 
           <Route path="products" element={<ProductsPage />} />
+
+          {/* PARIVESH updates: ?page=N holds the page number */}
+          <Route path="updates" element={<Updates />} />
 
           {/* ── Booking flow — single BookingProvider for all steps ─────── */}
           <Route path="booking-vm" element={<BookingLayout />}>

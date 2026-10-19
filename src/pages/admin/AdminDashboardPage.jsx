@@ -12,6 +12,7 @@ import { formatDateDisplay } from '../../utils/validation';
 import StatCard from '../../components/admin/StatCard';
 import MeetingsList from '../../components/admin/MeetingsList';
 import VisitsCard from '../../components/admin/VisitsCard';
+import PariveshSyncBanner from '../../components/admin/PariveshSyncBanner';
 import { Video, PhoneCall, RefreshCw, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 
 // "YYYY-MM-DD" shifted by whole days, using local date parts (never UTC).
@@ -143,6 +144,9 @@ export default function AdminDashboardPage() {
   return (
     <div className="space-y-6">
       {header}
+
+      {/* Warning when the PARIVESH updates have not synced for more than 24 hours */}
+      <PariveshSyncBanner />
 
       {/* Stat cards */}
       <div className="grid grid-cols-2 gap-4">
