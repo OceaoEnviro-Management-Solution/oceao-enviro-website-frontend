@@ -1,7 +1,7 @@
 import { Award, Calendar, MapPin, Leaf, Microscope, FlaskConical } from 'lucide-react';
-import envEarth from '../../assets/images/homePage/AboutSection/EnviornmentEarth.png';
 import envResearch from '../../assets/images/homePage/AboutSection/EnvironmentResearch.png';
 import labTesting from '../../assets/images/homePage/AboutSection/LabTesting.jpg';
+import AqiPanel from './AqiPanel';
 
 export default function Welcome() {
   return (
@@ -13,12 +13,8 @@ export default function Welcome() {
           <div className="flex flex-col gap-4">
             {/* Section 1: Images */}
             <div className="grid grid-cols-2 gap-1 pt-11">
-              <div className="col-span-2 overflow-hidden rounded-xl">
-                <img
-                  src={envEarth}
-                  alt="Environmental Earth"
-                  className="w-full h-[250px] lg:h-[300px] object-cover hover:scale-105 transition-transform duration-700"
-                />
+              <div className="col-span-2">
+                <AqiPanel />
               </div>
               <div className="overflow-hidden rounded-xl">
                 <img
