@@ -6,11 +6,14 @@ import { importantLinks } from '../../constants/quickLinks';
 import AnimatedTagline from './AnimatedTagline';
 import LocationCard from './LocationCard';
 import SocialLinks from './SocialLinks';
+import { useVisitorCount } from '../../hooks/useVisitorCount';
 import companyLogo from '../../assets/logos/company-logo2.png';
 import { Phone, Mail, MapPin, Clock } from 'lucide-react';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  // null while loading, on an error and on /admin pages: then the count is simply left out
+  const visitors = useVisitorCount();
 
   return (
     <footer className="bg-[#011539] pt-10 pb-6 border-t-[4px] border-[#FDB813] relative overflow-hidden text-sm font-sans">
@@ -144,9 +147,14 @@ export default function Footer() {
 
       {/* Bottom Bar */}
       <div className="w-full px-4 lg:px-6 pt-6 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-400 relative z-10">
-        <p>
-          &copy; {currentYear} Oceao-Enviro Management Solutions &amp; Research &amp; Analytics Laboratories.<br className="hidden md:block" /> All rights reserved.
-        </p>
+        <div>
+          <p>
+            &copy; {currentYear} Oceao-Enviro Management Solutions &amp; Research &amp; Analytics Laboratories.<br className="hidden md:block" /> All rights reserved.
+          </p>
+          {visitors !== null && (
+            <p className="mt-1">Visitors: {visitors.toLocaleString('en-IN')}</p>
+          )}
+        </div>
         <div className="flex items-center gap-4">
           <Link to="/privacy" className="hover:text-brand-orange transition-colors">Privacy Policy</Link>
           <span className="text-gray-600">|</span>

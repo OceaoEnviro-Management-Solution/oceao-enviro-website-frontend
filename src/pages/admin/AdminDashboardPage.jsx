@@ -11,6 +11,7 @@ import { toDateKey, fromDateKey } from '../../utils/dateKey';
 import { formatDateDisplay } from '../../utils/validation';
 import StatCard from '../../components/admin/StatCard';
 import MeetingsList from '../../components/admin/MeetingsList';
+import VisitsCard from '../../components/admin/VisitsCard';
 import { Video, PhoneCall, RefreshCw, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 
 // "YYYY-MM-DD" shifted by whole days, using local date parts (never UTC).
@@ -176,6 +177,9 @@ export default function AdminDashboardPage() {
           emptyMessage={isToday ? undefined : 'Nothing scheduled for this day'}
         />
       </div>
+
+      {/* Visitors of the website: the total and the last 30 days */}
+      <VisitsCard />
 
       {/* View all bookings CTA */}
       <button
