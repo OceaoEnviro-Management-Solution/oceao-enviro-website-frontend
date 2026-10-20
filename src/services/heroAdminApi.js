@@ -28,6 +28,7 @@ const adaptSlide = (slide) => ({
   location: String(slide.location ?? ''),
   description: String(slide.description ?? ''),
   credit: slide.credit ? String(slide.credit) : '',
+  textStyle: slide.textStyle === 'light' ? 'light' : 'dark',
 });
 
 const adaptList = (list) => (Array.isArray(list) ? list.map(adaptSlide) : []);
@@ -54,14 +55,15 @@ export async function getHeroAdmin({ signal } = {}) {
 
 // ── addSlide ─────────────────────────────────────────────────────────────────
 // Uploads the picture with its texts as multipart form data (the browser sets the boundary).
-// credit is optional. Resolves with the new slide.
-export async function addSlide({ set, file, name, location, description, credit, performedBy }) {
+// credit is optional; textStyle is 'dark' (default) or 'light'. Resolves with the new slide.
+export async function addSlide({ set, file, name, location, description, credit, textStyle = 'dark', performedBy }) {
   const form = new FormData();
   form.append('set', set);
   form.append('name', name);
   form.append('location', location);
   form.append('description', description);
   if (credit) form.append('credit', credit);
+  form.append('textStyle', textStyle);
   form.append('performedBy', performedBy);
   form.append('image', file);   // last: the texts are validated before the picture is touched
 
@@ -70,8 +72,8 @@ export async function addSlide({ set, file, name, location, description, credit,
 }
 
 // ── updateSlide ──────────────────────────────────────────────────────────────
-// Texts only: any of name, location, description, credit ('' or null removes the credit).
-// The picture cannot be changed. Resolves with the updated slide.
+// Texts and text style only: any of name, location, description, credit ('' or null removes the
+// credit), textStyle ('dark' | 'light'). The picture cannot be changed. Resolves with the updated slide.
 export async function updateSlide(id, { performedBy, ...texts }) {
   const payload = await request(`/admin/hero/slides/${encodeURIComponent(id)}`, {
     method: 'PATCH',

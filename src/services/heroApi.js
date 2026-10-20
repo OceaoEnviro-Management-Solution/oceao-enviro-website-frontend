@@ -14,8 +14,10 @@ const isHttpsUrl = (value) => {
 
 // ── getHeroSlides ────────────────────────────────────────────────────────────
 // GET /hero. Resolves with the live slides, in the order to show them:
-//   [{ id, imageUrl, name, location, description, credit }]
-// credit is null when the slide has none. An empty list means "show the static hero picture".
+//   [{ id, imageUrl, name, location, description, textStyle, credit }]
+// credit is null when the slide has none. textStyle is 'dark' or 'light': how to colour the hero text
+// while this slide is on show ('dark' for a slide without one). An empty list means "show the static
+// hero picture".
 // The answer may be cached for 5 minutes.
 export async function getHeroSlides({ signal } = {}) {
   const payload = await request('/hero', { signal });
@@ -33,6 +35,7 @@ export async function getHeroSlides({ signal } = {}) {
       name: String(slide.name ?? ''),
       location: String(slide.location ?? ''),
       description: String(slide.description ?? ''),
+      textStyle: slide.textStyle === 'light' ? 'light' : 'dark',
       credit: slide.credit ? String(slide.credit) : null,
     }));
 }

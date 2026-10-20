@@ -9,6 +9,9 @@
 //   before its picture has loaded. A picture that fails to load is dropped from the rotation.
 // - Nothing pauses it by itself (not the mouse either). The visitor has Previous, Pause / Play and
 //   Next (HeroControls) to look at the pictures at their own pace.
+// - A slide with the "Light text" style lays a soft dark shade over the picture (HeroShade) and the
+//   hero text turns light (Hero.jsx reads the style from the slide on show); "Dark text" has no shade.
+//   The shade fades in and out together with the text colour.
 // - One slide: no timer, no fade, no controls. prefers-reduced-motion: slides still change, without
 //   the fade.
 // - The info card is in the bottom-right of the picture from 768px. It sits in a layer above the
@@ -23,6 +26,7 @@ import { getHeroSlides } from '../../services/heroApi';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 import HeroControls from './HeroControls';
 import { clearHeroState, publishHeroState, registerHeroActions } from './heroActiveSlide';
+import { useHeroBackdropHeight } from './useHeroBackdropHeight';
 
 const SLIDE_MS = 3000;
 const FADE_MS = 1000;
@@ -42,9 +46,20 @@ export function HeroSlideInfo({ slide }) {
   );
 }
 
+// A soft dark shade behind the hero text, for light text on a photo. It is always there and fades
+// in or out (1 second, like the text colour) so a change of style is not abrupt.
+export function HeroShade({ light }) {
+  return (
+    <div
+      aria-hidden="true"
+      className={`absolute inset-0 z-30 bg-black/35 transition-opacity duration-1000 motion-reduce:transition-none md:bg-gradient-to-r md:from-black/55 md:via-black/25 md:to-transparent ${light ? 'opacity-100' : 'opacity-0'}`}
+    />
+  );
+}
+
 // The card in the bottom-right quadrant of the picture (from 768px). On tablets and phones the
 // fixed bottom bar takes the last 4rem of the screen, so the card stays above it.
-function InfoCard({ slide }) {
+export function InfoCard({ slide }) {
   return (
     <div className="pointer-events-auto absolute z-40 hidden rounded-2xl bg-[#011539]/75 px-6 py-5 text-white backdrop-blur-sm md:block md:right-4 md:top-[calc(100svh-5rem)] md:w-[19rem] md:-translate-y-full lg:right-10 lg:top-auto lg:bottom-10 lg:w-[24rem] lg:translate-y-0">
       <div key={slide.id} className="animate-in fade-in duration-1000 motion-reduce:animate-none">
@@ -64,6 +79,7 @@ export default function HeroSlideshow() {
   const requested = useRef(new Set());
 
   const reduceMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const backdrop = useHeroBackdropHeight();
 
   // The slides. On any error the list stays empty and the static picture stays.
   useEffect(() => {
@@ -143,7 +159,7 @@ export default function HeroSlideshow() {
 
   return (
     <>
-      <div className="absolute top-0 left-0 right-0 h-[100vh] z-0 overflow-hidden">
+      <div className="absolute top-0 left-0 right-0 z-0 overflow-hidden" style={backdrop}>
         {/* Always there: what the visitor sees with no slides, and until the first one has loaded */}
         <img src={heroBg} alt="" className="w-full h-full object-cover object-center" />
 
@@ -166,11 +182,13 @@ export default function HeroSlideshow() {
           );
         })}
 
+        <HeroShade light={showing && active.textStyle === 'light'} />
+
         <div className="absolute inset-0 z-30 bg-gradient-to-b from-white/40 via-transparent to-transparent"></div>
       </div>
 
       {/* Above the hero text (z-10) so the controls can be clicked; only the card takes the mouse */}
-      <div className="pointer-events-none absolute top-0 left-0 right-0 h-[100vh] z-20">
+      <div className="pointer-events-none absolute top-0 left-0 right-0 z-20" style={backdrop}>
         {showing && <InfoCard slide={active} />}
       </div>
     </>

@@ -8,10 +8,8 @@ import { HeroSlideInfo } from './HeroSlideshow';
 import HeroControls from './HeroControls';
 import { useHeroState } from './heroActiveSlide';
 
-export default function HeroInfoStrip() {
-  const { slide } = useHeroState();
-  if (!slide) return null;
-
+// The strip itself (also used by the admin's preview, which has no slideshow behind it).
+export function HeroInfoStripView({ slide }) {
   return (
     <div className="relative z-10 bg-[#011539]/90 px-5 py-4 text-white md:hidden">
       <div key={slide.id} className="animate-in fade-in duration-1000 motion-reduce:animate-none">
@@ -20,4 +18,9 @@ export default function HeroInfoStrip() {
       <HeroControls />
     </div>
   );
+}
+
+export default function HeroInfoStrip() {
+  const { slide } = useHeroState();
+  return slide ? <HeroInfoStripView slide={slide} /> : null;
 }

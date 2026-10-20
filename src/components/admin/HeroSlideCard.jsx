@@ -8,6 +8,7 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { GripVertical, Pencil, Trash2, MapPin } from 'lucide-react';
 import { thumbnailUrl } from '../../utils/heroForm';
+import { HERO_TEXT_STYLE_LABELS } from '../sections/heroTextStyles';
 
 export default function HeroSlideCard({ slide, position, disabled, onEdit, onDelete }) {
   const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging } =
@@ -46,8 +47,16 @@ export default function HeroSlideCard({ slide, position, disabled, onEdit, onDel
         </span>
       </div>
 
-      <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-bold text-[#011539]">{slide.name}</p>
+      <div className="w-0 min-w-0 flex-1">
+        <div className="flex items-center gap-2">
+          <p className="truncate text-sm font-bold text-[#011539]">{slide.name}</p>
+          <span
+            className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold ${slide.textStyle === 'light' ? 'bg-[#011539] text-white' : 'bg-gray-100 text-gray-500'}`}
+            title="Colour of the hero text while this slide is on show"
+          >
+            {HERO_TEXT_STYLE_LABELS[slide.textStyle] ?? HERO_TEXT_STYLE_LABELS.dark}
+          </span>
+        </div>
         <p className="mt-0.5 flex items-center gap-1 text-xs font-medium text-gray-500">
           <MapPin className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
           <span className="truncate">{slide.location}</span>

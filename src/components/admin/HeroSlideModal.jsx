@@ -3,14 +3,18 @@
 //                 The photo is checked here (jpg, png or webp, at most 10 MB) before it is uploaded.
 //   mode 'edit' : the same texts, but no photo field: a photo cannot be changed, only replaced by
 //                 deleting the slide and adding a new one.
+// Both modes choose the "Text style" (dark or light hero text) and have a Preview button that shows
+// the homepage hero with this photo and these texts before anything is uploaded or saved.
 // The employee name is prefilled from sessionStorage ("oe_admin_name") and saved back on submit.
 // A failed request shows the backend's message inside the modal, which stays open.
 // Props: isOpen, mode, set ('live'|'scheduled', for add), setLabel, slide (for edit), onClose,
 //        onSaved() called after a successful save (the page reloads its lists)
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { X, ImagePlus, RefreshCw, Images } from 'lucide-react';
 import { addSlide, updateSlide } from '../../services/heroAdminApi';
+import HeroTextStyleField from './HeroTextStyleField';
+import HeroPreviewModal from './HeroPreviewModal';
 import { getStoredAdminName, saveAdminName } from '../../utils/adminName';
 import { validateEmployeeName } from '../../utils/validation';
 import { HERO_LIMITS, IMAGE_TYPES, heroErrorsFrom, validateHeroTexts, validateImageFile } from '../../utils/heroForm';
@@ -31,6 +35,8 @@ function HeroSlideDialog({ mode, set, setLabel, slide, onClose, onSaved }) {
   const [location, setLocation]         = useState(slide?.location ?? '');
   const [description, setDescription]   = useState(slide?.description ?? '');
   const [credit, setCredit]             = useState(slide?.credit ?? '');
+  const [textStyle, setTextStyle]       = useState(slide?.textStyle ?? 'dark');
+  const [previewOpen, setPreviewOpen]   = useState(false);
   const [employeeName, setEmployeeName] = useState(getStoredAdminName());
   const [file, setFile]                 = useState(null);
   const [preview, setPreview]           = useState('');
@@ -79,6 +85,7 @@ function HeroSlideDialog({ mode, set, setLabel, slide, onClose, onSaved }) {
         ...(location.trim() !== slide.location && { location: location.trim() }),
         ...(description.trim() !== slide.description && { description: description.trim() }),
         ...(credit.trim() !== slide.credit && { credit: credit.trim() || null }),
+        ...(textStyle !== slide.textStyle && { textStyle }),
       }
     : {};
   const nothingToSave = isEdit && Object.keys(changed).length === 0;
@@ -107,7 +114,7 @@ function HeroSlideDialog({ mode, set, setLabel, slide, onClose, onSaved }) {
         await addSlide({
           set, file,
           name: name.trim(), location: location.trim(), description: description.trim(), credit: credit.trim(),
-          performedBy: employeeName.trim(),
+          textStyle, performedBy: employeeName.trim(),
         });
       }
       onSaved();
@@ -119,6 +126,10 @@ function HeroSlideDialog({ mode, set, setLabel, slide, onClose, onSaved }) {
   };
 
   const descriptionLeft = HERO_LIMITS.description.max - description.length;
+  const previewTexts = useMemo(
+    () => ({ name: name.trim(), location: location.trim(), description: description.trim(), credit: credit.trim() }),
+    [name, location, description, credit]
+  );
 
   return (
     <div
@@ -237,6 +248,15 @@ function HeroSlideDialog({ mode, set, setLabel, slide, onClose, onSaved }) {
             {errors.credit && <p className="text-xs text-red-600 mt-1">{errors.credit}</p>}
           </div>
 
+          <HeroTextStyleField
+            value={textStyle}
+            onChange={setTextStyle}
+            onPreview={() => setPreviewOpen(true)}
+            previewDisabled={!isEdit && !preview}
+            previewHint="Choose a photo first"
+            disabled={busy}
+          />
+
           <div>
             <label htmlFor="hero-employee" className="text-sm font-semibold text-[#011539] block mb-1.5">
               Employee Name <span className="text-red-500">*</span>
@@ -266,6 +286,15 @@ function HeroSlideDialog({ mode, set, setLabel, slide, onClose, onSaved }) {
           </button>
         </div>
       </form>
+      {previewOpen && (
+        <HeroPreviewModal
+          photoUrl={isEdit ? slide.imageUrl : preview}
+          textStyle={textStyle}
+          texts={previewTexts}
+          onTextStyleChange={setTextStyle}
+          onClose={() => setPreviewOpen(false)}
+        />
+      )}
       <style>{ANIM}</style>
     </div>
   );

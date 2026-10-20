@@ -52,6 +52,7 @@ import AdminAvailabilityVMPage from '../pages/admin/AdminAvailabilityVMPage.jsx'
 import AdminAvailabilityCallbacksPage from '../pages/admin/AdminAvailabilityCallbacksPage.jsx';
 import AdminSettingsPage from '../pages/admin/AdminSettingsPage.jsx';
 import AdminHeroSlidesPage from '../pages/admin/AdminHeroSlidesPage.jsx';
+import HeroPreviewFrame from '../pages/HeroPreviewFrame.jsx';
 
 // ── BookingLayout — shared parent that holds BookingProvider ───────────────
 // All /booking-vm/* routes nest under this. Context persists across all steps.
@@ -112,6 +113,9 @@ export default function AppRoutes() {
           <Route path="*" element={<NotFound />} />
 
         </Route>
+
+        {/* The page the admin's hero Preview shows in an iframe (no header or footer of its own) */}
+        <Route path="/hero-preview-frame" element={<HeroPreviewFrame />} />
 
         {/* ── Admin panel — outside MainLayout, has its own AdminLayout ─── */}
         {/* AdminLayout handles: session guard, sidebar, topbar, Outlet      */}
