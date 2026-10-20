@@ -51,6 +51,7 @@ import AdminBookingsPage from '../pages/admin/AdminBookingsPage.jsx';
 import AdminAvailabilityVMPage from '../pages/admin/AdminAvailabilityVMPage.jsx';
 import AdminAvailabilityCallbacksPage from '../pages/admin/AdminAvailabilityCallbacksPage.jsx';
 import AdminSettingsPage from '../pages/admin/AdminSettingsPage.jsx';
+import AdminHeroSlidesPage from '../pages/admin/AdminHeroSlidesPage.jsx';
 
 // ── BookingLayout — shared parent that holds BookingProvider ───────────────
 // All /booking-vm/* routes nest under this. Context persists across all steps.
@@ -120,6 +121,7 @@ export default function AppRoutes() {
           <Route path="bookings" element={<AdminBookingsPage />} />
           <Route path="availability-vm" element={<AdminAvailabilityVMPage />} />
           <Route path="availability-callbacks" element={<AdminAvailabilityCallbacksPage />} />
+          <Route path="hero-slides" element={<AdminHeroSlidesPage />} />
           <Route path="settings" element={<AdminSettingsPage />} />
         </Route>
 
